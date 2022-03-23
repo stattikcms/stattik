@@ -1,0 +1,5 @@
+#Welcome!
+
+```bash
+stattik build
+```

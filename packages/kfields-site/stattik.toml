@@ -1,0 +1,3 @@
+[environment]
+STATTIK_ROOT_MODULE = "kfields_site"
+STATTIK_SETTINGS_MODULE = "kfields_site.settings"

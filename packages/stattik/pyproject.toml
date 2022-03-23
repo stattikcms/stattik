@@ -1,0 +1,39 @@
+[tool.poetry]
+name = "stattik"
+version = "0.1.0"
+description = ""
+authors = ["Kurtis Fields <kurtisfields@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10.0"
+click = "^8.0.3"
+loguru = "^0.5.3"
+ariadne = "^0.13.0"
+aiofiles = "^0.7.0"
+python-frontmatter = "^1.0.0"
+Markdown = "^3.3.4"
+xmlschema = "^1.8.1"
+lxml = "^4.6.4"
+html5lib = "^1.1"
+pydantic = "^1.8.2"
+aiosqlite = "^0.17.0"
+SQLAlchemy = "^1.4.26"
+uvicorn = {extras = ["standard"], version = "^0.15.0"}
+pydantic-sqlalchemy = "^0.0.9"
+PyYAML = "^6.0"
+emoji = "^1.6.1"
+mistune = "2.0.0rc1"
+Pygments = "^2.10.0"
+pymdown-extensions = "^9.0"
+python-dotenv = "^0.19.2"
+beautifulsoup4 = "^4.10.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^6.2.5"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+stattik = 'stattik.management:cli'

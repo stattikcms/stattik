@@ -1,0 +1,41 @@
+scalar Datetime
+
+type PageInfo {
+  hasNextPage: Boolean!
+  hasPreviousPage: Boolean!
+  startCursor: String
+  endCursor: String
+}
+
+type Post {
+  id: ID!
+  title: String!
+  block: String!
+  body: String!
+  date: Datetime
+  description: String!
+  cover: String!
+  slug: String!
+  category: String!
+}
+
+input PostInput {
+  title: String!
+  block: String!
+  body: String!
+  date: Datetime
+  description: String!
+  cover: String!
+  slug: String!
+  category: String!
+}
+
+type PostConnection {
+  edges: [PostEdge!]!
+  pageInfo: PageInfo!
+}
+
+type PostEdge {
+  cursor: String!
+  node: Post!
+}

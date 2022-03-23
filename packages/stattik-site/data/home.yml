@@ -1,0 +1,11 @@
+callouts:
+  - title: Fast
+    subtitle: Generate a full site in seconds
+    icon: fas fa-tachometer-alt fa-2x
+  - title: Component Architecture
+    subtitle: Based on Vue
+    icon: fas fa-cogs fa-2x
+  - title: Customizable
+    subtitle: Make it work the way you want it to
+    icon: fas fa-archway fa-2x
+    icon_brand: true

@@ -1,0 +1,29 @@
+{
+  "name": "stattik-site",
+  "version": "1.0.0",
+  "main": "webpack.config.js",
+  "scripts": {
+    "build": "webpack --mode production",
+    "develop": "webpack --watch --mode development"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "bulma": "^0.9.3",
+    "css-loader": "^6.5.0",
+    "mini-css-extract-plugin": "^2.4.3",
+    "node-sass": "^6.0.1",
+    "sass-loader": "^12.2.0",
+    "style-loader": "^3.3.1",
+    "webpack": "^5.60.0",
+    "webpack-cli": "^4.9.1"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.36",
+    "@fortawesome/free-brands-svg-icons": "^5.15.4",
+    "@fortawesome/free-regular-svg-icons": "^5.15.4",
+    "@fortawesome/free-solid-svg-icons": "^5.15.4",
+    "file-loader": "^6.2.0",
+    "url-loader": "^4.1.1",
+    "yarn": "^1.22.17"
+  }
+}
