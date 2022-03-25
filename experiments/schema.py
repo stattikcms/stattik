@@ -7,7 +7,7 @@ from starlette.staticfiles import StaticFiles
 from ariadne.asgi import GraphQL
 
 import stattik
-from stattik.application import Stattik
+from stattik.server import Stattik
 from stattik.database import Database
 from stattik.schema import Schema
 

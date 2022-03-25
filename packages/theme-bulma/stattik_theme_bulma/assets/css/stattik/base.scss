@@ -1,0 +1,53 @@
+body {
+  margin: 0;
+  font-family: $family-sans-serif;
+}
+
+p {
+  margin-bottom: 1rem;
+}
+
+section {
+  padding: 1.5rem;
+}
+
+header {
+  background-color: $primary;
+}
+.footer {
+  border-top: 3px groove #444444;
+  padding-bottom: 3rem;
+}
+
+.article-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.article-list li {
+  //border-bottom: 1px solid #444444;
+  margin-bottom: 16px
+}
+.article-list li:last-child {
+  margin-bottom: 0px
+}
+
+.project-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 5vmin;
+}
+
+.list-inline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.list-inline li {
+  display: inline-block;
+}

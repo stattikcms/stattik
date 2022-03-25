@@ -1,15 +1,26 @@
-import os
-import shutil
+import sys
 import asyncio
 
-from pathlib import Path
+from timeit import default_timer as timer
 
-from stattik.assembly.assembler import Assembler
+import emoji
 
+from stattik.site import Site
 
 async def assemble():
-    assembler = Assembler()
-    await assembler.assemble()
+
+    start = timer()
+
+    site = await Site.produce()
+    #await site.begin()
+    await site.assemble()
+
+    end = timer()
+    elapsed = end - start
+
+    count = await site.page_count
+    
+    print(emoji.emojize(f"Assembled {count} pages in {str(round(elapsed, 2))} seconds :thumbs_up:"))
 
 if __name__ == "__main__":
     asyncio.run(assemble())

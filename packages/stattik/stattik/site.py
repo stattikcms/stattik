@@ -1,4 +1,5 @@
 import os, sys
+import asyncio
 from pathlib import Path
 import importlib.util
 
@@ -9,6 +10,7 @@ load_dotenv(Path(os.getcwd()) / '.env')
 
 import toml
 
+from . import blackboard
 from .core.collection import Collection
 
 aliases = {}
@@ -18,36 +20,30 @@ aliases = {}
 def to_path(ref):
     path = None
     if isinstance(ref, str):
-        #return Path(os.getcwd(), ref)
         path = Path(ref)
     else:
         path = ref
 
-    #index = path.parts.index('ghi')
-    #new_path = Path('/jkl/mno').joinpath(*path.parts[index:])
     if path.parts[0] in aliases:
-        #print(path.parts[1:len(path.parts)])
-        #exit()
-        #path = Path(aliases[path.parts[0]]).joinpath(path.parts[1:-1])
         path = Path(aliases[path.parts[0]]).joinpath('/'.join(path.parts[1:len(path.parts)]))
-        #print(path)
-        #exit()
 
-    #exit()
     return path
 
 class SiteConfigNotFound(Exception):
     pass
 
 class Site:
+    
     _instance = None
     @classmethod
     @property
     def instance(self):
         if self._instance:
             return self._instance
-        self._instance = self._produce()
+        self._instance = asyncio.run(Site.produce())
         return self._instance
+    
+    #instance = None
 
     def __init__(self):
         self.collections = []
@@ -56,12 +52,21 @@ class Site:
         self.renderer = None
         self.indexer = None
         self.css_scopes = []
+        self.tasks = []
+
+    def create_task(self, awaitable):
+        self.tasks.append(asyncio.create_task(awaitable))
+
+    async def run_tasks(self):
+        for task in self.tasks:
+            await task
 
     @classmethod
-    def _produce(self):
+    async def produce(self):
         # NOTE: Need to set _instance here or it causes infinite recursion
-        self._instance = site = self.load_site()
+        self._instance = site = await self.load_site()
         site.on_create()
+        await site.begin()
         return site
 
     @property
@@ -75,7 +80,7 @@ class Site:
         pass
 
     @classmethod
-    def load_site(self):
+    async def load_site(self):
         #config = toml.load('stattik.toml')
         config = self.load_config()
         environment = config['environment']
@@ -87,19 +92,6 @@ class Site:
         sys.path.append(f"./{root_name}")
         module_name = environment['STATTIK_SETTINGS_MODULE']
         module = importlib.import_module(module_name)
-
-        '''
-        path = Path(os.getcwd(), 'src/settings.py')
-        if not os.path.exists(path):
-            raise SiteConfigNotFound()
-
-        module_name = "stattik_site"
-        spec = importlib.util.spec_from_file_location(
-            module_name, path
-        )
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
-        '''
 
         attrs = {}
         for key in dir(module):
@@ -114,6 +106,10 @@ class Site:
         super_class = Site
         SiteClass = type(module_name, (super_class,), attrs)
         site = SiteClass()
+
+        self.load_resolve(attrs)
+        await self.load_plugins(site, attrs)
+
         return site
 
     @classmethod
@@ -132,8 +128,6 @@ class Site:
                 config[key] = stattik_config.__dict__[key]
         #logger.debug(f'load_config:config: {config}')
 
-        self.load_resolve(config)
-
         return config
 
     @classmethod
@@ -150,25 +144,34 @@ class Site:
             collection = Collection()
             self.collections.append(collection)
 
-    def load_plugins(self):
-        plugins = self.config['plugins']
+    @classmethod
+    async def load_plugins(self, site, config):
+        plugins = config['plugins']
         for plugin in plugins:
             use = plugin['use']
             plugin_module = importlib.import_module(use)
-            plugin_module.install(self, plugin['options'])
+            await plugin_module.install(site, plugin['options'])
 
     async def begin(self):
         await self.database.begin()
 
     async def build(self):
-        await self.begin()
+        await self.assemble()
+        await self.index()
+        await self.render()
+
+    async def assemble(self):
+        #await self.begin()
         await self.database.drop_all()
         await self.architect.build_site()
 
     async def render(self):
-        await self.begin()
+        #await self.begin()
         await self.renderer.render()
 
     async def index(self):
-        await self.begin()
-        await self.indexer.index()
+        #await self.begin()
+        #await self.indexer.index()
+        await self.run_tasks()
+        #await blackboard.index.asend(self)
+        await blackboard.publish('index', self)

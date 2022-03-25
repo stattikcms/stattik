@@ -1,0 +1,11 @@
+callouts:
+  - title: Python
+    subtitle: Best Language Ever
+    icon: fab fa-python fa-2x
+  - title: Vue
+    subtitle: Based on Vue
+    icon: fab fa-vuejs fa-2x
+  - title: GraphQL
+    subtitle: Make it work the way you want it to
+    icon: fak fa-graphql fa-2x
+    icon_brand: true

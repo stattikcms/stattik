@@ -8,10 +8,10 @@ import emoji
 from stattik.site import Site
 
 async def render():
-    site = Site.instance
-
     start = timer()
 
+    site = await Site.produce()
+    await site.begin()
     await site.render()
 
     end = timer()

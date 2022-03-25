@@ -6,15 +6,13 @@ from timeit import default_timer as timer
 import emoji
 
 from stattik.site import Site
-from stattik.database import Database
 
-async def build():
-    site = Site.instance
-
+async def build():    
     start = timer()
 
+    site = await Site.produce()
+    await site.begin()
     await site.build()
-    await site.render()
 
     end = timer()
     elapsed = end - start

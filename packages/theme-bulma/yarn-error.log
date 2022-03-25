@@ -1,0 +1,59 @@
+Arguments: 
+  /home/kurt/.nvm/versions/node/v14.17.5/bin/node /home/kurt/.yarn/bin/yarn.js
+
+PATH: 
+  /home/kurt/.cache/pypoetry/virtualenvs/stattik-root-7m9Nu_BT-py3.10/bin:/home/kurt/.yarn/bin:/home/kurt/.config/yarn/global/node_modules/.bin:/home/kurt/.asdf/shims:/home/kurt/.asdf/bin:/home/kurt/.local/bin:/home/kurt/.pyenv/shims:/home/kurt/.pyenv/bin:/home/kurt/.yarn/bin:/home/kurt/.config/yarn/global/node_modules/.bin:/home/kurt/.local/bin:/home/kurt/.pyenv/shims:/home/kurt/.pyenv/bin:/home/kurt/.vscode-server/bin/c722ca6c7eed3d7987c0d5c3df5c45f6b15e77d1/bin/remote-cli:/home/kurt/.local/bin:/home/kurt/bin:/home/kurt/.cargo/bin:/home/kurt/.yarn/bin:/home/kurt/.config/yarn/global/node_modules/.bin:/home/kurt/.nvm/versions/node/v14.17.5/bin:/home/kurt/.local/bin:/home/kurt/.pyenv/shims:/home/kurt/.pyenv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/usr/lib/wsl/lib:/mnt/c/Windows/system32:/mnt/c/Windows:/mnt/c/Windows/System32/Wbem:/mnt/c/Windows/System32/WindowsPowerShell/v1.0/:/mnt/c/Windows/System32/OpenSSH/:/mnt/c/Program Files/Intel/WiFi/bin/:/mnt/c/Program Files/Common Files/Intel/WirelessCommon/:/mnt/c/Program Files (x86)/NVIDIA Corporation/PhysX/Common:/mnt/c/Program Files/NVIDIA Corporation/NVIDIA NvDLISR:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/dotnet/:/mnt/c/ProgramData/chocolatey/bin:/mnt/c/Qt/6.1.1/msvc2019_64/lib:/mnt/c/Qt/6.1.1/msvc2019_64/bin:/mnt/c/Program Files/LLVM/bin:/mnt/c/AAA/Dev/flutter/bin:/mnt/c/Program Files (x86)/Microsoft Visual Studio/2019/Community/MSBuild/Current/Bin:/mnt/c/Program Files/Meson/:/mnt/c/Bin:/mnt/c/Lib:/mnt/c/WINDOWS/system32:/mnt/c/WINDOWS:/mnt/c/WINDOWS/System32/Wbem:/mnt/c/WINDOWS/System32/WindowsPowerShell/v1.0/:/mnt/c/WINDOWS/System32/OpenSSH/:/mnt/c/Program Files/Microsoft SQL Server/150/Tools/Binn/:/mnt/c/Program Files/Microsoft SQL Server/Client SDK/ODBC/170/Tools/Binn/:/mnt/c/Program Files/Docker/Docker/resources/bin:/mnt/c/ProgramData/DockerDesktop/version-bin:/mnt/c/Program Files (x86)/dotnet/:/mnt/c/Program Files/Git/cmd:/mnt/c/Users/kurti/AppData/Local/Microsoft/WindowsApps:/mnt/c/Users/kurti/.dotnet/tools:/mnt/c/Users/kurti/AppData/Local/GitHubDesktop/bin:/mnt/c/Users/kurti/AppData/Local/Programs/Microsoft VS Code/bin:/mnt/c/Program Files/JetBrains/IntelliJ IDEA Community Edition 2020.3.2/bin:/mnt/c/Program Files/Inkscape/bin:/mnt/c/Program Files/CMake/bin:/snap/bin
+
+Yarn version: 
+  1.22.17
+
+Node version: 
+  14.17.5
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/kurt/Dev/stattik/packages/stattik-theme-bulma/package.json: Unexpected token } in JSON at position 200
+      at JSON.parse (<anonymous>)
+      at /home/kurt/.yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/home/kurt/.yarn/lib/cli.js:310:30)
+      at /home/kurt/.yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "stattik-theme-bulma",
+    "version": "1.0.0",
+    "main": "webpack.config.js",
+    "scripts": {
+      "build": "webpack --mode production",
+      "develop": "webpack --watch --mode development",
+    },
+    "license": "MIT",
+    "devDependencies": {
+      "bulma": "^0.9.3",
+      "css-loader": "^6.5.0",
+      "mini-css-extract-plugin": "^2.4.3",
+      "node-sass": "^6.0.1",
+      "sass-loader": "^12.2.0",
+      "style-loader": "^3.3.1",
+      "webpack": "^5.60.0",
+      "webpack-cli": "^4.9.1"
+    },
+    "dependencies": {
+      "@fortawesome/fontawesome-svg-core": "^1.2.36",
+      "@fortawesome/free-brands-svg-icons": "^5.15.4",
+      "@fortawesome/free-regular-svg-icons": "^5.15.4",
+      "@fortawesome/free-solid-svg-icons": "^5.15.4",
+      "file-loader": "^6.2.0",
+      "url-loader": "^4.1.1",
+      "yarn": "^1.22.17"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

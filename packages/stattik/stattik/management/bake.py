@@ -13,11 +13,29 @@ import emoji
 from stattik.site import Site
 
 async def bake():
-    site = Site.instance
-
     start = timer()
 
-    await site.index()
+    site = await Site.produce()
+    await site.begin()
+
+    '''
+    if os.path.isdir("./static"):
+        shutil.copytree("./static", "./dist", dirs_exist_ok=True)
+    '''
+
+    site_static = Path(site.root, 'static')
+
+    if os.path.isdir(site_static):
+        shutil.copytree(site_static, "./dist", dirs_exist_ok=True)
+
+    if hasattr(site, 'apps'):
+        for module_name in site.apps:
+            print("Module name:  ", module_name)
+            module = importlib.import_module(f"{module_name}.static")
+            print("Module:  ", module)
+            root = os.path.dirname(module.__file__)
+            dist = Path(os.getcwd(), './dist')
+            walk(resources.files(module), root, dist)
 
     end = timer()
     elapsed = end - start
@@ -25,16 +43,6 @@ async def bake():
     #count = await site.page_count
     
     #print(emoji.emojize(f"Indexed {count} pages in {str(round(elapsed, 2))} seconds :thumbs_up:"))
-
-    if os.path.isdir("./static"):
-        shutil.copytree("./static", "./dist", dirs_exist_ok=True)
-
-    for module_name in site.apps:
-        print(module_name)
-        module = importlib.import_module(f"{module_name}.static")
-        root = os.path.dirname(module.__file__)
-        dist = Path(os.getcwd(), './dist')
-        walk(resources.files(module), root, dist)
 
 skiplist = [
     '__pycache__',

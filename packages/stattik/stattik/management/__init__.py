@@ -27,12 +27,7 @@ def async_cmd(func):
 def cli(ctx):
     ctx.ensure_object(dict)
     if ctx.invoked_subcommand is None:
-      develop()
-
-@cli.command()
-@click.pass_context
-def develop(ctx):
-    _develop()
+        develop()
 
 @cli.command()
 @click.pass_context
@@ -70,6 +65,16 @@ async def build(ctx, profile):
     else:
         await _build()
 '''
+
+'''
+def start_site():
+    site = Site.produce()
+'''
+
+@cli.command()
+@click.pass_context
+def develop(ctx):
+    _develop()
 
 @cli.command()
 @click.pass_context

@@ -8,14 +8,15 @@ from starlette.staticfiles import StaticFiles
 from ariadne.asgi import GraphQL
 
 import stattik
-from stattik.application import Stattik
+from stattik.server import Stattik
 from stattik.database import Database
 
 def create_app():
     db = Database.produce()
 
     async def on_startup():
-        await db.begin()
+        #await db.begin()
+        pass
 
     async def on_shutdown():
         pass
@@ -32,12 +33,10 @@ def create_app():
 
     return app
 
-stattik.create_app = create_app
-
 # WARNING:  You must pass the application as an import string to enable 'reload' or 'workers'.
 def develop():
     uvicorn.run(
-        'stattik:create_app',
+        'stattik.management.develop:create_app',
         host="0.0.0.0",
         port=8000,
         reload=True,

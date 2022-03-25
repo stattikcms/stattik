@@ -28,17 +28,12 @@ class Database(Schema):
     def __init__(self):
         super().__init__()
         self.db = Database.instance = self
+        self.engine = None
         self.query_type = QueryType()
         self.mutation_type = MutationType()
         self.subscription_type = SubscriptionType()
 
         self.child_map = {}
-
-        self.engine = engine = create_async_engine(
-            Site.instance.DATABASE_URL,
-            json_serializer=json_serializer
-        )
-
 
     def add_child(self, schema):
         # TODO:  Hacky
@@ -49,12 +44,13 @@ class Database(Schema):
         return self.child_map[key]
 
     async def begin(self):
-        '''
+        #if self.engine:
+        #    return
         self.engine = engine = create_async_engine(
             Site.instance.DATABASE_URL,
             json_serializer=json_serializer
         )
-        '''
+        
         #await self.drop_all()
         engine = self.engine
 
@@ -73,11 +69,16 @@ class Database(Schema):
 
         self.register()
 
+
+    async def end(self):
+        await self.end_session()
+
     async def end_session(self):
         await self.Session.commit()
         await self.Session.remove()
 
     async def drop_all(self):
+        await self.begin()
         async with self.engine.begin() as conn:
             await conn.run_sync(Model.metadata.drop_all)
 
