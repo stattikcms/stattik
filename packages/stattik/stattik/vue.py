@@ -60,7 +60,8 @@ class Vue:
         context.paginator = paginator
         for page in paginator.pages:
             if page.number != 1:
-                context.add_context(page.url, page.path)
+                #context.add_context(page.url, page.path)
+                context.add_context(page.src_url, page.path)
         return paginator
         
     def data(self):

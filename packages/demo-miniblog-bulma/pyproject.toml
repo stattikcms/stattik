@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "stattik-demo-miniblog-bulma"
+version = "0.1.0"
+description = ""
+authors = ["Kurtis Fields <kurtisfields@gmail.com>"]
+packages = [
+    { include = "demo_miniblog_bulma" },
+]
+
+[tool.poetry.dependencies]
+python = ">=3.10.0,<3.11"
+stattik = {path = "../stattik",  develop = true}
+stattik-theme-bulma = {path = "../theme-bulma", develop = true}
+stattik-plugin-search-fuse = {path = "../plugin-search-fuse", develop = true}
+stattik-app-search-fuse-bulma = {path = "../app-search-fuse-bulma", develop = true}
+gql = {extras = ["all"], version = "^3.0.0b0", allow-prereleases = true}
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

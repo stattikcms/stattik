@@ -14,7 +14,8 @@ class RenderContext:
     def __init__(self, renderer, page, url=None, path=None, paginator=None):
         self.renderer = renderer
         self.page = page
-        self.url = url if url else page.url
+        #self.url = url if url else page.url
+        self.url = url if url else page.src_url
         self.path = path if path else page.path
         self.body = ''
         self.paginator = paginator

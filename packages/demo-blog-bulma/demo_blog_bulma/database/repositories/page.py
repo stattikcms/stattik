@@ -13,7 +13,7 @@ import sqlalchemy.types as types
 from pathlib import Path
 
 class PathType(types.TypeDecorator):
-    impl = String
+    impl = Text
 
     def process_bind_param(self, value, dialect):
         return str(value)
@@ -33,6 +33,11 @@ class Page(Model):
     type = Column(String(50))
     data = Column(JSON)
 
+    src_path = Column(PathType())
+    src_url = Column(PathType())
+    path = Column(PathType())
+    url = Column(PathType())
+
     title = Column(String(50))
     date = Column(DateTime, index=True, default=datetime.utcnow())
     stars = Column(Integer, index=True)
@@ -41,8 +46,6 @@ class Page(Model):
     cover = Column(String(50))
     slug = Column(String(50))
 
-    path = Column(PathType(50))
-    url = Column(PathType(50))
     content = Column(Text)
 
     __mapper_args__ = {

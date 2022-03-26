@@ -38,16 +38,26 @@ class MarkdownBuilder(PageBuilder):
 
         parent_path = Path('/'.join(src_path.parts[1:-1]))
         path = parent_path / f'{stem}.{suffix}'
-        job.path = path
-
-        url = Path('/')
+        job.src_path = path
+        print(path)
+        #job.path = path
+        job.path =  Path('/'.join([x for x in path.parts if x != '_index']))
+        print(job.path)
+        #exit()
+        #url = Path('/')
         
         if path.name == 'index.html':
-            url = url.joinpath(parent_path)
+            #url = url.joinpath(parent_path)
+            url = parent_path
         else:
-            url = url.joinpath(path)
+            #url = url.joinpath(path)
+            url = path
         
-        job.url = url
+        job.src_url = Path('/') / url
+        #print(url)
+        #print(job.src_url)
+        job.url = Path('/') / Path('/'.join([x for x in url.parts if x != '_index']))
+        #print(job.url)
 
         with open(src_path) as f:
             matter = stattik.frontmatter.load(f)
