@@ -1,7 +1,4 @@
 ---
-title: Stattik Bulma Demo
-description: Stattik is an awesome static website generator for Python!
-data: !data home.yml
+title: Stattik Bulma Blog Demo
+description: Stattik Bulma Blog Demo
 ---
-## Stattik is a fantastic static website generator for Python!
-:rocket:

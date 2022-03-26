@@ -8,7 +8,6 @@ from pathlib import Path
 from stattik import data
 
 from .builder import Builder
-from .paginator import Paginator
 from .job import Job
 
 
@@ -34,7 +33,7 @@ class FolderBuilder(Builder):
         for entry in os.scandir(root):
             if entry.is_dir():
                 #print('==', entry.name)
-                await self.build_folder(Job( Path(root) / entry.name, copy(config)) )
+                await self.build_folder(Job(Path(root) / entry.name, copy(config)))
                 continue
             if entry.name == '_index.md':
                 continue
@@ -69,15 +68,3 @@ class FolderBuilder(Builder):
         #print(job.__dict__)
         builder = self.get_builder(job)
         await builder.build(job)
-
-    '''
-    async def build_page(self, job):
-        #print(job.__dict__)
-        builder = self.get_builder(job)
-        page = await builder.build(job)
-
-        type = page.type
-        repo = self.architect.db[type]
-
-        await repo.add(page)
-    '''

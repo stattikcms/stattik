@@ -161,17 +161,12 @@ class Site:
         await self.render()
 
     async def assemble(self):
-        #await self.begin()
         await self.database.drop_all()
         await self.architect.build_site()
 
     async def render(self):
-        #await self.begin()
         await self.renderer.render()
 
     async def index(self):
-        #await self.begin()
         #await self.indexer.index()
-        await self.run_tasks()
-        #await blackboard.index.asend(self)
         await blackboard.publish('index', self)

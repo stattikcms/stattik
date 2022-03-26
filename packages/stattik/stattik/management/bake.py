@@ -30,9 +30,9 @@ async def bake():
 
     if hasattr(site, 'apps'):
         for module_name in site.apps:
-            print("Module name:  ", module_name)
+            #print("Module name:  ", module_name)
             module = importlib.import_module(f"{module_name}.static")
-            print("Module:  ", module)
+            #print("Module:  ", module)
             root = os.path.dirname(module.__file__)
             dist = Path(os.getcwd(), './dist')
             walk(resources.files(module), root, dist)
@@ -52,12 +52,12 @@ skiplist = [
 def walk(traversable, root, dist):
     if traversable.name in skiplist:
         return
-    print(traversable)
+    #print(traversable)
     rel_path = traversable.relative_to(root)
-    print('REL:  ', rel_path)
+    #print('REL:  ', rel_path)
 
     dst_path = dist / rel_path
-    print('DEST:  ', dst_path)
+    #print('DEST:  ', dst_path)
     
     if traversable.is_dir():
         if not str(rel_path) == '.':

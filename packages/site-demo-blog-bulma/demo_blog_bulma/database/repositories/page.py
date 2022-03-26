@@ -21,17 +21,6 @@ class PathType(types.TypeDecorator):
     def process_result_value(self, value, dialect):
         return Path(value)
 
-class PaginationType(types.TypeDecorator):
-    impl = JSON
-
-    def process_bind_param(self, value, dialect):
-        if value:
-            return value
-
-    def process_result_value(self, value, dialect):
-        #return Pagination.produce(value)
-        return value
-
 class Page(Model):
     def __init__(self, data={}) -> None:
         self.inject(data)
@@ -43,7 +32,6 @@ class Page(Model):
     id = Column(Integer, primary_key=True)
     type = Column(String(50))
     data = Column(JSON)
-    pagination = Column(PaginationType)
 
     title = Column(String(50))
     date = Column(DateTime, index=True, default=datetime.utcnow())
@@ -119,3 +107,7 @@ class PageRepository(Repository):
         q = await session.execute(select(self.Model).order_by(self.Model.id).slice(start, stop))
         return q.scalars().all()
 
+    async def latest(self, start, stop):
+        session = self.Session()
+        q = await session.execute(select(self.Model).order_by(self.Model.date).slice(start, stop))
+        return q.scalars().all()

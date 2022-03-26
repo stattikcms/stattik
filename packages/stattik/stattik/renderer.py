@@ -49,7 +49,6 @@ class Renderer:
     async def render(self):
         site = Site.instance
         db = site.database
-        #await db.begin()
 
         pages = await db['Page'].all()
 
@@ -70,7 +69,6 @@ class Renderer:
                 text = str(css)
                 myfile.write(text)
 
-        #await db.end_session()
 
     async def render_page(self, page, context=None):
         if not context:
@@ -83,7 +81,9 @@ class Renderer:
             if msg['type'] != 'http.response.body':
                 #logger.debug(msg['type'])
                 return
-            context.body = f"<!DOCTYPE html>\n{msg['body'].decode('utf-8')}"
+            content = msg['body'].decode('utf-8')
+            #logger.debug(content)
+            context.body = f"<!DOCTYPE html>\n{content}"
             self.write_context(context)
 
         await self.render_context(context, receive, send)
@@ -113,7 +113,10 @@ class Renderer:
 
     def write_context(self, context):
         body = context.body
-        dst_path = 'dist' / context.path
+        context_path = context.path
+        #print(context_path)
+        dst_path = 'dist' / context_path
+        #print(dst_path)
 
         if not os.path.exists(os.path.dirname(dst_path)):
             try:

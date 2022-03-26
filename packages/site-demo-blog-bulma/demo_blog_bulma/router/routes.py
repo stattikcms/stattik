@@ -12,18 +12,11 @@ routes = [
                 ]
             },
 
-            {"path": "post", "component": "src/layouts/PostsLayout",
+            {"path": "blog", "component": "src/layouts/PostsLayout",
                 "children": [
                     {"path": "", "component": "src/pages/Posts"},
                     {"path": "page/{number:int}/", "component": "src/pages/Posts"},
                     {"path": "{postname}", "component": "src/pages/Post"},
-                ]
-            },
-            {"path": "project", "component": "src/layouts/ProjectsLayout",
-                "children": [
-                    {"path": "", "component": "src/pages/Projects"},
-                    {"path": "page/{number:int}/", "component": "src/pages/Projects"},
-                    {"path": "{postname}", "component": "src/pages/Project"},
                 ]
             },
         ],
