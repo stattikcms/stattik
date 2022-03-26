@@ -6,7 +6,7 @@ from sqlalchemy import Column, Integer, JSON, String, DateTime, Text, event, fun
 from sqlalchemy.future import select
 
 from stattik.database import Repository
-from stattik.model import Model
+from stattik.models import Model
 from stattik.data import Data
 
 import sqlalchemy.types as types

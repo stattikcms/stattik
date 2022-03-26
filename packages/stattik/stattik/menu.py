@@ -13,6 +13,9 @@ class Menu:
     def add_child(self, child):
         self.children.append(child)
 
+    def has_children(self):
+        return len(self.children) > 0
+
     def dumps(self):
         #return json.dumps(self.__dict__, sort_keys=True, indent=4)
         return self.__dict__
@@ -26,13 +29,16 @@ def build_bottom_up(page, stop_url='/'):
     matched = build_matched(page, stop_url)
     #print(matched)
     menu = build_menu(matched)
-    #print_menu(menu)
+    print_menu(menu)
     return menu
 
 def build_menu(matched):
     page = matched[0]
-    cls = 'is-active' if len(matched) == 1 else ''
-    menu = Menu({ 'title': page.title, 'url': page.url, 'cls': cls })
+    is_active = len(matched) == 1
+    cls = 'is-active' if is_active else ''
+    url = '#' if is_active else page.url
+    menu = Menu({ 'title': page.title, 'url': url, 'cls': cls })
+    #print(page.url)
     if page.menu:
         for item in page.menu:
             if len(matched) > 1 and item['url'] == str(matched[1].url):

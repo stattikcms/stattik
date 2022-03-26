@@ -1,4 +1,4 @@
-from .page import PageRepository
+from stattik.models.page import PageRepository
 from .landing import LandingRepository
 from .post import PostRepository
 

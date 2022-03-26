@@ -24,7 +24,7 @@ async def created(self):
 async def paginate(self):
     db = self.v_db
     per_page = 5
-    paginator = await Paginator.produce(db['Post'], per_page, self.v_page.url, self.v_page.path)
+    paginator = await Paginator.produce(db['Post'], per_page, self.v_page.src_url, self.v_page.url, self.v_page.path)
     return await super(self.__class__, self).paginate(paginator)
 
 </script>

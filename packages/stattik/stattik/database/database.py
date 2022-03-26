@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_scop
 
 from stattik.schema import Schema
 from stattik.site import Site
-from stattik.model import Model
+from stattik.models import Model
 from .utils import json_serializer
 
 class Database(Schema):

@@ -1,5 +1,6 @@
 from typing import Optional
 from datetime import datetime
+import json
 
 from sqlalchemy import Column, ForeignKey, Integer, JSON, String, DateTime, Text, event, func
 from sqlalchemy.orm import relationship
@@ -13,7 +14,7 @@ import sqlalchemy.types as types
 from pathlib import Path
 
 class PathType(types.TypeDecorator):
-    impl = String
+    impl = Text
 
     def process_bind_param(self, value, dialect):
         return str(value)
@@ -33,22 +34,23 @@ class Page(Model):
     parent_id = Column(Integer, ForeignKey('Page.id'))
     type = Column(String(50))
     data = Column(JSON)
-    menu = Column(JSON)
+
+    src_path = Column(PathType())
+    src_url = Column(PathType())
+    path = Column(PathType())
+    url = Column(PathType())
 
     title = Column(String(50))
     date = Column(DateTime, index=True, default=datetime.utcnow())
+    stars = Column(Integer, index=True)
+    menu = Column(JSON)
+
     description = Column(String(50))
     cover = Column(String(50))
     slug = Column(String(50))
 
-    path = Column(PathType(50))
-    url = Column(PathType(50))
     content = Column(Text)
-    '''
-    children = relationship("Page",
-                    lazy="joined",
-                    join_depth=2)
-    '''
+
     parent = relationship(
         'Page',
         lazy='joined',
@@ -61,12 +63,13 @@ class Page(Model):
         'polymorphic_identity':'Page',
         'polymorphic_on':type
     }
-"""
+'''
 @event.listens_for(Page, "load")
 def _inject_data(target, context):
-    print(context)
+    print(context.data)
     target.inject(context.data)
-"""
+'''
+
 #event.listen(Page, 'load', _inject_data)
 
 class PageData(Data):
@@ -112,3 +115,13 @@ class PageRepository(Repository):
         q = await session.execute(select(func.count()).select_from(select(self.Model).subquery()))
         count = q.scalars().one()
         return count
+
+    async def slice(self, start, stop):
+        session = self.Session()
+        q = await session.execute(select(self.Model).order_by(self.Model.id).slice(start, stop))
+        return q.scalars().all()
+
+    async def latest(self, start, stop):
+        session = self.Session()
+        q = await session.execute(select(self.Model).order_by(self.Model.date).slice(start, stop))
+        return q.scalars().all()

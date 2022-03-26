@@ -38,11 +38,11 @@ class MarkdownBuilder(PageBuilder):
 
         parent_path = Path('/'.join(src_path.parts[1:-1]))
         path = parent_path / f'{stem}.{suffix}'
-        job.src_path = path
-        print(path)
+        #job.src_path = path
+        #print(path)
         #job.path = path
         job.path =  Path('/'.join([x for x in path.parts if x != '_index']))
-        print(job.path)
+        #print(job.path)
         #exit()
         #url = Path('/')
         
@@ -52,6 +52,7 @@ class MarkdownBuilder(PageBuilder):
         else:
             #url = url.joinpath(path)
             url = path
+            #print(url)
         
         job.src_url = Path('/') / url
         #print(url)
@@ -83,8 +84,10 @@ class MarkdownBuilder(PageBuilder):
             src_path = job.src_path
             item_path = Path(src_path.parent) / f"{item['url']}.md"
             if item_path.is_file():
+                print('File:  ', item_path)
                 item['url'] = "/" / Path('/'.join(src_path.parts[1:-1])) / f"{item['url']}.html"
             else:
+                print('Dir:  ', item_path)
                 item['url'] = "/" / Path('/'.join(src_path.parts[1:-1])) / item['url']
             new_menu.append(item)
 

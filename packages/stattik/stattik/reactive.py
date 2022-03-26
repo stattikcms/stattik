@@ -2,10 +2,11 @@ from collections import UserDict
 from aioreactive import AsyncSubject, AsyncAnonymousObserver
 
 class Blackboard(UserDict):
-    '''
+
     def __init__(self) -> None:
-        pass
-    '''
+        super().__init__()
+        self.add_topic('index')
+
     def add_topic(self, topic):
         self[topic] = AsyncSubject()
 

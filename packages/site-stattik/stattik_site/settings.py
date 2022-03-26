@@ -23,6 +23,7 @@ siteMetadata = {
 }
 
 apps = [
+    'stattik_theme_bulma',
 ]
 
 plugins = []
