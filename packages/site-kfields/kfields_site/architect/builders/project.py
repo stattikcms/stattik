@@ -3,8 +3,7 @@ from pathlib import Path
 
 from loguru import logger
 
-from stattik.markdown import md
-
+from stattik.markdown import Markdown
 import stattik.frontmatter
 
 from gql import gql, Client
@@ -111,24 +110,29 @@ class ProjectBuilder(MarkdownBuilder):
 
         parent_path = Path('/'.join(src_path.parts[1:-1]))
         path = parent_path / f'{stem}.{suffix}'
-        job.path = path
+        #job.path = path
+        job.path =  Path('/'.join([x for x in path.parts if x != '_index']))
 
         url = Path('/')
         
         if path.name == 'index.html':
-            url = url.joinpath(parent_path)
+            #url = url.joinpath(parent_path)
+            url = parent_path
         else:
-            url = url.joinpath(path)
-        
-        job.url = url
+            #url = url.joinpath(path)
+            url = path
+            #print(url)
 
-        #with open(src_path) as f:
-        #    matter = stattik.frontmatter.load(f)
+        job.src_url = Path('/') / url
+        #job.url = url
+        job.url = Path('/') / Path('/'.join([x for x in url.parts if x != '_index']))
+
         text = await self.load_text(job)
         matter = stattik.frontmatter.loads(text)
 
         #logger.debug(f'build_md:metadata:  {matter.metadata}')
         metadata = matter.metadata
+        md = Markdown.instance.md
         html = md.convert(matter.content)
         metadata['toc'] = md.toc_tokens
         job.inject(metadata)

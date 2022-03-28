@@ -28,6 +28,9 @@ class RenderContext:
     def add_child(self, child):
         self.children.append(child)
 
+class NotFound(Exception):
+    pass
+
 class Renderer:
 
     def __init__(self):
@@ -83,6 +86,9 @@ class Renderer:
                 #logger.debug(msg['type'])
                 return
             content = msg['body'].decode('utf-8')
+            if content == 'Not Found':
+                print(page.__dict__)
+                raise NotFound(f"Route not found:  {page.src_url}")
             #logger.debug(content)
             context.body = f"<!DOCTYPE html>\n{content}"
             self.write_context(context)

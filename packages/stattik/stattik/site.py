@@ -8,10 +8,9 @@ from loguru import logger
 from dotenv import load_dotenv
 load_dotenv(Path(os.getcwd()) / '.env')
 
-import toml
-
 from . import blackboard
 from .core.collection import Collection
+from .settings import Settings
 
 aliases = {}
 #TODO:  Need to start Typing!
@@ -52,6 +51,20 @@ class Site:
         self.renderer = None
         self.indexer = None
         self.css_scopes = []
+        self.stylesheets = [
+            '/css/bundle.css',
+            '/css/components.css',
+            #'/css/pygments.css',
+        ]
+        self.markdown_extensions = [
+            'meta',
+            'toc',
+            'tables',
+            'pymdownx.highlight',
+            'pymdownx.emoji',
+            'pymdownx.superfences',
+        ]
+
         self.tasks = []
 
     def create_task(self, awaitable):
@@ -65,7 +78,7 @@ class Site:
     async def produce(self):
         # NOTE: Need to set _instance here or it causes infinite recursion
         self._instance = site = await self.load_site()
-        site.on_create()
+        site.on_create(site)
         await site.begin()
         return site
 
@@ -81,7 +94,18 @@ class Site:
 
     @classmethod
     async def load_site(self):
-        #config = toml.load('stattik.toml')
+        settings = Settings.instance
+        site = Site()
+        for key, val in settings.items():
+            site.__setattr__(key, val)
+
+        self.load_resolve(settings)
+        await self.load_plugins(site, settings)
+        
+        return site
+    '''
+    @classmethod
+    async def load_site(self):
         config = self.load_config()
         environment = config['environment']
         for key, val in environment.items():
@@ -114,6 +138,7 @@ class Site:
 
     @classmethod
     def load_config(self):
+        #config = toml.load('stattik.toml')
         config = {}
         path = Path(os.getcwd(), 'stattik-config.py')
         if os.path.exists(path):
@@ -125,11 +150,13 @@ class Site:
             for key in dir(stattik_config):
                 if key.startswith('__'):
                     continue
+                #print(key, stattik_config.__dict__[key])
                 config[key] = stattik_config.__dict__[key]
+            #exit()
         #logger.debug(f'load_config:config: {config}')
 
         return config
-
+    '''
     @classmethod
     def load_resolve(self, config):
         if 'resolve' in config:

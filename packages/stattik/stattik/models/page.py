@@ -116,6 +116,12 @@ class PageRepository(Repository):
         count = q.scalars().one()
         return count
 
+    async def child_count(self):
+        session = self.Session()
+        q = await session.execute(select(func.count()).select_from(select(self.Model.children).subquery()))
+        count = q.scalars().one()
+        return count
+
     async def slice(self, start, stop):
         session = self.Session()
         q = await session.execute(select(self.Model).order_by(self.Model.id).slice(start, stop))

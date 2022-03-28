@@ -38,7 +38,7 @@ def build_menu(matched):
     cls = 'is-active' if is_active else ''
     url = '#' if is_active else page.url
     menu = Menu({ 'title': page.title, 'url': url, 'cls': cls })
-    #print(page.url)
+    print(page.url)
     if page.menu:
         for item in page.menu:
             if len(matched) > 1 and item['url'] == str(matched[1].url):

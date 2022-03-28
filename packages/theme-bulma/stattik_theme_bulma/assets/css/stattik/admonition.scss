@@ -1,0 +1,270 @@
+.admonition {
+  border-left-style: solid;
+  border-left-width: thick;
+
+  p.admonition-title {
+    color: white !important;
+  }
+}
+//note
+.admonition.note {
+  border-left-color: #448aff;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-info;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f303";
+    }
+    svg{
+      padding-right: 1em;
+      color: #448aff;
+    }
+  }
+}
+
+//abstract, summary, tldr
+.admonition.abstract {
+  border-left-color: #00b0ff;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-link;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f328";
+    }
+    svg{
+      padding-right: 1em;
+      color: #00b0ff;
+    }
+  }
+}
+
+//info, todo
+.admonition.info {
+  border-left-color: #00b8d4;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-primary;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f05a";
+    }
+    svg{
+      padding-right: 1em;
+      color: #00b8d4;
+    }
+  }
+}
+
+//tip, hint, important
+.admonition.tip {
+  border-left-color: #00bfa5;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-primary;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f06d";
+    }
+    svg{
+      padding-right: 1em;
+      color: #00bfa5;
+    }
+  }
+}
+
+//success, check, done
+.admonition.success {
+  border-left-color: #00c853;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-success;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f00c";
+    }
+    svg{
+      padding-right: 1em;
+      color: #00c853;
+    }
+  }
+}
+
+//question, help, faq
+.admonition.question {
+  border-left-color: #64dd17;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-success;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f128";
+    }
+    svg{
+      padding-right: 1em;
+      color: #64dd17;
+    }
+  }
+}
+
+//warning, caution, attention
+.admonition.warning {
+  border-left-color: #ff9100;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-warning;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f071";
+    }
+    svg{
+      padding-right: 1em;
+      color: #ff9100;
+    }
+  }
+}
+
+//failure, fail, missing
+.admonition.failure {
+  border-left-color: #ff5252;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-danger;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f00d";
+    }
+    svg{
+      padding-right: 1em;
+      color: #ff5252;
+    }
+  }
+}
+
+//danger, error
+.admonition.danger {
+  border-left-color: #ff1744;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-danger;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f780";
+    }
+    svg{
+      padding-right: 1em;
+      color: #ff1744;
+    }
+  }
+}
+
+//bug
+.admonition.bug {
+  border-left-color: #f50057;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-danger;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f188";
+    }
+    svg{
+      padding-right: 1em;
+      color: #f50057;
+    }
+  }
+}
+
+//example
+.admonition.example {
+  border-left-color: #7c4dff;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-link;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f0cb";
+    }
+    svg{
+      padding-right: 1em;
+      color: #7c4dff;
+    }
+  }
+}
+
+//quote, cite
+.admonition.quote {
+  border-left-color: #9e9e9e;
+  p {
+    padding-left: 1em;
+  }
+
+  p.admonition-title {
+    @extend .notification;
+    @extend .is-light;
+    &::before {
+      display: none;
+      font-family: "Font Awesome 5 Free"; font-weight: 900; content: "\f10e";
+    }
+    svg{
+      padding-right: 1em;
+      color: #9e9e9e;
+    }
+  }
+}
