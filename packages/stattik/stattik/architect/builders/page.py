@@ -78,15 +78,6 @@ class MarkdownBuilder(PageBuilder):
         #print(job.menu)
         new_menu = []
         for item in job.menu:
-            '''
-            item_path = Path(job.src_path.parent) / f"{item['url']}.md"
-            if item_path.is_file():
-                #print('File:  ', item_path)
-                item['url'] = "/" / Path('/'.join(job.path.parts[1:-1])) / f"{item['url']}.html"
-            else:
-                #print('Dir:  ', item_path)
-                item['url'] = "/" / Path('/'.join(job.path.parts[1:-1])) / item['url']
-            '''
             item_path = Path(job.src_path.parent) / f"{item['url']}.md"
             if item_path.is_file():
                 #print('File:  ', item_path)
