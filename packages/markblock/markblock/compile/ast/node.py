@@ -208,6 +208,14 @@ class BlockQuote(Block):
     def __init__(self, children):
         super().__init__(children, 'BlockQuote')
 
+class Ul(Block):
+    def __init__(self, children):
+        super().__init__(children, 'Ul')
+
+class Ol(Block):
+    def __init__(self, children):
+        super().__init__(children, 'Ol')
+
 class Snippet(Node):
     def __init__(self, t):
         super().__init__()

@@ -84,7 +84,7 @@ class Parser(sly.Parser):
     def Tag(self, p):
         return yy.ImportStmt(p.Expression)
 
-    @_('HeadingU', 'Paragraph', 'BlockQuote')
+    @_('HeadingU', 'Paragraph', 'BlockQuote', 'Ul', 'Ol')
     def Statement(self, p):
         return p[0]
 
@@ -142,11 +142,9 @@ class Parser(sly.Parser):
     def Text(self, p):
         return yy.Text(p[0])
 
-    @_('BLOCKQUOTE Text')
-    def BlockQuoteItem(self, p):
-        return p[1]
+    # Block quotes
 
-    @_('BLOCKQUOTE Block')
+    @_('BLOCKQUOTE Text', 'BLOCKQUOTE Block')
     def BlockQuoteItem(self, p):
         return p[1]
 
@@ -158,20 +156,72 @@ class Parser(sly.Parser):
     def BlockQuoteItem(self, p):
         return p[0]
 
-
     @_('BlockQuoteList BlockQuoteItem')
     def BlockQuoteList(self, p):
-        p[0].append(p[1])
+        if p[1]:
+            p[0].append(p[1])
         return p[0]
 
     @_('BlockQuoteItem')
     def BlockQuoteList(self, p):
         return [p[0]]
 
-    @_('BlockQuoteList')
+    @_('BlockQuoteList', 'BlockQuoteList TERMINATOR')
     def BlockQuote(self, p):
         return yy.BlockQuote(p[0])
 
-    @_('BlockQuoteList TERMINATOR')
-    def BlockQuote(self, p):
-        return yy.BlockQuote(p[0])
+    # Unordered List
+
+    @_('UL Text', 'UL Block')
+    def UlItem(self, p):
+        return p[1]
+
+    @_('UL TERMINATOR')
+    def UlItem(self, p):
+        return None
+
+    @_('Block')
+    def UlItem(self, p):
+        return p[0]
+
+    @_('UlList UlItem')
+    def UlList(self, p):
+        if p[1]:
+            p[0].append(p[1])
+        return p[0]
+
+    @_('UlItem')
+    def UlList(self, p):
+        return [p[0]]
+
+    @_('UlList', 'UlList TERMINATOR')
+    def Ul(self, p):
+        return yy.Ul(p[0])
+
+# Ordered List
+
+    @_('OL Text', 'OL Block')
+    def OlItem(self, p):
+        return p[1]
+
+    @_('OL TERMINATOR')
+    def OlItem(self, p):
+        return None
+
+    @_('Block')
+    def OlItem(self, p):
+        return p[0]
+
+    @_('OlList OlItem')
+    def OlList(self, p):
+        if p[1]:
+            p[0].append(p[1])
+        return p[0]
+
+    @_('OlItem')
+    def OlList(self, p):
+        return [p[0]]
+
+    @_('OlList', 'OlList TERMINATOR')
+    def Ol(self, p):
+        return yy.Ol(p[0])
