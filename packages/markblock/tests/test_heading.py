@@ -14,7 +14,7 @@ from markblock.compile.ast.node import AstEncoder
 
 class Test(unittest.TestCase):
     def test(self):
-        filename = "headings.md"
+        filename = "heading.md"
         with load(filename) as fh:
             s = fh.read()
 

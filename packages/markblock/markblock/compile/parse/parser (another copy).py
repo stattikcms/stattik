@@ -43,56 +43,64 @@ class Parser(sly.Parser):
     def Body(self, p):
         return yy.Block([p.Line])
 
-    @_('Body Line')
+    @_('Body TERMINATOR Line')
     def Body(self, p):
         p.Body.add(p.Line)
+        return p.Body
+
+    @_('Body TERMINATOR')
+    def Body(self, p):
         return p.Body
 
     @_('Expression')
     def ExprList(self, p):
         return [p.Expression]
 
+    @_('ExprList TERMINATOR Expression')
+    def ExprList(self, p):
+        return p.ExprList.append(p.Expression)
+
+    @_('ExprList TERMINATOR')
+    def ExprList(self, p):
+        return p.ExprList
+
     @_('Statement', 'Expression')
     def Line(self, p):
-        return p[0]
-
-    @_('TERMINATOR')
-    def Expression(self, p):
-        return p[0]
-
-    @_('TextElementList TERMINATOR H1U TERMINATOR')
-    def HeadingU(self, p):
-        return yy.Heading(1, p[0])
-
-    @_('TextElementList TERMINATOR H2U TERMINATOR')
-    def HeadingU(self, p):
-        return yy.Heading(2, p[0])
-
-    @_('H1 TextElementList TERMINATOR')
-    def Heading(self, p):
-        return yy.Heading(len(p[0]), p[1])
-
-    @_('H2 TextElementList TERMINATOR')
-    def Heading(self, p):
-        return yy.Heading(len(p[0]), p[1])
-
-    @_('H3 TextElementList TERMINATOR')
-    def Heading(self, p):
-        return yy.Heading(len(p[0]), p[1])
-
-    @_('TAG Expression')
-    def Tag(self, p):
-        return yy.ImportStmt(p.Expression)
-
-    @_('HeadingU', 'Paragraph', 'BlockQuote')
-    def Statement(self, p):
         return p[0]
 
     @_('Tag')
     def Statement(self, p):
         return p[0]
 
-    @_('Heading')
+    @_('Heading', 'HeadingU')
+    def Statement(self, p):
+        return p[0]
+
+    @_('H1 SPAN')
+    def Heading(self, p):
+        return yy.Heading(len(p[0]), p[1])
+
+    @_('H2 SPAN')
+    def Heading(self, p):
+        return yy.Heading(len(p[0]), p[1])
+
+    @_('H3 SPAN')
+    def Heading(self, p):
+        return yy.Heading(len(p[0]), p[1])
+
+    @_('H1U')
+    def HeadingU(self, p):
+        return yy.Heading(1, p[0])
+
+    @_('H2U')
+    def HeadingU(self, p):
+        return yy.Heading(2, p[0])
+
+    @_('TAG Expression')
+    def Tag(self, p):
+        return yy.ImportStmt(p.Expression)
+
+    @_('Text')
     def Expression(self, p):
         return p[0]
 
@@ -125,53 +133,6 @@ class Parser(sly.Parser):
     def TextElementList(self, p):
         return [p[0]]
 
-    @_('TextList Text')
-    def TextList(self, p):
-        p[0].append(p[1])
-        return p[0]
-
-    @_('Text')
-    def TextList(self, p):
-        return [p[0]]
-
-    @_('TextList')
-    def Paragraph(self, p):
-        return yy.Paragraph(p[0])
-
-    @_('TextElementList TERMINATOR')
+    @_('TextElementList')
     def Text(self, p):
         return yy.Text(p[0])
-
-    @_('BLOCKQUOTE Text')
-    def BlockQuoteItem(self, p):
-        return p[1]
-
-    @_('BLOCKQUOTE Block')
-    def BlockQuoteItem(self, p):
-        return p[1]
-
-    @_('BLOCKQUOTE TERMINATOR')
-    def BlockQuoteItem(self, p):
-        return None
-
-    @_('Block')
-    def BlockQuoteItem(self, p):
-        return p[0]
-
-
-    @_('BlockQuoteList BlockQuoteItem')
-    def BlockQuoteList(self, p):
-        p[0].append(p[1])
-        return p[0]
-
-    @_('BlockQuoteItem')
-    def BlockQuoteList(self, p):
-        return [p[0]]
-
-    @_('BlockQuoteList')
-    def BlockQuote(self, p):
-        return yy.BlockQuote(p[0])
-
-    @_('BlockQuoteList TERMINATOR')
-    def BlockQuote(self, p):
-        return yy.BlockQuote(p[0])

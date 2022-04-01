@@ -5,7 +5,7 @@ class Var:
     def __init__(self, name, value, kind):
         self.name = name
         self.value = value
-        self.kind = kind
+        self.type = kind
 
 
 class Scope:

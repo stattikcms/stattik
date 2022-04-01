@@ -37,11 +37,14 @@ class MultiLexer(Lexer):
         p = re.compile(self.regex)
 
         indent_stack = [0]
+        indent = 0
 
         for lineno, line in enumerate(lines):
             #print(line)
             lstripped = line.lstrip()
-            m = p.match(lstripped)
+            indent = len(line) - len(lstripped)
+            line = lstripped
+            m = p.match(line)
             #print(m)
             child_tokens = None
             if m:
@@ -51,29 +54,26 @@ class MultiLexer(Lexer):
                         child_tokens = list(self.lexer_map[key].tokenize(line, lineno+1))
             else:
                 child_tokens = list(self.default_lexer.tokenize(line))
-
-            child_indent = len(child_tokens[0].value) if len(child_tokens) and child_tokens[0].type == 'WS' else 0
+            '''
+            indent = len(child_tokens[0].value) if len(child_tokens) and child_tokens[0].type == 'WS' else 0
             if child_tokens and child_tokens[0].type == 'WS':
                 child_tokens.pop(0)
-            if child_indent > indent_stack[-1]:
-                indent_stack.append(child_indent)
-                tokens.append(INDENT_(index, child_indent))
-            elif child_indent < indent_stack[-1]:
-                while child_indent < indent_stack[-1]:
+            '''
+            if indent > indent_stack[-1]:
+                indent_stack.append(indent)
+                tokens.append(INDENT_(index, indent))
+            elif indent < indent_stack[-1]:
+                while indent < indent_stack[-1]:
                     indent_stack.pop()
-                    tokens.append(DEDENT_(index, child_indent))
-
-                #indent_stack.pop(-1)
-                #tokens.append(DEDENT_(index, child_indent))
+                    tokens.append(DEDENT_(index, indent))
 
             tokens += child_tokens
-            #tokens.append(self.create_token(self.NEWLINE, None, lineno, 0))
-            tokens.append(TERMINATOR_(index, child_indent))
+            tokens.append(TERMINATOR_(index, indent))
 
 
         while len(indent_stack) > 1:
-            child_indent = indent_stack.pop()
-            tokens.append(DEDENT_(index, child_indent))
+            indent = indent_stack.pop()
+            tokens.append(DEDENT_(index, indent))
                 
         result = []
         span = None

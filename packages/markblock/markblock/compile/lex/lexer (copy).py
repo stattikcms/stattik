@@ -38,7 +38,6 @@ class Lexer(sly.Lexer):
         BOLD,
         ITALIC,
         BOLDITALIC,
-        BLOCKQUOTE,
 
         IMPORT,
         INSTANCEOF,

@@ -2,12 +2,11 @@ from json import JSONEncoder
 
 from .metanode import MetaNode
 
-KIND = "KIND"
-VALUE = "VALUE"
-LEVEL = "LEVEL"
-NAME = "NAME"
-TYPE = "TYPE"
-NODES = "NODES"
+TYPE = "type"
+VALUE = "value"
+LEVEL = "level"
+NAME = "name"
+CHILDREN = "children"
 SUBJ = "SUBJ"
 VERB = "VERB"
 OBJ = "OBJ"
@@ -16,7 +15,7 @@ TRIGGER = "TRIGGER"
 BODY = "BODY"
 FLAVOR = "FLAVOR"
 BINDING = "BINDING"
-VALUE = "VALUE"
+VALUE = "value"
 ARG = "ARG"
 
 _terms = {}
@@ -29,11 +28,10 @@ class AstEncoder(JSONEncoder):
 
 
 class Node(object, metaclass=MetaNode):
-    def __init__(self, kind=None):
+    def __init__(self, type=None):
         super().__init__()
-        self.kind = kind or self.__class__.__name__
+        self.type = type or self.__class__.__name__
         self.children = [None] * self.nodeCount
-        self.type = None
         self.scope = None
         self.binding = None
 
@@ -51,7 +49,7 @@ class Node(object, metaclass=MetaNode):
         return self.children.map(lambda child: child.walk(fn))
 
     def __next__(self):
-        for node in self.NODES:
+        for node in self.CHILDREN:
             yield node
 
 
@@ -61,7 +59,7 @@ class Array(Node):
         self.children = children
 
     def toJSON(self):
-        return {KIND: self.kind, TYPE: self.type, NODES: self.children}
+        return {TYPE: self.type, TYPE: self.type, CHILDREN: self.children}
 
 
 class Property(Node):
@@ -71,7 +69,7 @@ class Property(Node):
         self.value = val
 
     def toJSON(self):
-        return {KIND: self.kind, NAME: self.name, VALUE: self.value}
+        return {TYPE: self.type, NAME: self.name, VALUE: self.value}
 
 
 class Properties(Node):
@@ -87,16 +85,16 @@ class Variable(Node):
         self.info = None
 
     def toJSON(self):
-        return {KIND: self.kind, NAME: self.name, TYPE: self.type, INFO: self.info}
+        return {TYPE: self.type, NAME: self.name, TYPE: self.type, INFO: self.info}
 
 
 class Term(Node):
-    def __init__(self, name, kind="Term"):
-        super().__init__(kind)
+    def __init__(self, name, type="Term"):
+        super().__init__(type)
         self.name = name
 
     def toJSON(self):
-        return {KIND: self.kind, NAME: self.name, TYPE: self.type}
+        return {TYPE: self.type, NAME: self.name, TYPE: self.type}
 
 
 def term_(name):
@@ -113,7 +111,7 @@ class Type(Term):
         self.builtin = False
 
     def toJSON(self):
-        return {KIND: self.kind, NAME: self.name}
+        return {TYPE: self.type, NAME: self.name}
 
 
 def type_(name):
@@ -142,7 +140,7 @@ class Literal(Node):
         self.value = value
 
     def toJSON(self):
-        return {KIND: self.kind, VALUE: self.value}
+        return {TYPE: self.type, VALUE: self.value}
 
 
 _null = Literal("null")
@@ -150,16 +148,16 @@ _null = Literal("null")
 
 
 class ExprList(Node):
-    def __init__(self, children, kind="ExprList"):
-        super().__init__(kind)
+    def __init__(self, children, type="ExprList"):
+        super().__init__(type)
         self.children = children
 
 class Block(ExprList):
-    def __init__(self, children, kind="Block"):
-        super().__init__(children, kind)
+    def __init__(self, children, type="Block"):
+        super().__init__(children, type)
 
     def toJSON(self):
-        return {KIND: self.kind, NODES: self.children}
+        return {TYPE: self.type, CHILDREN: self.children}
 
 
 #
@@ -174,13 +172,17 @@ class Text(Block):
     def __init__(self, children):
         super().__init__(children, 'Text')
 
+class Paragraph(Block):
+    def __init__(self, children):
+        super().__init__(children, 'Paragraph')
+
 class TextElement(Node):
     def __init__(self, value):
         super().__init__()
         self.value = value
 
     def toJSON(self):
-        return {KIND: self.kind, VALUE: self.value}
+        return {TYPE: self.type, VALUE: self.value}
 
 class Span(TextElement):
     pass
@@ -194,14 +196,17 @@ class Italic(TextElement):
 class BoldItalic(TextElement):
     pass
 
-class Heading(Node):
-    def __init__(self, level, value):
-        super().__init__()
+class Heading(Block):
+    def __init__(self, level, children):
+        super().__init__(children, 'Heading')
         self.level = level
-        self.value = value
 
     def toJSON(self):
-        return {KIND: self.kind, LEVEL: self.level, VALUE: self.value}
+        return {TYPE: self.type, LEVEL: self.level, CHILDREN: self.children}
+
+class BlockQuote(Block):
+    def __init__(self, children):
+        super().__init__(children, 'BlockQuote')
 
 class Snippet(Node):
     def __init__(self, t):
@@ -211,7 +216,7 @@ class Snippet(Node):
         self.text = t
 
     def toJSON(self):
-        return {KIND: self.kind, text: self.text}
+        return {TYPE: self.type, text: self.text}
 
 
 class Code(Node):
@@ -222,21 +227,7 @@ class Code(Node):
         self.text = t
 
     def toJSON(self):
-        return {KIND: self.kind, text: self.text}
-
-
-class Paragraph(Node):
-    Node.node("subj")
-    Node.node("list")
-
-    def __init__(self, subj, arr):
-        super().__init__()
-        self.subj = subj
-        self.list = arr
-
-    def toJSON(self):
-        return {KIND: self.kind, TYPE: self.type, SUBJ: self.subj, LIST: self.list}
-
+        return {TYPE: self.type, text: self.text}
 
 class Sentence(Node):
     Node.node("clause")
@@ -248,7 +239,7 @@ class Sentence(Node):
         self.list = arr
 
     def toJSON(self):
-        return {KIND: self.kind, TYPE: self.type, clause: self.clause, LIST: self.list}
+        return {TYPE: self.type, TYPE: self.type, clause: self.clause, LIST: self.list}
 
 
 class Clause(Node):
@@ -267,7 +258,7 @@ class Clause(Node):
 
     def toJSON(self):
         return {
-            KIND: self.kind,
+            TYPE: self.type,
             TYPE: self.type,
             SUBJ: self.subj,
             VERB: self.verb,
@@ -305,7 +296,7 @@ class Trigger(Node):
 
     def toJSON(self):
         return {
-            KIND: self.kind,
+            TYPE: self.type,
             FLAVOR: self.flavor,
             TYPE: self.type,
             SUBJ: self.subj,
@@ -319,17 +310,17 @@ class Trigger(Node):
 class UnaryExpr(Node):
     Node.node("arg")
 
-    def __init__(self, arg, kind="UnaryExpr"):
-        super().__init__(kind)
+    def __init__(self, arg, type="UnaryExpr"):
+        super().__init__(type)
         self.arg = arg
 
     def toJSON(self):
-        return {KIND: self.kind, ARG: self.arg}
+        return {TYPE: self.type, ARG: self.arg}
 
 
 class PrefixExpr(UnaryExpr):
-    def __init__(self, arg, kind="PrefixExpr"):
-        super().__init__(arg, kind)
+    def __init__(self, arg, type="PrefixExpr"):
+        super().__init__(arg, type)
 
 
 #
@@ -352,7 +343,7 @@ class Message(PrefixExpr):
                 clause.type = type_("Achieve")
 
     def toJSON(self):
-        return {KIND: self.kind, TYPE: self.type, ARG: self.arg}
+        return {TYPE: self.type, TYPE: self.type, ARG: self.arg}
 
 
 class Propose(Message):
@@ -376,21 +367,21 @@ class Retract(Message):
 
 
 class PostfixExpr(UnaryExpr):
-    def __init__(self, arg, kind="PostfixExpr"):
-        super().__init__(arg, kind)
+    def __init__(self, arg, type="PostfixExpr"):
+        super().__init__(arg, type)
 
 
 class BinaryExpr(Node):
     Node.node("left")
     Node.node("right")
 
-    def __init__(self, left, right, kind="BinaryExpr"):
-        super().__init__(kind)
+    def __init__(self, left, right, type="BinaryExpr"):
+        super().__init__(type)
         self.left = left
         self.right = right
 
     def toJSON(self):
-        return {KIND: self.kind, op: self.op, left: self.left, right: self.right}
+        return {TYPE: self.type, op: self.op, left: self.left, right: self.right}
 
 
 class Contextualize(Node):
@@ -403,28 +394,28 @@ class Contextualize(Node):
         self.right = right
 
     def toJSON(self):
-        return {KIND: self.kind, left: self.left, right: self.right}
+        return {TYPE: self.type, left: self.left, right: self.right}
 
 
 class Statement(Node):
-    def __init__(self, kind="Statement"):
-        super().__init__(kind)
+    def __init__(self, type="Statement"):
+        super().__init__(type)
 
     def toJSON(self):
-        return {KIND: self.kind}
+        return {TYPE: self.type}
 
 
 class Def(Statement):
     Node.node("trigger")
     Node.node("body")
 
-    def __init__(self, trigger, body, kind="Def"):
-        super().__init__(kind)
+    def __init__(self, trigger, body, type="Def"):
+        super().__init__(type)
         self.trigger = trigger
         self.body = body
 
     def toJSON(self):
-        return {KIND: self.kind, TRIGGER: self.trigger, BODY: self.body}
+        return {TYPE: self.type, TRIGGER: self.trigger, BODY: self.body}
 
 
 class Sig(Def):
@@ -438,7 +429,7 @@ class ImportStmt(Statement):
         self.expr = expr
 
     def toJSON(self):
-        return {KIND: self.kind, expr: self.expr}
+        return {TYPE: self.type, expr: self.expr}
 
 
 #
@@ -452,18 +443,18 @@ class Query(Statement):
         self.rhs = rhs
 
     def toJSON(self):
-        return {KIND: self.kind, lhs: self.lhs, rhs: self.rhs}
+        return {TYPE: self.type, lhs: self.lhs, rhs: self.rhs}
 
 
 class Condition(Node):
     Node.node("expr")
 
-    def __init__(self, expr, kind="Condition"):
-        super().__init__(kind)
+    def __init__(self, expr, type="Condition"):
+        super().__init__(type)
         self.expr = expr
 
     def toJSON(self):
-        return {KIND: self.kind, expr: self.expr}
+        return {TYPE: self.type, expr: self.expr}
 
 
 class QClause(Condition):
@@ -482,12 +473,12 @@ class QFilter(Condition):
 
 
 class Lhs(ExprList):
-    def __init__(self, child, kind):
+    def __init__(self, child, type):
         super().__init__(child, "Lhs")
 
 
 class Rhs(Block):
-    def __init__(self, child, kind):
+    def __init__(self, child, type):
         super(child, "Rhs")
 
 
@@ -495,19 +486,19 @@ class Rhs(Block):
 # Actions
 #
 class Actions(Node):
-    def __init__(self, body, kind):
-        super().__init__(self, kind)
+    def __init__(self, body, type):
+        super().__init__(self, type)
         self.body = body
 
     def toJSON(self):
-        return {KIND: self.kind, BODY: self.body}
+        return {TYPE: self.type, BODY: self.body}
 
 
 #
 class Action(Node):
-    def __init__(self, expr, kind="Action"):
-        super().__init__(kind)
+    def __init__(self, expr, type="Action"):
+        super().__init__(type)
         self.expr = expr
 
     def toJSON(self):
-        return {KIND: self.kind, expr: self.expr}
+        return {TYPE: self.type, expr: self.expr}
