@@ -12,7 +12,22 @@ class MultiLexer(Lexer):
         self.fingerprints = []
         self.regex = None
         self.default_lexer = None
+        self.fence_stack = []
 
+    @property
+    def fence(self):
+        return self.fence_stack[-1]
+
+    def push_fence(self, fence):
+        fence.value = ''
+        self.fence_stack.append(fence)
+
+    def pop_fence(self):
+        return self.fence_stack.pop(-1)
+
+    def in_fence(self):
+        return len(self.fence_stack) > 0
+        
     def add_lexer(self, lexer, default=False):
         self.lexers.append(lexer)
         if default:
@@ -39,11 +54,10 @@ class MultiLexer(Lexer):
         indent_stack = [0]
         indent = 0
 
-        for lineno, line in enumerate(lines):
+        for lineno, rawline in enumerate(lines):
             #print(line)
-            lstripped = line.lstrip()
-            indent = len(line) - len(lstripped)
-            line = lstripped
+            line = rawline.lstrip()
+            indent = len(rawline) - len(line)
             m = p.match(line)
             #print(m)
             child_tokens = None
@@ -54,11 +68,18 @@ class MultiLexer(Lexer):
                         child_tokens = list(self.lexer_map[key].tokenize(line, lineno+1))
             else:
                 child_tokens = list(self.default_lexer.tokenize(line))
-            '''
-            indent = len(child_tokens[0].value) if len(child_tokens) and child_tokens[0].type == 'WS' else 0
-            if child_tokens and child_tokens[0].type == 'WS':
-                child_tokens.pop(0)
-            '''
+
+            if child_tokens and child_tokens[0].type == 'FENCE':
+                if self.in_fence():
+                    fence = self.pop_fence()
+                    #print(fence.value)
+                    continue
+                else:
+                    self.push_fence(child_tokens[0])
+            elif self.in_fence():
+                self.fence.value += f"{rawline}\n"
+                continue
+
             if indent > indent_stack[-1]:
                 indent_stack.append(indent)
                 tokens.append(INDENT_(index, indent))

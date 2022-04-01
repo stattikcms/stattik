@@ -6,6 +6,11 @@ class Lexer(sly.Lexer):
     def __init__(self):
         super().__init__()
 
+    def error(self, t):
+        #print('Line %d: Bad character %r' % (self.lineno, t.value[0]))
+        print(f"{self.__class__.__name__}: Line {self.lineno}: Bad character '{t.value[0]}'")
+        self.index += 1
+
     def create_token(self, type, value, lineno, index):
         tok = sly.lex.Token()
         tok.type = type
@@ -21,6 +26,7 @@ class Lexer(sly.Lexer):
         COMMENT,
         WS,
         NEWLINE,
+        NAME,
         TERMINATOR,
         COMMA,
         SEMICOLON,
@@ -41,6 +47,7 @@ class Lexer(sly.Lexer):
         BLOCKQUOTE,
         UL,
         OL,
+        FENCE,
 
         IMPORT,
         INSTANCEOF,

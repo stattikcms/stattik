@@ -5,7 +5,9 @@ from markblock.compile.lex.lexer import Lexer
 import markblock.compile.ast.node  as yy
 
 class Parser(sly.Parser):
+
     tokens = Lexer.tokens
+
     def __init__(self):
         super().__init__()
 
@@ -84,7 +86,7 @@ class Parser(sly.Parser):
     def Tag(self, p):
         return yy.ImportStmt(p.Expression)
 
-    @_('HeadingU', 'Paragraph', 'BlockQuote', 'Ul', 'Ol')
+    @_('HeadingU', 'Paragraph', 'BlockQuote', 'Ul', 'Ol', 'Fence')
     def Statement(self, p):
         return p[0]
 
@@ -225,3 +227,12 @@ class Parser(sly.Parser):
     @_('OlList', 'OlList TERMINATOR')
     def Ol(self, p):
         return yy.Ol(p[0])
+
+    # Fence
+    @_('FENCE TERMINATOR')
+    def Fence(self, p):
+        return yy.Fence(p[0])
+
+    @_('FENCE NAME TERMINATOR')
+    def Fence(self, p):
+        return yy.Fence(p[0], p[1])
