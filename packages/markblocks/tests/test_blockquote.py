@@ -7,7 +7,7 @@ from markblocks.lex.multilexer import MultiLexer
 from markblocks.lex.textlexer import TextLexer
 from markblocks.lex.headinglexer import HeadingLexer
 from markblocks.lex.taglexer import TagLexer
-from markblocks.lex.blockquotelexer import BlockQuoteLexer
+from markblocks.lex.blockquotelexer import BlockquoteLexer
 
 from markblocks.parse.parser import Parser
 from markblocks.ast.node import AstEncoder
@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
         lexer.add_lexer(TextLexer(), default=True)
         lexer.add_lexer(HeadingLexer())
         lexer.add_lexer(TagLexer())
-        lexer.add_lexer(BlockQuoteLexer())
+        lexer.add_lexer(BlockquoteLexer())
 
         tokens = lexer.tokenize(s)
         tokens, tokens2 = itertools.tee(tokens)

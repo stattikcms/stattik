@@ -44,7 +44,6 @@ class MultiLexer(Lexer):
             self.lexer_map[fingerprint[1]] = lexer
 
     def tokenize(self, text, lineno=1, index=0):
-        print('tokenize')
         tokens = []
         child_tokens = []
         lines = text.splitlines()

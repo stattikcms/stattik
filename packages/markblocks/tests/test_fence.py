@@ -7,7 +7,7 @@ from markblocks.lex.multilexer import MultiLexer
 from markblocks.lex.textlexer import TextLexer
 from markblocks.lex.headinglexer import HeadingLexer
 from markblocks.lex.taglexer import TagLexer
-from markblocks.lex.blockquotelexer import BlockQuoteLexer
+from markblocks.lex.blockquotelexer import BlockquoteLexer
 from markblocks.lex.listlexer import ListLexer
 from markblocks.lex.fencelexer import FenceLexer
 
@@ -30,7 +30,7 @@ class Test(unittest.TestCase):
         lexer.add_lexer(TextLexer(), default=True)
         lexer.add_lexer(HeadingLexer())
         lexer.add_lexer(TagLexer())
-        lexer.add_lexer(BlockQuoteLexer())
+        lexer.add_lexer(BlockquoteLexer())
         lexer.add_lexer(ListLexer())
         lexer.add_lexer(FenceLexer())
 

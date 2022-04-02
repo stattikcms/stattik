@@ -52,6 +52,11 @@ class Node(object, metaclass=MetaNode):
         for node in self.children:
             yield node
 
+    def toJSON(self):
+        return {}
+
+class Empty(Node):
+    pass
 
 class Array(Node):
     def __init__(self, children):
@@ -192,9 +197,9 @@ class Heading(Block):
     def toJSON(self):
         return {TYPE: self.type, LEVEL: self.level, CHILDREN: self.children}
 
-class BlockQuote(Block):
+class Blockquote(Block):
     def __init__(self, children):
-        super().__init__(children, 'BlockQuote')
+        super().__init__(children, 'Blockquote')
 
 class Ul(Block):
     def __init__(self, children):

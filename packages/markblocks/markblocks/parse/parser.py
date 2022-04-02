@@ -60,7 +60,7 @@ class Parser(sly.Parser):
 
     @_('TERMINATOR')
     def Expression(self, p):
-        return p[0]
+        return yy.Empty()
 
     @_('TextElementList TERMINATOR H1U TERMINATOR')
     def HeadingU(self, p):
@@ -86,7 +86,7 @@ class Parser(sly.Parser):
     def Tag(self, p):
         return yy.ImportStmt(p.Expression)
 
-    @_('HeadingU', 'Paragraph', 'BlockQuote', 'Ul', 'Ol', 'Fence')
+    @_('HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Fence')
     def Statement(self, p):
         return p[0]
 
@@ -147,30 +147,29 @@ class Parser(sly.Parser):
     # Block quotes
 
     @_('BLOCKQUOTE Text', 'BLOCKQUOTE Block')
-    def BlockQuoteItem(self, p):
+    def BlockquoteItem(self, p):
         return p[1]
 
     @_('BLOCKQUOTE TERMINATOR')
-    def BlockQuoteItem(self, p):
-        return None
+    def BlockquoteItem(self, p):
+        return yy.Empty()
 
     @_('Block')
-    def BlockQuoteItem(self, p):
+    def BlockquoteItem(self, p):
         return p[0]
 
-    @_('BlockQuoteList BlockQuoteItem')
-    def BlockQuoteList(self, p):
-        if p[1]:
-            p[0].append(p[1])
+    @_('BlockquoteList BlockquoteItem')
+    def BlockquoteList(self, p):
+        p[0].append(p[1])
         return p[0]
 
-    @_('BlockQuoteItem')
-    def BlockQuoteList(self, p):
+    @_('BlockquoteItem')
+    def BlockquoteList(self, p):
         return [p[0]]
 
-    @_('BlockQuoteList', 'BlockQuoteList TERMINATOR')
-    def BlockQuote(self, p):
-        return yy.BlockQuote(p[0])
+    @_('BlockquoteList', 'BlockquoteList TERMINATOR')
+    def Blockquote(self, p):
+        return yy.Blockquote(p[0])
 
     # Unordered List
 
@@ -180,7 +179,7 @@ class Parser(sly.Parser):
 
     @_('UL TERMINATOR')
     def UlItem(self, p):
-        return None
+        return yy.Empty()
 
     @_('Block')
     def UlItem(self, p):
@@ -188,8 +187,7 @@ class Parser(sly.Parser):
 
     @_('UlList UlItem')
     def UlList(self, p):
-        if p[1]:
-            p[0].append(p[1])
+        p[0].append(p[1])
         return p[0]
 
     @_('UlItem')
@@ -208,7 +206,7 @@ class Parser(sly.Parser):
 
     @_('OL TERMINATOR')
     def OlItem(self, p):
-        return None
+        return yy.Empty()
 
     @_('Block')
     def OlItem(self, p):
@@ -216,8 +214,7 @@ class Parser(sly.Parser):
 
     @_('OlList OlItem')
     def OlList(self, p):
-        if p[1]:
-            p[0].append(p[1])
+        p[0].append(p[1])
         return p[0]
 
     @_('OlItem')

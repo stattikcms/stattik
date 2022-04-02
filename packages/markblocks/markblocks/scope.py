@@ -6,6 +6,7 @@ class Scope:
         self.indent_level = 0
         self.indent_step = INDENT_STEP
         self.lines = []
+        self.inlined = False
 
     def indent(self):
         self.indent_level += 1
@@ -20,7 +21,12 @@ class Scope:
         self.dedent()
 
     def __call__(self, line):
-        line = f"{' ' * self.indent_level * self.indent_step}{line}\n"
+        #print(line)
+        if not self.inlined:
+            line = f"{' ' * self.indent_level * self.indent_step}{line}\n"
+        self.lines.append(line)
+
+    def inline(self, line):
         self.lines.append(line)
 
     def nl(self):

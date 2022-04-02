@@ -1,6 +1,6 @@
 from .lexer import Lexer
 
-class BlockQuoteLexer(Lexer):
+class BlockquoteLexer(Lexer):
     tokens = Lexer.tokens
     fingerprints = [
         (r'(?P<BLOCKQUOTE>^>( +)?)', 'BLOCKQUOTE'),
