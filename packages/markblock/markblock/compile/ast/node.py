@@ -45,12 +45,11 @@ class Node(object, metaclass=MetaNode):
         if index > -1:
             return self.children.splice(index, 1)
 
-    def walk(self, fn):
-        fn.apply(self)
-        return self.children.map(lambda child: child.walk(fn))
+    def walk(self, fn, reduce):
+        return fn(self, reduce(map(lambda child: child.walk(fn, reduce), self.children)))
 
     def __next__(self):
-        for node in self.CHILDREN:
+        for node in self.children:
             yield node
 
 
