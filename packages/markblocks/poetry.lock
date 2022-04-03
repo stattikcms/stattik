@@ -1,4 +1,15 @@
 [[package]]
+name = "emoji"
+version = "1.7.0"
+description = "Emoji for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.extras]
+dev = ["pytest", "coverage", "coveralls"]
+
+[[package]]
 name = "pygments"
 version = "2.11.2"
 description = "Pygments is a syntax highlighting package written in Python."
@@ -20,9 +31,12 @@ test = ["pytest", "regex"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "5982ecf80982cdae3518312c9f57ecacdce42ce1ada311d2460da73b25da0d5e"
+content-hash = "49bb7ce66b75da215fe5c9db63367270bbdb8d27c0a08ab5dc54a6edd36d0442"
 
 [metadata.files]
+emoji = [
+    {file = "emoji-1.7.0.tar.gz", hash = "sha256:65c54533ea3c78f30d0729288998715f418d7467de89ec258a31c0ce8660a1d1"},
+]
 pygments = [
     {file = "Pygments-2.11.2-py3-none-any.whl", hash = "sha256:44238f1b60a76d78fc8ca0528ee429702aae011c265fe6a8dd8b63049ae41c65"},
     {file = "Pygments-2.11.2.tar.gz", hash = "sha256:4e426f72023d88d03b2fa258de560726ce890ff3b630f88c21cbb8b2503b8c6a"},

@@ -8,6 +8,7 @@ authors = ["kfields <kurtisfields@gmail.com>"]
 python = "^3.10"
 sly = "^0.4"
 Pygments = "^2.11.2"
+emoji = "^1.7.0"
 
 [tool.poetry.dev-dependencies]
 

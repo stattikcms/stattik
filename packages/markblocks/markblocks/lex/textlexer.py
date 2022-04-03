@@ -31,6 +31,11 @@ class TextLexer(Lexer):
     def LINK(self, t):
         return t
 
+    @_(r':\w+:')
+    def EMOJI(self, t):
+        t.value = t.value[1:-1]
+        return t
+
     @_(r'.')
     def SPAN(self, t):
         return t

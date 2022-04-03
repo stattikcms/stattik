@@ -6,7 +6,7 @@ from markblocks.convert import Converter
 
 class Test(unittest.TestCase):
     def test(self):
-        filename = "emphasis.md"
+        filename = "emoji.md"
         with load(filename) as fh:
             text = fh.read()
 

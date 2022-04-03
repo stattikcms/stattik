@@ -48,6 +48,7 @@ class Lexer(sly.Lexer):
         OL,
         FENCE,
         ADMONITION,
+        EMOJI,
 
         IMPORT,
         INSTANCEOF,

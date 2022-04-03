@@ -229,3 +229,11 @@ class Admonition(Block):
     def toJSON(self):
         return {TYPE: self.type, KIND: self.kind, TITLE: self.title, CHILDREN: self.children}
 
+
+class Emoji(Node):
+    def __init__(self, name):
+        super().__init__()
+        self.name = name
+
+    def toJSON(self):
+        return {TYPE: self.type, NAME: self.name}

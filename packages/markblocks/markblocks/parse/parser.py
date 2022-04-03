@@ -114,7 +114,11 @@ class Parser(sly.Parser):
     def BoldItalic(self, p):
         return yy.BoldItalic(p[0])
 
-    @_('Span', 'Bold', 'Italic', 'BoldItalic')
+    @_('EMOJI')
+    def Emoji(self, p):
+        return yy.Emoji(p[0])
+
+    @_('Span', 'Bold', 'Italic', 'BoldItalic', 'Emoji')
     def TextElement(self, p):
         return p[0]
 

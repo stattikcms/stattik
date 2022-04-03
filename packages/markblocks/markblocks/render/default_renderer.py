@@ -1,15 +1,17 @@
 from .renderer import Renderer
 from .fence_renderer_mixin import FenceRendererMixin
 from .admonition_renderer_mixin import AdmonitionRendererMixin
-from markblocks.ast.node import *
-from markblocks.visitor import Visitor
+from .emoji_renderer_mixin import EmojiRendererMixin
+
+#from markblocks.ast.node import *
+#from markblocks.visitor import Visitor
 
 
-class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin):
+class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, EmojiRendererMixin):
 
-    Document = Visitor.visits
+    Document = Renderer.visits
 
-    Block = Visitor.visits
+    Block = Renderer.visits
 
     #Text = Visitor.visits
     def Text(self, node):
