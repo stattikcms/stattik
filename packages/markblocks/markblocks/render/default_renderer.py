@@ -1,9 +1,11 @@
 from .renderer import Renderer
+from .fence_renderer_mixin import FenceRendererMixin
+from .admonition_renderer_mixin import AdmonitionRendererMixin
 from markblocks.ast.node import *
 from markblocks.visitor import Visitor
 
 
-class DefaultRenderer(Renderer):
+class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin):
 
     Document = Visitor.visits
 
@@ -12,10 +14,13 @@ class DefaultRenderer(Renderer):
     #Text = Visitor.visits
     def Text(self, node):
         with self.inlined:
+            self(self.indentation())
             for child in node.children:
                 self.visit(child)
 
-    Span = Renderer.value_
+    #Span = Renderer.value_
+    def Span(self, node):
+        self(node.value)
 
     def Paragraph(self, node):
         self('<p>')
@@ -66,12 +71,6 @@ class DefaultRenderer(Renderer):
 
     def Blockquote(self, node):
         self('<blockquote>')
-        with self.scope:
-            for child in node.children:
-                self.visit(child)
+        with self.indented:
+            self.visits(node)
         self('</blockquote>')
-
-    def Fence(self, node):
-        self('<pre><code>')
-        self.value_(node)
-        self('</code></pre>')

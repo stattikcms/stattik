@@ -18,6 +18,8 @@ BINDING = "BINDING"
 VALUE = "value"
 ARG = "ARG"
 LANG = "lang"
+KIND = 'kind'
+TITLE = 'title'
 
 _terms = {}
 _types = {}
@@ -217,4 +219,13 @@ class Fence(Node):
 
     def toJSON(self):
         return {TYPE: self.type, VALUE: self.value, LANG: self.lang}
+
+class Admonition(Block):
+    def __init__(self, children, kind, title=None):
+        super().__init__(children, 'Admonition')
+        self.kind = kind
+        self.title = title
+
+    def toJSON(self):
+        return {TYPE: self.type, KIND: self.kind, TITLE: self.title, CHILDREN: self.children}
 

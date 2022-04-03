@@ -1,5 +1,6 @@
 ```
 Simple Fence
+    Preserves spaces
 ```
 
 ``` py

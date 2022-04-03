@@ -26,6 +26,9 @@ class Scope:
             line = f"{' ' * self.indent_level * self.indent_step}{line}\n"
         self.lines.append(line)
 
+    def indentation(self):
+        return ' ' * self.indent_level * self.indent_step
+
     def inline(self, line):
         self.lines.append(line)
 

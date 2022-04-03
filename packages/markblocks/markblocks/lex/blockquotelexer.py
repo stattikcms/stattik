@@ -8,10 +8,6 @@ class BlockquoteLexer(Lexer):
     def __init__(self):
         super().__init__()
 
-    @_(r'\r?\n+')
-    def NEWLINE(self, t):
-        return t
-
     @_(r'^>( +)?')
     def BLOCKQUOTE(self, t):
         return t

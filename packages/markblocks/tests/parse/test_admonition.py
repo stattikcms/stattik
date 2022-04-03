@@ -1,4 +1,7 @@
+import unittest
 import itertools
+
+from markblocks.data import load
 
 from markblocks.lex.multilexer import MultiLexer
 from markblocks.lex.textlexer import TextLexer
@@ -12,11 +15,17 @@ from markblocks.lex.admonition_lexer import AdmonitionLexer
 from markblocks.parse.parser import Parser
 from markblocks.ast.node import AstEncoder
 
-from markblocks.render.default_renderer import DefaultRenderer
 
+class Test(unittest.TestCase):
+    def test(self):
+        filename = "admonition.md"
+        with load(filename) as fh:
+            s = fh.read()
 
-class Converter:
-    def convert(self, text, renderer = DefaultRenderer()):
+        print("##start##")
+        print(s)
+        print("##end##")
+
         lexer = MultiLexer()
 
         lexer.add_lexer(TextLexer(), default=True)
@@ -27,18 +36,20 @@ class Converter:
         lexer.add_lexer(FenceLexer())
         lexer.add_lexer(AdmonitionLexer())
 
-        tokens = lexer.tokenize(text)
-
+        tokens = lexer.tokenize(s)
         tokens, tokens2 = itertools.tee(tokens)
-        #for tok in tokens2:
-        #    print(tok)
+        for tok in tokens2:
+            print(tok)
 
         parser = Parser()
         
         # ast = parser.parse(s, debug=1)
         ast = parser.parse(tokens)
-        #print(AstEncoder(indent=2).encode(ast))
+        # print ast
+        # pprint.pprint(ast)
+        # json.dumps(ast)
+        print(AstEncoder(indent=2).encode(ast))
 
-        result = renderer.render(ast)
-        #print(result)
-        return result
+
+if __name__ == "__main__":
+    unittest.main()

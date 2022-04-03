@@ -50,17 +50,17 @@ class Parser(sly.Parser):
         p.Body.add(p.Line)
         return p.Body
 
-    @_('Expression')
-    def ExprList(self, p):
-        return [p.Expression]
-
-    @_('Statement', 'Expression')
+    @_('Statement', 'Expression', 'TERMINATOR')
     def Line(self, p):
-        return p[0]
+        if p[0]:
+            return p[0]
+        return yy.Empty()
 
+    '''
     @_('TERMINATOR')
     def Expression(self, p):
         return yy.Empty()
+    '''
 
     @_('TextElementList TERMINATOR H1U TERMINATOR')
     def HeadingU(self, p):
@@ -72,21 +72,21 @@ class Parser(sly.Parser):
 
     @_('H1 TextElementList TERMINATOR')
     def Heading(self, p):
-        return yy.Heading(len(p[0]), p[1])
+        return yy.Heading(1, p[1])
 
     @_('H2 TextElementList TERMINATOR')
     def Heading(self, p):
-        return yy.Heading(len(p[0]), p[1])
+        return yy.Heading(2, p[1])
 
     @_('H3 TextElementList TERMINATOR')
     def Heading(self, p):
-        return yy.Heading(len(p[0]), p[1])
+        return yy.Heading(3, p[1])
 
     @_('TAG Expression')
     def Tag(self, p):
         return yy.ImportStmt(p.Expression)
 
-    @_('HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Fence')
+    @_('HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Fence', 'Admonition')
     def Statement(self, p):
         return p[0]
 
@@ -233,3 +233,11 @@ class Parser(sly.Parser):
     @_('FENCE NAME TERMINATOR')
     def Fence(self, p):
         return yy.Fence(p[0], p[1])
+
+    @_('ADMONITION NAME WS STRING TERMINATOR Block')
+    def Admonition(self, p):
+        return yy.Admonition(p.Block.children, p.NAME, p.STRING)
+
+    @_('ADMONITION NAME TERMINATOR Block')
+    def Admonition(self, p):
+        return yy.Admonition(p.Block.children, p.NAME)

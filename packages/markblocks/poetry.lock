@@ -1,4 +1,12 @@
 [[package]]
+name = "pygments"
+version = "2.11.2"
+description = "Pygments is a syntax highlighting package written in Python."
+category = "main"
+optional = false
+python-versions = ">=3.5"
+
+[[package]]
 name = "sly"
 version = "0.4"
 description = "SLY - Sly Lex Yacc"
@@ -12,9 +20,13 @@ test = ["pytest", "regex"]
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.10"
-content-hash = "1c8c2dc8ee23f4e29ffe5de918c9a9b2b85382cf9d246b3cfc7ac5cbf59020e3"
+content-hash = "5982ecf80982cdae3518312c9f57ecacdce42ce1ada311d2460da73b25da0d5e"
 
 [metadata.files]
+pygments = [
+    {file = "Pygments-2.11.2-py3-none-any.whl", hash = "sha256:44238f1b60a76d78fc8ca0528ee429702aae011c265fe6a8dd8b63049ae41c65"},
+    {file = "Pygments-2.11.2.tar.gz", hash = "sha256:4e426f72023d88d03b2fa258de560726ce890ff3b630f88c21cbb8b2503b8c6a"},
+]
 sly = [
     {file = "sly-0.4.tar.gz", hash = "sha256:e5f2266a231322cc17519fbc3a3ba1c6335fed5a9a55abe0e598a35aea0ac32a"},
 ]

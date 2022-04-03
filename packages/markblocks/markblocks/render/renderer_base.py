@@ -19,6 +19,9 @@ class RendererBase(Visitor):
     def dedent(self):
         self.scope.dedent()
 
+    def indentation(self):
+        return self.scope.indentation()
+
     def __enter__(self):
         self.begin()
 

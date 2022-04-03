@@ -27,11 +27,10 @@ class Lexer(sly.Lexer):
         WS,
         NEWLINE,
         NAME,
+        STRING,
         TERMINATOR,
         COMMA,
         SEMICOLON,
-        INDENT,
-        DEDENT,
         EOF,
 
         SPAN,
@@ -48,6 +47,7 @@ class Lexer(sly.Lexer):
         UL,
         OL,
         FENCE,
+        ADMONITION,
 
         IMPORT,
         INSTANCEOF,

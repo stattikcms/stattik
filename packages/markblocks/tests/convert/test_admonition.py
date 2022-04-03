@@ -1,13 +1,11 @@
 import unittest
-import itertools
 
 from markblocks.data import load
-
 from markblocks.convert import Converter
 
 class Test(unittest.TestCase):
     def test(self):
-        filename = "blockquote.md"
+        filename = "admonition.md"
         with load(filename) as fh:
             text = fh.read()
 

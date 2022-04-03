@@ -7,6 +7,7 @@ authors = ["kfields <kurtisfields@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.10"
 sly = "^0.4"
+Pygments = "^2.11.2"
 
 [tool.poetry.dev-dependencies]
 
