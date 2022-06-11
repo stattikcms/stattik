@@ -39,19 +39,14 @@ class MarkdownBuilder(PageBuilder):
         #job.path = path
         job.path =  Path('/'.join([x for x in path.parts if x != '_index']))
         #print('Job Path', job.path)
-        #exit()
-        #url = Path('/')
         
         if path.name == 'index.html':
-            #url = url.joinpath(parent_path)
             url = parent_path
         else:
-            #url = url.joinpath(path)
             url = path
-            #print(url)
+        #print(url)
         
         job.src_url = Path('/') / url
-        #print(url)
         #print(job.src_url)
         job.url = Path('/') / Path('/'.join([x for x in url.parts if x != '_index']))
         #print('Job url', job.url)
@@ -63,7 +58,9 @@ class MarkdownBuilder(PageBuilder):
         metadata = matter.metadata
         md = Markdown.instance.md
         html = md.convert(matter.content)
-        metadata['toc'] = md.toc_tokens
+        toc_tokens = md.toc_tokens
+        print(toc_tokens)
+        metadata['toc'] = toc_tokens
         job.inject(metadata)
         if hasattr(job, 'menu'):
             self.build_menu(job)

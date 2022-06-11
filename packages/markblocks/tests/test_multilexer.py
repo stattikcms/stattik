@@ -9,7 +9,7 @@ from markblocks.lex.taglexer import TagLexer
 
 class Test(unittest.TestCase):
     def test(self):
-        filename = "tags.mb"
+        filename = "tags.md"
 
         with load(filename) as fh:
             s = fh.read()

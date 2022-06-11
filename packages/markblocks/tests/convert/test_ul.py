@@ -1,9 +1,7 @@
 import unittest
-import itertools
 
 from markblocks.data import load
-
-from markblocks.convert import Converter
+from markblocks import Markblocks
 
 class Test(unittest.TestCase):
     def test(self):
@@ -15,8 +13,8 @@ class Test(unittest.TestCase):
         print(text)
         print("##end##")
 
-        converter = Converter()
-        result = converter.convert(text)
+        mb = Markblocks()
+        result = mb.convert(text)
         print(result)
 
 if __name__ == "__main__":

@@ -1,7 +1,7 @@
 import unittest
 
 from markblocks.data import load
-from markblocks.convert import Converter
+from markblocks import Markblocks
 
 class Test(unittest.TestCase):
     def test(self):
@@ -9,8 +9,8 @@ class Test(unittest.TestCase):
         with load(filename) as fh:
             text = fh.read()
 
-        converter = Converter()
-        result = converter.convert(text)
+        mb = Markblocks()
+        result = mb.convert(text)
         print(result)
 
 if __name__ == "__main__":
