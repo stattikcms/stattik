@@ -1,5 +1,6 @@
 class Visitor:
     def visit(self, node):
+        #print(node.__class__)
         fn = getattr(self, node.type)
         return fn(node)
 

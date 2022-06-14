@@ -2,25 +2,22 @@ from .renderer import Renderer
 from .fence_renderer_mixin import FenceRendererMixin
 from .admonition_renderer_mixin import AdmonitionRendererMixin
 from .emoji_renderer_mixin import EmojiRendererMixin
+from .link_renderer_mixin import LinkRendererMixin
+from .table_renderer_mixin import TableRendererMixin
 
-#from markblocks.ast.node import *
-#from markblocks.visitor import Visitor
 
-
-class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, EmojiRendererMixin):
+class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, EmojiRendererMixin, LinkRendererMixin, TableRendererMixin):
 
     Document = Renderer.visits
 
     Block = Renderer.visits
 
-    #Text = Visitor.visits
     def Text(self, node):
         with self.inlined:
             self(self.indentation())
             for child in node.children:
                 self.visit(child)
 
-    #Span = Renderer.value_
     def Span(self, node):
         self(node.value)
 

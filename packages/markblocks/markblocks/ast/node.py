@@ -7,19 +7,14 @@ VALUE = "value"
 LEVEL = "level"
 NAME = "name"
 CHILDREN = "children"
-SUBJ = "SUBJ"
-VERB = "VERB"
-OBJ = "OBJ"
-XTRA = "XTRA"
-TRIGGER = "TRIGGER"
+
 BODY = "BODY"
-FLAVOR = "FLAVOR"
-BINDING = "BINDING"
 VALUE = "value"
 ARG = "ARG"
 LANG = "lang"
 KIND = 'kind'
 TITLE = 'title'
+LINK = 'link'
 
 _terms = {}
 _types = {}
@@ -179,6 +174,22 @@ class TextElement(Node):
     def toJSON(self):
         return {TYPE: self.type, VALUE: self.value}
 
+class Link(TextElement):
+    def __init__(self, value, link):
+        super().__init__(value)
+        self.link = link
+
+    def toJSON(self):
+        return {TYPE: self.type, VALUE: self.value, LINK: self.link}
+
+class Image(TextElement):
+    def __init__(self, value, link):
+        super().__init__(value)
+        self.link = link
+
+    def toJSON(self):
+        return {TYPE: self.type, VALUE: self.value, LINK: self.link}
+
 class Span(TextElement):
     pass
 
@@ -210,6 +221,23 @@ class Ul(Block):
 class Ol(Block):
     def __init__(self, children):
         super().__init__(children, 'Ol')
+
+class TRow(Block):
+    def __init__(self, children):
+        super().__init__(children, 'TRow')
+
+class THead(Block):
+    def __init__(self, children, separator):
+        super().__init__(children, 'THead')
+        self.separator = separator
+
+class TBody(Block):
+    def __init__(self, children):
+        super().__init__(children, 'TBody')
+
+class Table(Block):
+    def __init__(self, children):
+        super().__init__(children, 'Table')
 
 class Fence(Node):
     def __init__(self, value, lang=None):

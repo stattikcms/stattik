@@ -1,7 +1,6 @@
-from .lexer import Lexer
+from .textlexer import Lexer
 
 class HeadingLexer(Lexer):
-    #tokens = { H3, H2, H1 }
     tokens = Lexer.tokens
     fingerprints = [
         (r'(?P<H3>^###( +)?)', 'H3'),
@@ -37,6 +36,12 @@ class HeadingLexer(Lexer):
     def H1U(self, t):
         return t
 
-    @_(r'.+')
+    @_(r':\w+:')
+    def EMOJI(self, t):
+        t.value = t.value[1:-1]
+        return t
+
+    #@_(r'.+')
+    @_(r'.')
     def SPAN(self, t):
         return t

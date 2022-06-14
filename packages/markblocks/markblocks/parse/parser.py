@@ -1,5 +1,6 @@
 import sys
 import sly
+import re
 
 from markblocks.lex.lexer import Lexer
 import markblocks.ast.node  as yy
@@ -18,9 +19,9 @@ class Parser(sly.Parser):
         if token:
             lineno = getattr(token, 'lineno', 0)
             if lineno:
-                sys.stderr.write(f'sly: Syntax error at line {lineno}, token={token.type}\n')
+                sys.stderr.write(f'sly: Syntax error at line {lineno}, index {token.index}, token={token.type}, value={token.value}\n')
             else:
-                sys.stderr.write(f'sly: Syntax error, token={token.type}')
+                sys.stderr.write(f'sly: Syntax error, token={token.type}, value={token.value}\n')
         else:
             sys.stderr.write('sly: Parse error in input. EOF\n')
 
@@ -86,7 +87,7 @@ class Parser(sly.Parser):
     def Tag(self, p):
         return yy.ImportStmt(p.Expression)
 
-    @_('HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Fence', 'Admonition')
+    @_('HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Fence', 'Admonition', 'Table')
     def Statement(self, p):
         return p[0]
 
@@ -118,7 +119,23 @@ class Parser(sly.Parser):
     def Emoji(self, p):
         return yy.Emoji(p[0])
 
-    @_('Span', 'Bold', 'Italic', 'BoldItalic', 'Emoji')
+    @_('LINK')
+    def Link(self, p):
+        #print(p[0])
+        #r = re.compile(r'\[(?P<TEXT>([\w\s\d|#]+))\]\((?P<LINK>(?:\/|https?:\/\/)[\w\d./?=#]+)\)$')
+        r = re.compile(r'\[(?P<TEXT>([^\]]+))\]\((?P<LINK>(?:\/|https?:\/\/)[\w\d./?=#|?|&|=|-]+)\)')
+        m = r.match(p[0])
+        return yy.Link(m['TEXT'], m['LINK'])
+
+    @_('IMAGE')
+    def Image(self, p):
+        #print(p[0])
+        #r = re.compile(r'\!\[(?P<TEXT>([\w\s\d|#]+))\]\((?P<LINK>(?:\/|https?:\/\/)[\w\d./?=#]+)\)$')
+        r = re.compile(r'\!\[(?P<TEXT>([\w\s\d|#|-]+))\]\((?P<LINK>(?:\/|https?:\/\/)[\w\d./?=#|?|&|=|-]+)\)')
+        m = r.match(p[0])
+        return yy.Image(m['TEXT'], m['LINK'])
+
+    @_('Span', 'Bold', 'Italic', 'BoldItalic', 'Emoji', 'Link', 'Image')
     def TextElement(self, p):
         return p[0]
 
@@ -245,3 +262,68 @@ class Parser(sly.Parser):
     @_('ADMONITION NAME TERMINATOR Block')
     def Admonition(self, p):
         return yy.Admonition(p.Block.children, p.NAME)
+
+# Table
+
+    @_('PIPE Span')
+    def TCell(self, p):
+        return p[1]
+
+    @_('TRowList TCell')
+    def TRowList(self, p):
+        p[0].append(p[1])
+        return p[0]
+
+    @_('TCell')
+    def TRowList(self, p):
+        return [p[0]]
+
+    @_('TRowList TERMINATOR')
+    def TRow(self, p):
+        return yy.TRow(p[0])
+
+    # Separator
+    @_('PIPE TSEPARATOR')
+    def TSepCell(self, p):
+        return p[1]
+
+    @_('TSepRowList TSepCell')
+    def TSepRowList(self, p):
+        p[0].append(p[1])
+        return p[0]
+
+    @_('TSepCell')
+    def TSepRowList(self, p):
+        return [p[0]]
+
+    @_('TSepRowList TERMINATOR')
+    def TSepRow(self, p):
+        return yy.TRow(p[0])
+
+    '''
+    # Table Header
+    @_('TRow TSepRow TERMINATOR')
+    def THeader(self, p):
+        return yy.TRow(p[0])
+    '''
+    # Table
+    @_('TableList TRow', 'TableList TSepRow')
+    def TableList(self, p):
+        p[0].append(p[1])
+        return p[0]
+
+    @_('TRow', 'TSepRow')
+    def TableList(self, p):
+        return [p[0]]
+
+    @_('TableList', 'TableList TERMINATOR')
+    def TBody(self, p):
+        return yy.TBody(p[0])
+
+    @_('TRow TSepRow')
+    def THead(self, p):
+        return yy.THead(p[0].children, p[1])
+
+    @_('THead TBody')
+    def Table(self, p):
+        return yy.Table([p[0], p[1]])

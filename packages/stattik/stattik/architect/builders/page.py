@@ -51,6 +51,7 @@ class MarkdownBuilder(PageBuilder):
         job.url = Path('/') / Path('/'.join([x for x in url.parts if x != '_index']))
         #print('Job url', job.url)
 
+        print('Src Path', src_path)
         with open(src_path) as f:
             matter = stattik.frontmatter.load(f)
 
@@ -58,9 +59,11 @@ class MarkdownBuilder(PageBuilder):
         metadata = matter.metadata
         md = Markdown.instance.md
         html = md.convert(matter.content)
+        '''
         toc_tokens = md.toc_tokens
         print(toc_tokens)
         metadata['toc'] = toc_tokens
+        '''
         job.inject(metadata)
         if hasattr(job, 'menu'):
             self.build_menu(job)

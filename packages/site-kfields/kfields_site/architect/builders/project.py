@@ -134,7 +134,7 @@ class ProjectBuilder(MarkdownBuilder):
         metadata = matter.metadata
         md = Markdown.instance.md
         html = md.convert(matter.content)
-        metadata['toc'] = md.toc_tokens
+        #metadata['toc'] = md.toc_tokens
         job.inject(metadata)
         if hasattr(job, 'menu'):
             self.build_menu(job)

@@ -42,6 +42,11 @@ class Lexer(sly.Lexer):
         FENCE,
         ADMONITION,
         EMOJI,
+        LINK,
+        IMAGE,
+
+        PIPE,
+        TSEPARATOR,
 
     }
 

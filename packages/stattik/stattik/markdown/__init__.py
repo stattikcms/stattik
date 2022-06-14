@@ -1,4 +1,4 @@
-import markdown
+import markblocks
 
 from stattik.site import Site
 
@@ -37,6 +37,6 @@ class Markdown:
             }
         }
 
-        md.md = markdown.Markdown(extensions=extensions, extension_configs=extension_configs)
+        md.md = markblocks.Markblocks()
 
         return md
