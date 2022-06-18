@@ -21,5 +21,5 @@ class TableLexer(Lexer):
     #@_(r'.')
     #@_(r'[\w\s\d]+')
     @_(r'[\w\d]+')
-    def SPAN(self, t):
+    def TEXT(self, t):
         return t

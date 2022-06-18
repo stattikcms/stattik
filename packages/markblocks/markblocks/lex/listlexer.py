@@ -18,5 +18,5 @@ class ListLexer(Lexer):
         return t
 
     @_(r'.')
-    def SPAN(self, t):
+    def TEXT(self, t):
         return t

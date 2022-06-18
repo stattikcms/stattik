@@ -43,5 +43,5 @@ class HeadingLexer(Lexer):
 
     #@_(r'.+')
     @_(r'.')
-    def SPAN(self, t):
+    def TEXT(self, t):
         return t

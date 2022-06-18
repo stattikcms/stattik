@@ -48,7 +48,10 @@ class MultiLexer(Lexer):
         child_tokens = []
         lines = text.splitlines()
         #print(self.regex)
-        p = re.compile(self.regex)
+        if self.regex:
+            p = re.compile(self.regex)
+        else:
+            p = None
 
         indent_stack = [0]
         indent = 0
@@ -57,7 +60,10 @@ class MultiLexer(Lexer):
             #print(line)
             line = rawline.lstrip()
             indent = len(rawline) - len(line)
-            m = p.match(line)
+            if p:
+                m = p.match(line)
+            else:
+                m = None
             #print(m)
             child_tokens = None
             if m:
@@ -100,7 +106,7 @@ class MultiLexer(Lexer):
         result = []
         span = None
         for token in tokens:
-            if token.type != 'SPAN':
+            if token.type != 'TEXT':
                 if not span:
                     result.append(token)
                 else:

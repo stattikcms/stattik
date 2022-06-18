@@ -12,7 +12,7 @@ class Lexer(sly.Lexer):
     def create_token(self, type, value, lineno, index):
         tok = sly.lex.Token()
         tok.type = type
-        tok.value = None
+        tok.value = value
         tok.lineno = lineno
         tok.index = index
         return tok
@@ -26,7 +26,7 @@ class Lexer(sly.Lexer):
         STRING,
         TERMINATOR,
 
-        SPAN,
+        TEXT,
         TAG,
         H1,
         H2,
