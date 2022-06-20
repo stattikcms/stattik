@@ -21,6 +21,11 @@ class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, Emo
     def Span(self, node):
         self(node.value)
 
+    def CodeSpan(self, node):
+        self('<code>')
+        self(node.value)
+        self('</code>')
+
     def Paragraph(self, node):
         self('<p>')
         with self.scope:
@@ -67,6 +72,23 @@ class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, Emo
                     self.visit(child)
                 self('</li>')
         self('</ol>')
+
+    def Tl(self, node):
+        self('<ul>')
+        with self.scope:
+            for child in node.children:
+                with self.scope:
+                    self.visit(child)
+        self('</ul>')
+
+    def TlItem(self, node):
+        checked = "checked" if node.checked else None
+        self('<li>')
+        self(f'<input type="checkbox" id="" disabled="" class="task-list-item-checkbox" {checked}/>')
+        with self.scope:
+            print(node.value)
+            self.visit(node.value)
+        self('</li>')
 
     def Blockquote(self, node):
         self('<blockquote>')

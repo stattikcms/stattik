@@ -1,5 +1,7 @@
 import sly
 
+from . import tokens
+
 class Lexer(sly.Lexer):
 
     def __init__(self):
@@ -18,37 +20,7 @@ class Lexer(sly.Lexer):
         return tok
 
 
-    tokens = {
-        INDENT,
-        DEDENT,
-        WS,
-        NAME,
-        STRING,
-        TERMINATOR,
-
-        TEXT,
-        TAG,
-        H1,
-        H2,
-        H3,
-        H1U,
-        H2U,
-        BOLD,
-        ITALIC,
-        BOLDITALIC,
-        BLOCKQUOTE,
-        UL,
-        OL,
-        FENCE,
-        ADMONITION,
-        EMOJI,
-        LINK,
-        IMAGE,
-
-        PIPE,
-        TSEPARATOR,
-
-    }
+    tokens = tokens.tokens
 
     # Whitespace
     #@_(r' [ \t]+ ')

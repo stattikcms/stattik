@@ -48,97 +48,83 @@ class Parser(sly.Parser):
         p.Body.add(p.Line)
         return p.Body
 
-    @_('Statement', 'Expression', 'TERMINATOR')
+    @_('Statement', 'TERMINATOR')
     def Line(self, p):
         if p[0]:
             return p[0]
         return yy.Empty()
 
-    '''
-    @_('TERMINATOR')
-    def Expression(self, p):
-        return yy.Empty()
-    '''
-
-    @_('TextElementList TERMINATOR H1U TERMINATOR')
+    @_('InlineList TERMINATOR H1U TERMINATOR')
     def HeadingU(self, p):
         return yy.Heading(1, p[0])
 
-    @_('TextElementList TERMINATOR H2U TERMINATOR')
+    @_('InlineList TERMINATOR H2U TERMINATOR')
     def HeadingU(self, p):
         return yy.Heading(2, p[0])
 
-    @_('H1 TextElementList TERMINATOR')
+    @_('H1_OPEN InlineList H1_CLOSE TERMINATOR')
     def Heading(self, p):
         return yy.Heading(1, p[1])
 
-    @_('H2 TextElementList TERMINATOR')
+    @_('H2_OPEN InlineList H2_CLOSE TERMINATOR')
     def Heading(self, p):
         return yy.Heading(2, p[1])
 
-    @_('H3 TextElementList TERMINATOR')
+    @_('H3_OPEN InlineList H3_CLOSE TERMINATOR')
     def Heading(self, p):
         return yy.Heading(3, p[1])
 
-    @_('TAG Expression')
-    def Tag(self, p):
-        return yy.ImportStmt(p.Expression)
+    @_('H4_OPEN InlineList H4_CLOSE TERMINATOR')
+    def Heading(self, p):
+        return yy.Heading(4, p[1])
 
-    @_('HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Fence', 'Admonition', 'Table')
+    @_('Heading', 'HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Tl', 'Fence', 'Admonition', 'Table')
     def Statement(self, p):
-        return p[0]
-
-    @_('Tag')
-    def Statement(self, p):
-        return p[0]
-
-    @_('Heading')
-    def Expression(self, p):
         return p[0]
 
     @_('TEXT')
     def Span(self, p):
         return yy.Span(p[0])
 
-    @_('BOLD')
-    def Bold(self, p):
-        return yy.Bold(p[0])
+    @_('CODE_SPAN_OPEN TEXT CODE_SPAN_CLOSE')
+    def CodeSpan(self, p):
+        return yy.CodeSpan(p[1])
 
-    @_('ITALIC')
-    def Italic(self, p):
-        return yy.Italic(p[0])
-
-    @_('BOLDITALIC')
+    @_('BOLD_ITALIC_OPEN TEXT BOLD_ITALIC_CLOSE')
     def BoldItalic(self, p):
-        return yy.BoldItalic(p[0])
+        return yy.BoldItalic(p[1])
+
+    @_('BOLD_OPEN TEXT BOLD_CLOSE')
+    def Bold(self, p):
+        return yy.Bold(p[1])
+
+    @_('ITALIC_OPEN TEXT ITALIC_CLOSE')
+    def Italic(self, p):
+        return yy.Italic(p[1])
 
     @_('EMOJI')
     def Emoji(self, p):
         return yy.Emoji(p[0])
 
-    @_('LINK')
+    @_('LBRACE Inline RBRACE LPAREN TEXT RPAREN')
     def Link(self, p):
-        r = re.compile(r'\[(?P<TEXT>([^\]]+))\]\((?P<LINK>(?:\/|https?:\/\/)[\w\d./?=#|?|&|=|-]+)\)')
-        m = r.match(p[0])
-        return yy.Link(m['TEXT'], m['LINK'])
+        return yy.Link(p[1], p[4])
 
-    @_('IMAGE')
+    @_('BANG LBRACE TEXT RBRACE LPAREN TEXT RPAREN')
     def Image(self, p):
-        r = re.compile(r'\!\[(?P<TEXT>([\w\s\d|#|-]+))\]\((?P<LINK>(?:\/|https?:\/\/)[\w\d./?=#|?|&|=|-]+)\)')
-        m = r.match(p[0])
-        return yy.Image(m['TEXT'], m['LINK'])
+        return yy.Image(p[2], p[5])
 
-    @_('Span', 'Bold', 'Italic', 'BoldItalic', 'Emoji', 'Link', 'Image')
-    def TextElement(self, p):
+    @_('Span', 'CodeSpan', 'Bold', 'Italic', 'BoldItalic', 'Emoji', 'Link', 'Image')
+    def Inline(self, p):
         return p[0]
 
-    @_('TextElementList TextElement')
-    def TextElementList(self, p):
+    @_('InlineList Inline')
+    def InlineList(self, p):
         p[0].append(p[1])
         return p[0]
 
-    @_('TextElement')
-    def TextElementList(self, p):
+    @_('Inline')
+    def InlineList(self, p):
         return [p[0]]
 
     @_('TextList Text')
@@ -154,7 +140,7 @@ class Parser(sly.Parser):
     def Paragraph(self, p):
         return yy.Paragraph(p[0])
 
-    @_('TextElementList TERMINATOR')
+    @_('InlineList TERMINATOR')
     def Text(self, p):
         return yy.Text(p[0])
 
@@ -238,6 +224,34 @@ class Parser(sly.Parser):
     @_('OlList', 'OlList TERMINATOR')
     def Ol(self, p):
         return yy.Ol(p[0])
+
+# Task List
+
+    @_('TL Text', 'TL Block')
+    def TlItem(self, p):
+        checked = 'x' in p[0]
+        return yy.TlItem(p[1], checked)
+
+    @_('TL TERMINATOR')
+    def TlItem(self, p):
+        return yy.Empty()
+
+    @_('Block')
+    def TlItem(self, p):
+        return p[0]
+
+    @_('TlList TlItem')
+    def TlList(self, p):
+        p[0].append(p[1])
+        return p[0]
+
+    @_('TlItem')
+    def TlList(self, p):
+        return [p[0]]
+
+    @_('TlList', 'TlList TERMINATOR')
+    def Tl(self, p):
+        return yy.Tl(p[0])
 
     # Fence
     @_('FENCE TERMINATOR')

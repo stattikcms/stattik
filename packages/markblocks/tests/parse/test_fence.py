@@ -5,11 +5,11 @@ from markblocks.data import load
 
 from markblocks.lex.multilexer import MultiLexer
 from markblocks.lex.textlexer import TextLexer
-from markblocks.lex.headinglexer import HeadingLexer
+from markblocks.lex.heading_lexer import HeadingLexer
 from markblocks.lex.taglexer import TagLexer
-from markblocks.lex.blockquotelexer import BlockquoteLexer
-from markblocks.lex.listlexer import ListLexer
-from markblocks.lex.fencelexer import FenceLexer
+from markblocks.lex.blockquote_lexer import BlockquoteLexer
+from markblocks.lex.list_lexer import ListLexer
+from markblocks.lex.fence_lexer import FenceLexer
 
 from markblocks.parse.parser import Parser
 from markblocks.ast.node import AstEncoder

@@ -5,7 +5,7 @@
     <h1>{{v_page.title}}</h1>
     <h2>{{v_page.description}}</h2>
   </hero-banner>
-  <section>
+  <section class="content">
     {{v_page.content}}
   </section>
   <callouts />

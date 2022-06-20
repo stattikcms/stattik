@@ -8,9 +8,6 @@ LEVEL = "level"
 NAME = "name"
 CHILDREN = "children"
 
-BODY = "BODY"
-VALUE = "value"
-ARG = "ARG"
 LANG = "lang"
 KIND = 'kind'
 TITLE = 'title'
@@ -34,7 +31,6 @@ class Node(object, metaclass=MetaNode):
         self.binding = None
 
     def add(self, child):
-        # child.parent = self
         return self.children.append(child)
 
     def remove(self, child):
@@ -78,16 +74,6 @@ class Properties(Node):
     def __init__(self, child):
         super().__init__()
         self.add(child)
-
-
-class Variable(Node):
-    def __init__(self, name):
-        super().__init__()
-        self.name = name
-        self.info = None
-
-    def toJSON(self):
-        return {TYPE: self.type, NAME: self.name, TYPE: self.type, INFO: self.info}
 
 
 class Term(Node):
@@ -137,14 +123,10 @@ _null = Literal("null")
 #
 
 
-class ExprList(Node):
-    def __init__(self, children, type="ExprList"):
+class Block(Node):
+    def __init__(self, children, type="Block"):
         super().__init__(type)
         self.children = children
-
-class Block(ExprList):
-    def __init__(self, children, type="Block"):
-        super().__init__(children, type)
 
     def toJSON(self):
         return {TYPE: self.type, CHILDREN: self.children}
@@ -166,7 +148,7 @@ class Paragraph(Block):
     def __init__(self, children):
         super().__init__(children, 'Paragraph')
 
-class TextElement(Node):
+class Inline(Node):
     def __init__(self, value):
         super().__init__()
         self.value = value
@@ -174,7 +156,7 @@ class TextElement(Node):
     def toJSON(self):
         return {TYPE: self.type, VALUE: self.value}
 
-class Link(TextElement):
+class Link(Inline):
     def __init__(self, value, link):
         super().__init__(value)
         self.link = link
@@ -182,7 +164,7 @@ class Link(TextElement):
     def toJSON(self):
         return {TYPE: self.type, VALUE: self.value, LINK: self.link}
 
-class Image(TextElement):
+class Image(Inline):
     def __init__(self, value, link):
         super().__init__(value)
         self.link = link
@@ -190,16 +172,19 @@ class Image(TextElement):
     def toJSON(self):
         return {TYPE: self.type, VALUE: self.value, LINK: self.link}
 
-class Span(TextElement):
+class Span(Inline):
     pass
 
-class Bold(TextElement):
+class CodeSpan(Inline):
     pass
 
-class Italic(TextElement):
+class Bold(Inline):
     pass
 
-class BoldItalic(TextElement):
+class Italic(Inline):
+    pass
+
+class BoldItalic(Inline):
     pass
 
 class Heading(Block):
@@ -221,6 +206,16 @@ class Ul(Block):
 class Ol(Block):
     def __init__(self, children):
         super().__init__(children, 'Ol')
+
+class Tl(Block):
+    def __init__(self, children):
+        super().__init__(children, 'Tl')
+
+class TlItem(Node):
+    def __init__(self, value, checked=False):
+        super().__init__()
+        self.value = value
+        self.checked = checked
 
 class TRow(Block):
     def __init__(self, children):

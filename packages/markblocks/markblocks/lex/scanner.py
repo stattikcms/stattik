@@ -1,3 +1,5 @@
+import re
+
 import sly
 
 class ScannerState:
@@ -6,10 +8,11 @@ class ScannerState:
         self.output = output
 
 class Scanner:
-    def __init__(self, input) -> None:
+    def __init__(self, input, lineno=1, index=0) -> None:
         self.input = input
+        self.lineno = lineno
+        self.cursor = index
         self.output = []
-        self.cursor = 0
         self.states = []
 
     def backup(self):
@@ -20,19 +23,45 @@ class Scanner:
         self.cursor = state.cursor
         self.output = state.output
 
+    def succeed(self):
+        self.states.pop()
+        return True
+
     def fail(self):
         self.restore()
         return False
 
-    def advance(self):
-        self.cursor += 1
+    def advance(self, increment=1):
+        self.cursor += increment
 
     @property
     def value(self):
         return self.input[self.cursor]
 
+    def consume(self, value, token, backup=False):
+        match = self.match(value)
+        if not match:
+            return False
+        if backup:
+            self.backup()
+        if isinstance(match, re.Match):
+            end = match.span()[1]
+            self(token, self.input[self.cursor:self.cursor+end])
+            self.advance(end)
+            return True
+        self(token, self.value)
+        self.advance(len(value))
+        return True
+
+    '''
     def match(self, value):
         return self.value == value        
+    '''
+    def match(self, value):
+        if isinstance(value, re.Pattern):
+            match = value.match(self.input[self.cursor:-1])
+            return match
+        return self.input[self.cursor:self.cursor + len(value)] == value    
 
     def create_token(self, type, value, lineno=1, index=0):
         tok = sly.lex.Token()

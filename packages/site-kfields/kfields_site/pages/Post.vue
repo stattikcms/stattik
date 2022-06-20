@@ -3,7 +3,7 @@
   <article>
     <section>
       <h1>{{ v_page.title }}</h1>
-      <div>{{ v_page.content }}</div>
+      <div class="content">{{ v_page.content }}</div>
     </section>
   </article>
 </template>

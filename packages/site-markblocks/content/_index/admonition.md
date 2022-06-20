@@ -2,7 +2,7 @@
 title: Admonition
 ---
 
-!!! note
+!!! note "optional explicit title within double quotes"
     You should note that the title will be automatically capitalized.
     You should note that the title will be automatically capitalized.
 

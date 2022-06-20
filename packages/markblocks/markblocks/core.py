@@ -1,12 +1,13 @@
 import itertools
 
 from .lex.multilexer import MultiLexer
-from .lex.textlexer import TextLexer
-from .lex.headinglexer import HeadingLexer
+#from .lex.textlexer import TextLexer
+from .lex.inline_lexer import InlineLexer
+from .lex.heading_lexer import HeadingLexer
 from .lex.taglexer import TagLexer
-from .lex.blockquotelexer import BlockquoteLexer
-from .lex.listlexer import ListLexer
-from .lex.fencelexer import FenceLexer
+from .lex.blockquote_lexer import BlockquoteLexer
+from .lex.list_lexer import ListLexer
+from .lex.fence_lexer import FenceLexer
 from .lex.admonition_lexer import AdmonitionLexer
 from .lex.tablelexer import TableLexer
 
@@ -22,7 +23,8 @@ class Markblocks:
             return ''
         lexer = MultiLexer()
 
-        lexer.add_lexer(TextLexer(), default=True)
+        #lexer.add_lexer(TextLexer(), default=True)
+        lexer.add_lexer(InlineLexer(), default=True)
         lexer.add_lexer(HeadingLexer())
         lexer.add_lexer(TagLexer())
         lexer.add_lexer(BlockquoteLexer())
