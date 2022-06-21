@@ -89,8 +89,8 @@ class MultiLexer(Lexer):
                 indent_stack.append(indent)
                 tokens.append(INDENT_(lineno, index))
             #elif indent < indent_stack[-1] and child_tokens and child_tokens[0].type != 'TERMINATOR' and child_tokens[0].index != 0:
-            elif indent < indent_stack[-1]:
-            #elif indent < indent_stack[-1] and child_tokens and child_tokens[0].type != 'TERMINATOR':
+            #elif indent < indent_stack[-1]:
+            elif indent < indent_stack[-1] and child_tokens and child_tokens[0].type != 'TERMINATOR':
                 while indent < indent_stack[-1]:
                     indent_stack.pop()
                     tokens.append(DEDENT_(lineno, index))

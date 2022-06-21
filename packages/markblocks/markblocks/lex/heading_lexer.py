@@ -18,28 +18,28 @@ class HeadingScanner(InlineScanner):
         return self.output
 
     def scan_h1(self):
-        if not self.consume(self.r_h1, H1_OPEN, backup=True):
+        if not self.consume_backup(self.r_h1, H1_OPEN):
             return False
         self.scan_inline()
         self(H1_CLOSE, '#')
         return self.succeed()
 
     def scan_h2(self):
-        if not self.consume(self.r_h2, H2_OPEN, backup=True):
+        if not self.consume_backup(self.r_h2, H2_OPEN):
             return False
         self.scan_inline()
         self(H2_CLOSE, '#')
         return self.succeed()
 
     def scan_h3(self):
-        if not self.consume(self.r_h3, H3_OPEN, backup=True):
+        if not self.consume_backup(self.r_h3, H3_OPEN):
             return False
         self.scan_inline()
         self(H3_CLOSE, '#')
         return self.succeed()
 
     def scan_h4(self):
-        if not self.consume(self.r_h4, H4_OPEN, backup=True):
+        if not self.consume_backup(self.r_h4, H4_OPEN):
             return False
         self.scan_inline()
         self(H4_CLOSE, '#')

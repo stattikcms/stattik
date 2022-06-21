@@ -12,10 +12,9 @@ class BlockquoteScanner(InlineScanner):
         return self.output
 
     def scan_bq(self):
-        if not self.consume(self.r_bq, BLOCKQUOTE, backup=True):
+        if not self.consume_backup(self.r_bq, BLOCKQUOTE):
             return False
         self.scan_inline()
-        #self(H1_CLOSE, '#')
         return self.succeed()
 
 class BlockquoteLexer(Lexer):

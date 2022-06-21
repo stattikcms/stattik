@@ -4,7 +4,7 @@ import itertools
 from markblocks.data import load
 
 from markblocks.lex.multilexer import MultiLexer
-from markblocks.lex.textlexer import TextLexer
+from markblocks.lex.inline_lexer import InlineLexer
 from markblocks.lex.heading_lexer import HeadingLexer
 from markblocks.lex.taglexer import TagLexer
 from markblocks.lex.blockquote_lexer import BlockquoteLexer
@@ -25,7 +25,7 @@ class Test(unittest.TestCase):
 
         lexer = MultiLexer()
 
-        lexer.add_lexer(TextLexer(), default=True)
+        lexer.add_lexer(InlineLexer(), default=True)
         lexer.add_lexer(HeadingLexer())
         lexer.add_lexer(TagLexer())
         lexer.add_lexer(BlockquoteLexer())

@@ -5,16 +5,16 @@ from markblocks.data import load
 
 from markblocks.lex.multilexer import MultiLexer
 from markblocks.lex.inline_lexer import InlineLexer
-from markblocks.lex.heading_lexer import HeadingLexer
-from markblocks.lex.taglexer import TagLexer
+from markblocks.lex.admonition_lexer import AdmonitionLexer
 
 from markblocks.parse.parser import Parser
 from markblocks.ast.node import AstEncoder
 
+from markblocks.render.default_renderer import DefaultRenderer
 
 class Test(unittest.TestCase):
     def test(self):
-        filename = "emphasis.md"
+        filename = "admonition.md"
         with load(filename) as fh:
             s = fh.read()
 
@@ -23,9 +23,9 @@ class Test(unittest.TestCase):
         print("##end##")
 
         lexer = MultiLexer()
+
         lexer.add_lexer(InlineLexer(), default=True)
-        lexer.add_lexer(HeadingLexer())
-        lexer.add_lexer(TagLexer())
+        lexer.add_lexer(AdmonitionLexer())
 
         tokens = lexer.tokenize(s)
         tokens, tokens2 = itertools.tee(tokens)
@@ -41,6 +41,9 @@ class Test(unittest.TestCase):
         # json.dumps(ast)
         print(AstEncoder(indent=2).encode(ast))
 
+        renderer = DefaultRenderer()
+        result = renderer.render(ast)
+        print(result)
 
 if __name__ == "__main__":
     unittest.main()

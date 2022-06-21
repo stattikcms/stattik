@@ -37,29 +37,54 @@ class Scanner:
     @property
     def value(self):
         return self.input[self.cursor]
-
-    def consume(self, value, token, backup=False):
-        match = self.match(value)
+    '''
+    def consume(self, pattern, token, backup=False):
+        match = self.match(pattern)
         if not match:
             return False
         if backup:
             self.backup()
         if isinstance(match, re.Match):
             end = match.span()[1]
-            self(token, self.input[self.cursor:self.cursor+end])
-            self.advance(end)
-            return True
-        self(token, self.value)
-        self.advance(len(value))
+            value = self.input[self.cursor:self.cursor+end]
+            length = end
+        else:
+            value = pattern
+            length = len(value)
+        self.advance(length)
+        self(token, value)
+        return True
+    '''
+    def consume(self, pattern, type, succeed = lambda t: t):
+        return self._consume(pattern, type, succeed)
+
+    def consume_backup(self, pattern, type, succeed = lambda t: t):
+        return self._consume(pattern, type, succeed, backup=True)
+
+    def _consume(self, pattern, type, succeed = lambda t: t, backup=False):
+        match = self.match(pattern)
+        if not match:
+            return False
+        if backup:
+            self.backup()
+        if isinstance(match, re.Match):
+            end = match.span()[1]
+            value = self.input[self.cursor:self.cursor+end]
+            length = end
+        else:
+            value = pattern
+            length = len(value)
+
+        token = self.create_token(type, value)
+        token = succeed(token)
+        self.write(token)
+        self.advance(length)
+
         return True
 
-    '''
-    def match(self, value):
-        return self.value == value        
-    '''
     def match(self, value):
         if isinstance(value, re.Pattern):
-            match = value.match(self.input[self.cursor:-1])
+            match = value.match(self.input[self.cursor:])
             return match
         return self.input[self.cursor:self.cursor + len(value)] == value    
 
@@ -71,6 +96,9 @@ class Scanner:
         tok.index = index
         return tok
 
+    def write(self, token):
+        self.output.append(token)
+
     def __call__(self, type, value, lineno=1, index=0):
-        tok = self.create_token(type, value, lineno, index)
-        self.output.append(tok)
+        token = self.create_token(type, value, lineno, index)
+        self.write(token)

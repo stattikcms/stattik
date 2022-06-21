@@ -1,7 +1,6 @@
 import itertools
 
 from .lex.multilexer import MultiLexer
-#from .lex.textlexer import TextLexer
 from .lex.inline_lexer import InlineLexer
 from .lex.heading_lexer import HeadingLexer
 from .lex.taglexer import TagLexer
@@ -23,7 +22,6 @@ class Markblocks:
             return ''
         lexer = MultiLexer()
 
-        #lexer.add_lexer(TextLexer(), default=True)
         lexer.add_lexer(InlineLexer(), default=True)
         lexer.add_lexer(HeadingLexer())
         lexer.add_lexer(TagLexer())

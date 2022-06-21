@@ -22,7 +22,7 @@ class InlineScanner(Scanner):
         return False
 
     def scan_code(self):
-        if not self.consume('`', CODE_SPAN_OPEN, backup=True):
+        if not self.consume_backup('`', CODE_SPAN_OPEN):
             return False
 
         if not self.scan_inline(lambda sc: sc.consume('`', CODE_SPAN_CLOSE)):
@@ -40,7 +40,7 @@ class InlineScanner(Scanner):
             )
 
     def scan_bold_italic(self):
-        if not self.consume('***', BOLD_ITALIC_OPEN, backup=True):
+        if not self.consume_backup('***', BOLD_ITALIC_OPEN):
             return False
 
         if not self.scan_inline(lambda sc: sc.consume('***', BOLD_ITALIC_CLOSE)):
@@ -49,7 +49,7 @@ class InlineScanner(Scanner):
         return self.succeed()
 
     def scan_bold(self):
-        if not self.consume('**', BOLD_OPEN, backup=True):
+        if not self.consume_backup('**', BOLD_OPEN):
             return False
 
         if not self.scan_inline(lambda sc: sc.consume('**', BOLD_CLOSE)):
@@ -58,7 +58,7 @@ class InlineScanner(Scanner):
         return self.succeed()
 
     def scan_italic(self):
-        if not self.consume('*', ITALIC_OPEN, backup=True):
+        if not self.consume_backup('*', ITALIC_OPEN):
             return False
 
         if not self.scan_inline(lambda sc: sc.consume('*', ITALIC_CLOSE)):
@@ -67,7 +67,7 @@ class InlineScanner(Scanner):
         return self.succeed()
 
     def scan_image(self):
-        if not self.consume('!', BANG, backup=True):
+        if not self.consume_backup('!', BANG):
             return False
 
         if not self.scan_link():
@@ -77,7 +77,7 @@ class InlineScanner(Scanner):
         
 
     def scan_link(self):
-        if not self.consume('[', LBRACE, backup=True):
+        if not self.consume_backup('[', LBRACE):
             return False
 
         if not self.scan_inline(lambda sc: sc.consume(']', RBRACE)):
@@ -98,3 +98,44 @@ class InlineLexer(Lexer):
     def tokenize(self, text, lineno=1, index=0):
         ctx = InlineScanner(text, lineno, index)
         return ctx.scan()
+
+    '''
+    @_(r'\r?\n+')
+    def NEWLINE(self, t):
+        return t
+
+    @_(r'\*\*\*.+\*\*\*')
+    def BOLDITALIC(self, t):
+        t.value = t.value[3:-3]
+        return t
+
+    @_(r'\*\*.+\*\*')
+    def BOLD(self, t):
+        t.value = t.value[2:-2]
+        return t
+
+    @_(r'\*.+\*')
+    def ITALIC(self, t):
+        t.value = t.value[1:-1]
+        return t
+
+    #@_(r'\[([\w\s\d]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#]+)\)$')
+    #@_(r'\[([\w\s\d|#]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#]+)\)$')
+    @_(r'\[([^\]]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#|?|&|=|-]+)\)')
+    def LINK(self, t):
+        return t
+
+    #@_(r'\!\[([\w\s\d|#]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#]+)\)$')
+    @_(r'\!\[([\w\s\d|#|-]+)\]\(((?:\/|https?:\/\/)[\w\d./?=#|?|&|=|-]+)\)')
+    def IMAGE(self, t):
+        return t
+
+    @_(r':\w+:')
+    def EMOJI(self, t):
+        t.value = t.value[1:-1]
+        return t
+
+    @_(r'.')
+    def TEXT(self, t):
+        return t
+    '''

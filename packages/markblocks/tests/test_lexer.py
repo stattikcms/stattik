@@ -1,8 +1,7 @@
 import unittest
 
 from markblocks.data import load
-from markblocks.lex.textlexer import TextLexer
-
+from markblocks.lex.inline_lexer import InlineLexer
 
 class Test(unittest.TestCase):
     def test(self):
@@ -11,7 +10,7 @@ class Test(unittest.TestCase):
         with load(filename) as fh:
             s = fh.read()
             
-        lexer = TextLexer()
+        lexer = InlineLexer()
         tokens = lexer.tokenize(s)
         for tok in tokens:
             print(tok)
