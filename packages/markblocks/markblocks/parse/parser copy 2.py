@@ -30,66 +30,56 @@ class Parser(sly.Parser):
     @_('Body')
     def Document(self, p):
         return yy.Document(p.Body.children)
-
-    '''
+    
     @_('INDENT DEDENT')
     def Block(self, p):
         return yy.Block()
-    '''
 
     @_('INDENT Body DEDENT')
-    def IndentedBody(self, p):
+    def Block(self, p):
         return p.Body
 
-    @_('LeafBlock', 'ContainerBlock')
-    def Block(self, p):
-        return p[0]
-
-    @_('Block')
+    @_('Line')
     def Body(self, p):
-        return yy.Block([p[0]])
+        return yy.Block([p.Line])
 
     @_('Body Line')
     def Body(self, p):
-        p.Body.add(p[1])
+        p.Body.add(p.Line)
         return p.Body
-    
-    @_('Block', 'TERMINATOR')
+
+    @_('Statement', 'TERMINATOR')
     def Line(self, p):
         if p[0]:
             return p[0]
         return yy.Empty()
 
-    @_('InlineGroup TERMINATOR H1U TERMINATOR')
+    @_('InlineList TERMINATOR H1U TERMINATOR')
     def HeadingU(self, p):
         return yy.Heading(1, p[0])
 
-    @_('InlineGroup TERMINATOR H2U TERMINATOR')
+    @_('InlineList TERMINATOR H2U TERMINATOR')
     def HeadingU(self, p):
         return yy.Heading(2, p[0])
 
-    @_('H1_OPEN InlineGroup H1_CLOSE TERMINATOR')
+    @_('H1_OPEN InlineList H1_CLOSE TERMINATOR')
     def Heading(self, p):
         return yy.Heading(1, p[1])
 
-    @_('H2_OPEN InlineGroup H2_CLOSE TERMINATOR')
+    @_('H2_OPEN InlineList H2_CLOSE TERMINATOR')
     def Heading(self, p):
         return yy.Heading(2, p[1])
 
-    @_('H3_OPEN InlineGroup H3_CLOSE TERMINATOR')
+    @_('H3_OPEN InlineList H3_CLOSE TERMINATOR')
     def Heading(self, p):
         return yy.Heading(3, p[1])
 
-    @_('H4_OPEN InlineGroup H4_CLOSE TERMINATOR')
+    @_('H4_OPEN InlineList H4_CLOSE TERMINATOR')
     def Heading(self, p):
         return yy.Heading(4, p[1])
 
-    @_('Heading', 'HeadingU', 'Paragraph', 'Fence')
-    def LeafBlock(self, p):
-        return p[0]
-
-    @_('Blockquote', 'Ul', 'Ol', 'Tl', 'Fence', 'Admonition', 'Table')
-    def ContainerBlock(self, p):
+    @_('Heading', 'HeadingU', 'Paragraph', 'Blockquote', 'Ul', 'Ol', 'Tl', 'Fence', 'Admonition', 'Table')
+    def Statement(self, p):
         return p[0]
 
     @_('TEXT')
@@ -128,13 +118,13 @@ class Parser(sly.Parser):
     def Inline(self, p):
         return p[0]
 
-    @_('InlineGroup Inline')
-    def InlineGroup(self, p):
+    @_('InlineList Inline')
+    def InlineList(self, p):
         p[0].append(p[1])
         return p[0]
 
     @_('Inline')
-    def InlineGroup(self, p):
+    def InlineList(self, p):
         return [p[0]]
 
     @_('TextList Text')
@@ -150,34 +140,21 @@ class Parser(sly.Parser):
     def Paragraph(self, p):
         return yy.Paragraph(p[0])
 
-    @_('InlineGroup TERMINATOR')
+    @_('InlineList TERMINATOR')
     def Text(self, p):
         return yy.Text(p[0])
 
     # Block quotes
-    # Admonition
-    @_('BLOCKQUOTE InlineGroup TERMINATOR')
-    def Blockquote(self, p):
-        return yy.Blockquote(p[1])
 
-    @_('BLOCKQUOTE TERMINATOR IndentedBody')
-    def Blockquote(self, p):
-        return yy.Blockquote(p.IndentedBody.children)
-
-    @_('BLOCKQUOTE InlineGroup TERMINATOR IndentedBody')
-    def Blockquote(self, p):
-        return yy.Blockquote(p[1] + p.IndentedBody.children)
-
-    '''
-    @_('BLOCKQUOTE Text', 'BLOCKQUOTE IndentedBody')
+    @_('BLOCKQUOTE Text', 'BLOCKQUOTE Block')
     def BlockquoteItem(self, p):
         return p[1]
 
     @_('BLOCKQUOTE TERMINATOR')
     def BlockquoteItem(self, p):
         return yy.Empty()
-    
-    @_('IndentedBody')
+
+    @_('Block')
     def BlockquoteItem(self, p):
         return p[0]
 
@@ -193,10 +170,10 @@ class Parser(sly.Parser):
     @_('BlockquoteList', 'BlockquoteList TERMINATOR')
     def Blockquote(self, p):
         return yy.Blockquote(p[0])
-    '''
+
     # Unordered List
 
-    @_('UL Text', 'UL IndentedBody')
+    @_('UL Text', 'UL Block')
     def UlItem(self, p):
         return p[1]
 
@@ -204,7 +181,7 @@ class Parser(sly.Parser):
     def UlItem(self, p):
         return yy.Empty()
 
-    @_('IndentedBody')
+    @_('Block')
     def UlItem(self, p):
         return p[0]
 
@@ -223,7 +200,7 @@ class Parser(sly.Parser):
 
 # Ordered List
 
-    @_('OL Text', 'OL IndentedBody')
+    @_('OL Text', 'OL Block')
     def OlItem(self, p):
         return p[1]
 
@@ -231,7 +208,7 @@ class Parser(sly.Parser):
     def OlItem(self, p):
         return yy.Empty()
 
-    @_('IndentedBody')
+    @_('Block')
     def OlItem(self, p):
         return p[0]
 
@@ -250,7 +227,7 @@ class Parser(sly.Parser):
 
 # Task List
 
-    @_('TL Text', 'TL IndentedBody')
+    @_('TL Text', 'TL Block')
     def TlItem(self, p):
         checked = 'x' in p[0]
         return yy.TlItem(p[1], checked)
@@ -259,7 +236,7 @@ class Parser(sly.Parser):
     def TlItem(self, p):
         return yy.Empty()
 
-    @_('IndentedBody')
+    @_('Block')
     def TlItem(self, p):
         return p[0]
 
@@ -286,13 +263,13 @@ class Parser(sly.Parser):
         return yy.Fence(p[0], p[1])
 
     # Admonition
-    @_('ADMONITION NAME WS STRING TERMINATOR IndentedBody')
+    @_('ADMONITION NAME WS STRING TERMINATOR Block')
     def Admonition(self, p):
-        return yy.Admonition(p.IndentedBody.children, p.NAME, p.STRING)
+        return yy.Admonition(p.Block.children, p.NAME, p.STRING)
 
-    @_('ADMONITION NAME TERMINATOR IndentedBody')
+    @_('ADMONITION NAME TERMINATOR Block')
     def Admonition(self, p):
-        return yy.Admonition(p.IndentedBody.children, p.NAME)
+        return yy.Admonition(p.Block.children, p.NAME)
 
     # Table
     @_('PIPE Span')

@@ -5,15 +5,12 @@ from markblocks.data import load
 
 from markblocks.lex.multilexer import MultiLexer
 from markblocks.lex.inline_lexer import InlineLexer
-from markblocks.lex.heading_lexer import HeadingLexer
-from markblocks.lex.taglexer import TagLexer
-from markblocks.lex.blockquote_lexer import BlockquoteLexer
-from markblocks.lex.list_lexer import ListLexer
 from markblocks.lex.table_lexer import TableLexer
 
 from markblocks.parse.parser import Parser
 from markblocks.ast.node import AstEncoder
 
+from markblocks.render.default_renderer import DefaultRenderer
 
 class Test(unittest.TestCase):
     def test(self):
@@ -28,10 +25,6 @@ class Test(unittest.TestCase):
         lexer = MultiLexer()
 
         lexer.add_lexer(InlineLexer(), default=True)
-        lexer.add_lexer(HeadingLexer())
-        lexer.add_lexer(TagLexer())
-        lexer.add_lexer(BlockquoteLexer())
-        lexer.add_lexer(ListLexer())
         lexer.add_lexer(TableLexer())
 
         tokens = lexer.tokenize(s)
@@ -48,6 +41,9 @@ class Test(unittest.TestCase):
         # json.dumps(ast)
         print(AstEncoder(indent=2).encode(ast))
 
+        renderer = DefaultRenderer()
+        result = renderer.render(ast)
+        print(result)
 
 if __name__ == "__main__":
     unittest.main()

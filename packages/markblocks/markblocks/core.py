@@ -8,7 +8,7 @@ from .lex.blockquote_lexer import BlockquoteLexer
 from .lex.list_lexer import ListLexer
 from .lex.fence_lexer import FenceLexer
 from .lex.admonition_lexer import AdmonitionLexer
-from .lex.tablelexer import TableLexer
+from .lex.table_lexer import TableLexer
 
 from .parse.parser import Parser
 from .ast.node import AstEncoder

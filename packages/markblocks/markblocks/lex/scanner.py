@@ -88,17 +88,17 @@ class Scanner:
             return match
         return self.input[self.cursor:self.cursor + len(value)] == value    
 
-    def create_token(self, type, value, lineno=1, index=0):
+    def create_token(self, type, value):
         tok = sly.lex.Token()
         tok.type = type
         tok.value = value
-        tok.lineno = lineno
-        tok.index = index
+        tok.lineno = self.lineno
+        tok.index = self.cursor
         return tok
 
     def write(self, token):
         self.output.append(token)
 
-    def __call__(self, type, value, lineno=1, index=0):
-        token = self.create_token(type, value, lineno, index)
+    def __call__(self, type, value):
+        token = self.create_token(type, value)
         self.write(token)

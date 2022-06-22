@@ -5,12 +5,12 @@ from .inline_lexer import InlineScanner
 from .tokens import *
 
 class ListScanner(InlineScanner):
-    r_ul = re.compile(r'^\*( +)?')
+    r_ul = re.compile(r'^(\* |\+ |\- )( +)?')
     r_ol = re.compile(r'^\d+.( +)?')
     r_tl = re.compile(r'^\- \[( |x)\]( +)?')
 
     def scan(self):
-        self.scan_ul() or self.scan_ol() or self.scan_tl()
+        self.scan_tl() or self.scan_ul() or self.scan_ol()
         return self.output
 
     def scan_ul(self):
@@ -31,7 +31,7 @@ class ListScanner(InlineScanner):
 class ListLexer(Lexer):
     tokens = Lexer.tokens
     fingerprints = [
-        (r'(?P<UL>^\*( +)?)', 'UL'),
+        (r'(?P<UL>^(\* |\+ |\- )( +)?)', 'UL'),
         (r'(?P<OL>^\d+.( +)?)', 'OL'),
         (r'(?P<TL>^\- \[( |x)\]( +)?)', 'TL'),
     ]

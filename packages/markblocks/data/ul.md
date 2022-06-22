@@ -9,3 +9,9 @@
 
 * First Item
 * [Hi](mysite.com)
+
+- Hyphen First
+- Hyphen Second
+
++ Plus First
++ Plus Second
