@@ -78,7 +78,7 @@ class Parser(sly.Parser):
     def LeafBlock(self, p):
         return p[0]
 
-    @_('Blockquote', 'Ul', 'Ol', 'Tl', 'Fence', 'Admonition', 'Table')
+    @_('Blockquote', 'Ul', 'Ol', 'Tl', 'Admonition', 'Table')
     def ContainerBlock(self, p):
         return p[0]
 
@@ -136,7 +136,7 @@ class Parser(sly.Parser):
         return yy.Paragraph(p[0].children + p[1].children)
 
     # Block quotes
-    # Admonition
+
     @_('BLOCKQUOTE InlineGroup TERMINATOR')
     def Blockquote(self, p):
         return yy.Blockquote(p[1].children)
