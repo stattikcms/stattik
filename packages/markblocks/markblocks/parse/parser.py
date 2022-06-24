@@ -23,10 +23,6 @@ class Parser(sly.Parser):
             sys.stderr.write('sly: Parse error in input. EOF\n')
 
 
-    @_('Document')
-    def File(self, p):
-        return p[0]
-
     @_('BlockGroup')
     def Document(self, p):
         return yy.Document(p[0].children)

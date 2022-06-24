@@ -19,12 +19,6 @@ class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, Emo
                 self.visit(child)
 
     def Text(self, node):
-        with self.inlined:
-            self(self.indentation())
-            for child in node.children:
-                self.visit(child)
-
-    def Span(self, node):
         self(node.value)
 
     def CodeSpan(self, node):
