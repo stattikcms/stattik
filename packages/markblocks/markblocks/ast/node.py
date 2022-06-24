@@ -122,15 +122,21 @@ class Literal(Node):
 _null = Literal("null")
 #
 
-
-class Block(Node):
-    def __init__(self, children, type="Block"):
+class Group(Node):
+    def __init__(self, children, type="Group"):
         super().__init__(type)
         self.children = children
 
     def toJSON(self):
         return {TYPE: self.type, CHILDREN: self.children}
 
+class InlineGroup(Group):
+    def __init__(self, children):
+        super().__init__(children, 'InlineGroup')
+
+class Block(Group):
+    def __init__(self, children, type="Block"):
+        super().__init__(children, type)
 
 #
 # Document
@@ -138,11 +144,6 @@ class Block(Node):
 class Document(Block):
     def __init__(self, children):
         super().__init__(children, "Document")
-
-
-class Text(Block):
-    def __init__(self, children):
-        super().__init__(children, 'Text')
 
 class Paragraph(Block):
     def __init__(self, children):
@@ -172,7 +173,7 @@ class Image(Inline):
     def toJSON(self):
         return {TYPE: self.type, VALUE: self.value, LINK: self.link}
 
-class Span(Inline):
+class Text(Inline):
     pass
 
 class CodeSpan(Inline):

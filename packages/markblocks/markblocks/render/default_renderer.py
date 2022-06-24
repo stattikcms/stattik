@@ -12,6 +12,12 @@ class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, Emo
 
     Block = Renderer.visits
 
+    def InlineGroup(self, node):
+        with self.inlined:
+            self(self.indentation())
+            for child in node.children:
+                self.visit(child)
+
     def Text(self, node):
         with self.inlined:
             self(self.indentation())
