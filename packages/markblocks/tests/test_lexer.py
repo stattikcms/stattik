@@ -16,5 +16,4 @@ class Test(unittest.TestCase):
             print(tok)
 
 if __name__ == "__main__":
-
     Test().test()

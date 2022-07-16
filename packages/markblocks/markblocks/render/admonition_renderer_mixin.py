@@ -1,10 +1,10 @@
 class AdmonitionRendererMixin:
     def Admonition(self, node):
-        self(f'<div class="admonition {node.kind}">')
+        self(f'<div class="admonition {node.flavor}">')
         if node.title:
             title = node.title
         else:
-            title = node.kind.capitalize()
+            title = node.flavor.capitalize()
 
         with self.indented:
             self(f'<p class="admonition-title">{title}</p>')

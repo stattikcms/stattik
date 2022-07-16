@@ -155,26 +155,19 @@ class Parser(sly.Parser):
     def UlItem(self, p):
         return p[1]
 
-    @_('UL TERMINATOR')
+    @_('UL InlineGroup TERMINATOR Body')
     def UlItem(self, p):
-        return yy.Empty()
+        p[1].children = p[1].children + p[3].children
+        return p[1]
 
-    @_('Body')
-    def UlItem(self, p):
-        return p[0]
-
-    @_('UlList UlItem')
-    def UlList(self, p):
-        p[0].append(p[1])
+    @_('Ul UlItem')
+    def Ul(self, p):
+        p[0].add(p[1])
         return p[0]
 
     @_('UlItem')
-    def UlList(self, p):
-        return [p[0]]
-
-    @_('UlList', 'UlList TERMINATOR')
     def Ul(self, p):
-        return yy.Ul(p[0])
+        return yy.Ul([p[0]])
 
 # Ordered List
 
@@ -182,54 +175,34 @@ class Parser(sly.Parser):
     def OlItem(self, p):
         return p[1]
 
-    @_('OL TERMINATOR')
+    @_('OL InlineGroup TERMINATOR Body')
     def OlItem(self, p):
-        return yy.Empty()
+        p[1].children = p[1].children + p[3].children
+        return p[1]
 
-    @_('Body')
-    def OlItem(self, p):
-        return p[0]
-
-    @_('OlList OlItem')
-    def OlList(self, p):
-        p[0].append(p[1])
+    @_('Ol OlItem')
+    def Ol(self, p):
+        p[0].add(p[1])
         return p[0]
 
     @_('OlItem')
-    def OlList(self, p):
-        return [p[0]]
-
-    @_('OlList', 'OlList TERMINATOR')
     def Ol(self, p):
-        return yy.Ol(p[0])
+        return yy.Ol([p[0]])
 
-# Task List
-
+    # Task List
     @_('TL InlineGroup TERMINATOR', 'TL Body')
     def TlItem(self, p):
         checked = 'x' in p[0]
         return yy.TlItem(p[1], checked)
 
-    @_('TL TERMINATOR')
-    def TlItem(self, p):
-        return yy.Empty()
-
-    @_('Body')
-    def TlItem(self, p):
-        return p[0]
-
-    @_('TlList TlItem')
-    def TlList(self, p):
-        p[0].append(p[1])
+    @_('Tl TlItem')
+    def Tl(self, p):
+        p[0].add(p[1])
         return p[0]
 
     @_('TlItem')
-    def TlList(self, p):
-        return [p[0]]
-
-    @_('TlList', 'TlList TERMINATOR')
     def Tl(self, p):
-        return yy.Tl(p[0])
+        return yy.Tl([p[0]])
 
     # Fence
     @_('FENCE TERMINATOR')

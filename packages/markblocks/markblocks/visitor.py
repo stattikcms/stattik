@@ -1,7 +1,6 @@
 class Visitor:
     def visit(self, node):
-        #print(node.__class__)
-        fn = getattr(self, node.type)
+        fn = getattr(self, node.kind)
         return fn(node)
 
     def visits(self, node):
@@ -12,5 +11,5 @@ class Visitor:
         return node.walk(lambda node, value: self.visit_node(node, value), reducer)
 
     def walk_visit_node(self, node, value):
-        fn = getattr(self, node.type)
+        fn = getattr(self, node.kind)
         return fn(node, value)

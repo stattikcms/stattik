@@ -2,14 +2,14 @@ from json import JSONEncoder
 
 from .metanode import MetaNode
 
-TYPE = "type"
+KIND = "kind"
 VALUE = "value"
 LEVEL = "level"
 NAME = "name"
 CHILDREN = "children"
 
 LANG = "lang"
-KIND = 'kind'
+FLAVOR = 'flavor'
 TITLE = 'title'
 LINK = 'link'
 
@@ -23,9 +23,12 @@ class AstEncoder(JSONEncoder):
 
 
 class Node(object, metaclass=MetaNode):
-    def __init__(self, type=None):
+    @property
+    def kind(self):
+        return self.__class__.__name__
+
+    def __init__(self):
         super().__init__()
-        self.type = type or self.__class__.__name__
         self.children = [None] * self.nodeCount
         self.scope = None
         self.binding = None
@@ -46,18 +49,10 @@ class Node(object, metaclass=MetaNode):
             yield node
 
     def toJSON(self):
-        return {}
+        return { KIND: self.kind }
 
 class Empty(Node):
     pass
-
-class Array(Node):
-    def __init__(self, children):
-        super().__init__()
-        self.children = children
-
-    def toJSON(self):
-        return {TYPE: self.type, TYPE: self.type, CHILDREN: self.children}
 
 
 class Property(Node):
@@ -67,7 +62,7 @@ class Property(Node):
         self.value = val
 
     def toJSON(self):
-        return {TYPE: self.type, NAME: self.name, VALUE: self.value}
+        return {KIND: self.kind, NAME: self.name, VALUE: self.value}
 
 
 class Properties(Node):
@@ -75,79 +70,32 @@ class Properties(Node):
         super().__init__()
         self.add(child)
 
-
-class Term(Node):
-    def __init__(self, name, type="Term"):
-        super().__init__(type)
-        self.name = name
-
-    def toJSON(self):
-        return {TYPE: self.type, NAME: self.name, TYPE: self.type}
-
-
-def term_(name):
-    term = _terms.get(name)
-    if not term:
-        term = Term(name)
-        _terms[name] = term
-    return term
-
-
-class Type(Term):
-    def __init__(self, name):
-        super().__init__(name, "Type")
-        self.builtin = False
-
-    def toJSON(self):
-        return {TYPE: self.type, NAME: self.name}
-
-
-def type_(name):
-    t = _types.get(name)
-    if not t:
-        t = Type(name)
-        _types[name] = t
-    return t
-
-
-class Literal(Node):
-    def __init__(self, value):
-        super().__init__("Literal")
-        self.value = value
-
-    def toJSON(self):
-        return {TYPE: self.type, VALUE: self.value}
-
-
-_null = Literal("null")
-#
-
 class Group(Node):
-    def __init__(self, children, type="Group"):
-        super().__init__(type)
+    def __init__(self, children):
+        super().__init__()
         self.children = children
 
     def toJSON(self):
-        return {TYPE: self.type, CHILDREN: self.children}
+        return {KIND: self.kind, CHILDREN: self.children}
 
 class InlineGroup(Group):
     def __init__(self, children):
-        super().__init__(children, 'InlineGroup')
+        super().__init__(children)
 
 class Block(Group):
-    def __init__(self, children, type="Block"):
-        super().__init__(children, type)
+    def __init__(self, children):
+        super().__init__(children)
 
 #
 # Document
 #
 class Document(Block):
     def __init__(self, children):
-        super().__init__(children, "Document")
+        super().__init__(children)
 
 class Paragraph(Block):
     def __init__(self, children):
-        super().__init__(children, 'Paragraph')
+        super().__init__(children)
 
 class Inline(Node):
     def __init__(self, value):
@@ -155,7 +103,7 @@ class Inline(Node):
         self.value = value
 
     def toJSON(self):
-        return {TYPE: self.type, VALUE: self.value}
+        return {KIND: self.kind, VALUE: self.value}
 
 class Link(Inline):
     def __init__(self, value, link):
@@ -163,7 +111,7 @@ class Link(Inline):
         self.link = link
 
     def toJSON(self):
-        return {TYPE: self.type, VALUE: self.value, LINK: self.link}
+        return {KIND: self.kind, VALUE: self.value, LINK: self.link}
 
 class Image(Inline):
     def __init__(self, value, link):
@@ -171,7 +119,7 @@ class Image(Inline):
         self.link = link
 
     def toJSON(self):
-        return {TYPE: self.type, VALUE: self.value, LINK: self.link}
+        return {KIND: self.kind, VALUE: self.value, LINK: self.link}
 
 class Text(Inline):
     pass
@@ -190,27 +138,27 @@ class BoldItalic(Inline):
 
 class Heading(Block):
     def __init__(self, level, children):
-        super().__init__(children, 'Heading')
+        super().__init__(children)
         self.level = level
 
     def toJSON(self):
-        return {TYPE: self.type, LEVEL: self.level, CHILDREN: self.children}
+        return {KIND: self.kind, LEVEL: self.level, CHILDREN: self.children}
 
 class Blockquote(Block):
     def __init__(self, children):
-        super().__init__(children, 'Blockquote')
+        super().__init__(children)
 
 class Ul(Block):
     def __init__(self, children):
-        super().__init__(children, 'Ul')
+        super().__init__(children)
 
 class Ol(Block):
     def __init__(self, children):
-        super().__init__(children, 'Ol')
+        super().__init__(children)
 
 class Tl(Block):
     def __init__(self, children):
-        super().__init__(children, 'Tl')
+        super().__init__(children)
 
 class TlItem(Node):
     def __init__(self, value, checked=False):
@@ -220,20 +168,20 @@ class TlItem(Node):
 
 class TRow(Block):
     def __init__(self, children):
-        super().__init__(children, 'TRow')
+        super().__init__(children)
 
 class THead(Block):
     def __init__(self, children, separator):
-        super().__init__(children, 'THead')
+        super().__init__(children)
         self.separator = separator
 
 class TBody(Block):
     def __init__(self, children):
-        super().__init__(children, 'TBody')
+        super().__init__(children)
 
 class Table(Block):
     def __init__(self, children):
-        super().__init__(children, 'Table')
+        super().__init__(children)
 
 class Fence(Node):
     def __init__(self, value, lang=None):
@@ -242,16 +190,16 @@ class Fence(Node):
         self.lang = lang
 
     def toJSON(self):
-        return {TYPE: self.type, VALUE: self.value, LANG: self.lang}
+        return {KIND: self.kind, VALUE: self.value, LANG: self.lang}
 
 class Admonition(Block):
-    def __init__(self, children, kind, title=None):
-        super().__init__(children, 'Admonition')
-        self.kind = kind
+    def __init__(self, children, flavor, title=None):
+        super().__init__(children)
+        self.flavor = flavor
         self.title = title
 
     def toJSON(self):
-        return {TYPE: self.type, KIND: self.kind, TITLE: self.title, CHILDREN: self.children}
+        return {KIND: self.kind, FLAVOR: self.flavor, TITLE: self.title, CHILDREN: self.children}
 
 
 class Emoji(Node):
@@ -260,4 +208,4 @@ class Emoji(Node):
         self.name = name
 
     def toJSON(self):
-        return {TYPE: self.type, NAME: self.name}
+        return {KIND: self.kind, NAME: self.name}
