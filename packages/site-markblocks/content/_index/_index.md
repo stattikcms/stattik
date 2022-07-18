@@ -24,4 +24,8 @@ menu:
 
     - title: Table
       url: table.html
+
+    - title: Emoji
+      url: emoji.html
+
 ---

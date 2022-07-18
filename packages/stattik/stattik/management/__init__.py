@@ -16,6 +16,8 @@ from .clean import clean as _clean
 from .develop import develop as _develop
 from .serve import serve as _serve
 
+from .deploy import deploy
+
 def async_cmd(func):
   @wraps(func)
   def wrapper(*args, **kwargs):
@@ -28,6 +30,8 @@ def cli(ctx):
     ctx.ensure_object(dict)
     if ctx.invoked_subcommand is None:
         develop()
+
+cli.add_command(deploy)
 
 @cli.command()
 @click.pass_context

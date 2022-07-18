@@ -94,11 +94,6 @@ class HeadingLexer(Lexer):
     def H1U(self, t):
         return t
 
-    @_(r':\w+:')
-    def EMOJI(self, t):
-        t.value = t.value[1:-1]
-        return t
-
     #@_(r'.+')
     @_(r'.')
     def TEXT(self, t):

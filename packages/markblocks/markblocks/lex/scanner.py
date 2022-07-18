@@ -37,24 +37,7 @@ class Scanner:
     @property
     def value(self):
         return self.input[self.cursor]
-    '''
-    def consume(self, pattern, token, backup=False):
-        match = self.match(pattern)
-        if not match:
-            return False
-        if backup:
-            self.backup()
-        if isinstance(match, re.Match):
-            end = match.span()[1]
-            value = self.input[self.cursor:self.cursor+end]
-            length = end
-        else:
-            value = pattern
-            length = len(value)
-        self.advance(length)
-        self(token, value)
-        return True
-    '''
+
     def consume(self, pattern, type, succeed = lambda t: t):
         return self._consume(pattern, type, succeed)
 

@@ -8,7 +8,8 @@ class AdmonitionScanner(InlineScanner):
     r_ad = re.compile(r'^!!!( +)?')
     r_name = re.compile(r'[a-zA-Z0-9_]+')
     r_ws = re.compile(r' +')
-    r_string = re.compile(r'\".+\"')
+    #r_string = re.compile(r'"(.+)"')
+    r_string = re.compile(r'"([^"]*)"')
 
     def scan(self):
         self.scan_ad()

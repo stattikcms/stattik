@@ -6,6 +6,18 @@ routes = [
 
             {"path": "", "component": "src/pages/Home"},
 
+            {"path": "about", "component": "src/layouts/AboutLayout",
+                "children": [
+                    {"path": "", "component": "src/pages/About"},
+                ]
+            },
+
+            {"path": "contact", "component": "src/layouts/ContactLayout",
+                "children": [
+                    {"path": "", "component": "src/pages/Contact"},
+                ]
+            },
+
             {"path": "search", "component": "src/layouts/SearchLayout",
                 "children": [
                     {"path": "", "component": "src/pages/Search"},

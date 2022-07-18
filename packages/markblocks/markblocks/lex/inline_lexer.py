@@ -1,8 +1,12 @@
+import re
+
 from .lexer import Lexer
 from .scanner import Scanner
 from .tokens import *
 
 class InlineScanner(Scanner):
+    r_emoji = re.compile(r':\w+:')
+
     def scan(self):
         self.scan_inline()
         return self.output
@@ -12,6 +16,7 @@ class InlineScanner(Scanner):
             if terminator(self):
                 return True
             if not (
+                self.scan_emoji() or
                 self.scan_code() or
                 self.scan_emphasis() or
                 self.scan_image() or
@@ -20,6 +25,16 @@ class InlineScanner(Scanner):
                 self('TEXT', self.value)
                 self.advance()
         return False
+
+    def scan_emoji(self):
+        def t_emoji(t):
+            t.value = t.value[1:-1]
+            return t
+
+        if not self.consume_backup(self.r_emoji, EMOJI, t_emoji):
+            return False
+
+        return self.succeed()
 
     def scan_code(self):
         if not self.consume_backup('`', CODE_SPAN_OPEN):

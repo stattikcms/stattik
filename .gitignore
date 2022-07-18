@@ -8,6 +8,7 @@ env
 .eggs
 *.egg-info
 dist/
+dist.zip
 build/
 _build
 
