@@ -2,7 +2,7 @@
 
 <template>
   <div>
-    {{emoji.emojize(slots['default'], use_aliases=True)}}
+    {{emoji.emojize(slots['default'], language='alias')}}
   </div>
 </template>
 
