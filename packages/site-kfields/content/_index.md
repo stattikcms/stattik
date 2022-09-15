@@ -5,4 +5,4 @@ data: !data home.yml
 ---
 ### Hi there 👋
 
-![GitHub - User Stats](https://github-readme-stats.vercel.app/api?username=kfields&theme=radical&show_icons=true)
+This is my personal developer blog and testing ground for [Stattik](https://github.com/stattikcms/stattik): a Python powered, Vue inspired static site generator I wrote.  Enjoy! :)

@@ -16,7 +16,6 @@ def create_app():
     db = Database.produce()
 
     async def on_startup():
-        #await db.begin()
         pass
 
     async def on_shutdown():
@@ -37,7 +36,6 @@ def create_app():
 
 # WARNING:  You must pass the application as an import string to enable 'reload' or 'workers'.
 def serve():
-    #stattik.create_app = create_app
     uvicorn.run(
         'stattik.management.serve:create_app',
         host="0.0.0.0",

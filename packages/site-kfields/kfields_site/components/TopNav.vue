@@ -3,7 +3,7 @@
 <nav class="main-nav navbar is-primary" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
     <a class="navbar-item" href="/">
-      <span style="font-size: 2em"><emojize>KFields :zap:</emojize></span>
+      <span style="font-size: 2em"><emojize>kfields :zap:</emojize></span>
     </a>
     <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarBasicExample">
       <span aria-hidden="true"></span>
@@ -15,11 +15,11 @@
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
 
-      <a href="/post" class="navbar-item">
+      <a href="/blog" class="navbar-item">
         Blog
       </a>
 
-      <a href="/project" class="navbar-item">
+      <a href="/projects" class="navbar-item">
         Projects
       </a>
 

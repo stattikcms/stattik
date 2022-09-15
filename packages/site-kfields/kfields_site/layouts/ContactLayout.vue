@@ -1,4 +1,4 @@
-<component name="SearchLayout">
+<component name="ContactLayout">
 
 <template>
   <container>

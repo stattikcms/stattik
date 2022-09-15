@@ -1,0 +1,21 @@
+.landing-title {
+  font-size: 2em;
+  white-space: nowrap;
+  opacity: .5;
+}
+@media only screen  and (min-width : 1224px) {
+  .landing-title {
+    font-size: 4em;
+    transform: rotate(-90deg);
+    position: relative;
+    top: 256px;
+  }
+}
+@media only screen and (max-width : 1223px) {
+  .landing-heading {
+    transform: none;
+  }
+  .landing-title {
+    transform: none;
+  }
+}

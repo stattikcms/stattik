@@ -5,21 +5,21 @@ import requests
 
 import click
 
-NETLIFY_SITE_ID = os.environ.get('NETLIFY_SITE_ID')
-NETLIFY_TOKEN = os.environ.get('NETLIFY_TOKEN')
-
-headers = { 
-    "Content-Type": "application/zip",
-    "Authorization": "Bearer " + NETLIFY_TOKEN
-}
-
 @click.command()
 def netlify():
     """Push the schema."""
     asyncio.run(_netlify())
 
 async def _netlify():
-    print('netlify')
+    #print('netlify')
+    NETLIFY_SITE_ID = os.environ.get('NETLIFY_SITE_ID')
+    NETLIFY_TOKEN = os.environ.get('NETLIFY_TOKEN')
+
+    headers = { 
+        "Content-Type": "application/zip",
+        "Authorization": "Bearer " + NETLIFY_TOKEN
+    }
+
     # make_archive makes a zip file of a folder
     shutil.make_archive('dist', 'zip', './dist')
 

@@ -97,10 +97,10 @@ class Router:
 
         records = build_records(self.routes)
 
-        sroutes=self.build_routes(records)
-        #print_routes(sroutes)
+        self.sroutes=self.build_routes(records)
+        #print_routes(self.sroutes)
 
-        self.router = srouting.Router(routes=sroutes)
+        self.router = srouting.Router(routes=self.sroutes)
 
     def build_routes(self, records):
         routes = []

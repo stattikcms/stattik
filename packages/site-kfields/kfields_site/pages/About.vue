@@ -2,7 +2,7 @@
 
 <template>
   <section>
-    <h1>I like coding and jamming :)</h1>
+    {{v_page.content}}
   </section>
 </template>
 

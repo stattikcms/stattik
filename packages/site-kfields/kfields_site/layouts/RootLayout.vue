@@ -3,11 +3,11 @@
 <template>
 <div class="layout">
   <site-header />
-    <main>
-      <container>
-          <router-view />
-      </container>
-    </main>
+  <main class="mx-2">
+    <container>
+      <router-view />
+    </container>
+  </main>
 </div>
 </template>
 
