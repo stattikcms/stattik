@@ -9,7 +9,7 @@ packages = [
 
 [tool.poetry.dependencies]
 python = ">=3.10.0,<3.11"
-gql = {extras = ["all"], version = "^3.0.0b0", allow-prereleases = true}
+gql = {extras = ["all"], version = "^3.4.1"}
 
 [tool.poetry.dev-dependencies]
 stattik = {path = "../stattik",  develop = true}

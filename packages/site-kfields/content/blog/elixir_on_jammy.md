@@ -1,3 +1,12 @@
+---
+title: "Elixir on Jammy"
+date: 2023-06-18 21:23:00
+description: Install Elixir on Ubuntu 22.04
+cover: "https://i.imgur.com/Uv6nv7k.jpg"
+slug: "elixir-jammy"
+category: ""
+---
+
 https://elixir-lang.org/install.html#gnulinux
 
 WARNING: It appears that a required development package 'automake' is not installed

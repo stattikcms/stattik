@@ -58,23 +58,6 @@ def render(ctx):
 def index(ctx):
     asyncio.run(_index())
 
-'''
-@cli.command()
-@click.pass_context
-@click.option('--profile/--no-profile', default=False)
-@async_cmd
-async def build(ctx, profile):
-    if profile:
-        cProfile.runctx('_build()', 'app.profile')
-    else:
-        await _build()
-'''
-
-'''
-def start_site():
-    site = Site.produce()
-'''
-
 @cli.command()
 @click.pass_context
 def develop(ctx):
