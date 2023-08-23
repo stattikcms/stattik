@@ -39,7 +39,6 @@ class Markblocks:
 
         parser = Parser()
         
-        # ast = parser.parse(s, debug=1)
         ast = parser.parse(tokens)
         #print(AstEncoder(indent=2).encode(ast))
         if not ast:

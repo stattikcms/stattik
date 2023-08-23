@@ -1,4 +1,3 @@
-<component name="Emojize">
 <template>
 <div>
 {{emoji.emojize(slots['default'], language='alias')}}
@@ -8,5 +7,3 @@
 <script type="text/python">
 import emoji
 </script>
-
-</component>

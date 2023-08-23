@@ -1,5 +1,3 @@
-<component name="Home">
-
 <template>
 
   <hero-banner>
@@ -20,5 +18,3 @@ components = {
   'Callouts': Callouts,
 }
 </script>
-
-</component>

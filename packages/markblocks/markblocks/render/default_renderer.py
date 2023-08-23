@@ -86,7 +86,7 @@ class DefaultRenderer(Renderer, FenceRendererMixin, AdmonitionRendererMixin, Emo
         self('<li>')
         self(f'<input type="checkbox" id="" disabled="" class="task-list-item-checkbox" {checked}/>')
         with self.scope:
-            print(node.value)
+            #print(node.value)
             self.visit(node.value)
         self('</li>')
 

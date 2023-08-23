@@ -1,4 +1,3 @@
-<component name="PostsLayout">
 <template>
   <container>
     <router-view />
@@ -12,5 +11,3 @@ components = {
   'Container': Container,
 }
 </script>
-
-</component>

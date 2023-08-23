@@ -1,5 +1,3 @@
-<component name="PostCards">
-
 <template>
     <ul class="article-list">
       <li v-for="post in self.posts">
@@ -17,5 +15,3 @@ components = {
 }
 
 </script>
-
-</component>

@@ -1,4 +1,4 @@
-import sly
+import markblocks.sly as sly
 
 EOF = 'EOF'
 NEWLINE = 'NEWLINE'
@@ -13,6 +13,7 @@ def create_token(type, value, lineno, index):
     tok.value = None
     tok.lineno = lineno
     tok.index = index
+    tok.end = index + 1
     return tok
 
 # Synthesize a TERMINATOR tag

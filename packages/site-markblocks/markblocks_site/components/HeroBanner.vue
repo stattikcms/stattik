@@ -1,4 +1,3 @@
-<component name="HeroBanner">
 <template>
   <div class="hero-banner">
     <slot/>
@@ -20,4 +19,3 @@
   display: inline-block
 }
 </style>
-</component>

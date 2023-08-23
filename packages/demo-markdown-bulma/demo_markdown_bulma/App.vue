@@ -1,5 +1,3 @@
-<component name="App">
-
 <template>
 <html lang="en">
   <head>
@@ -25,5 +23,3 @@ components = {
 }
 
 </script>
-
-</component>

@@ -18,14 +18,20 @@ class Compiler(Transpiler):
         src_path = self.src_path
         dst_path = self.dst_path
 
-        #logger.info(f"compiling:  {src_path}")
+        logger.info(f"compiling:  {src_path}")
         text = '''
-            <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
         '''
-        with open(str(src_path)) as f:
-            #text = f.read()
-            text += f.read()
+        component_name = src_path.stem
+        logger.debug(f"component_name:  {component_name}")
 
+        text += f'<component name="{component_name}">\n'
+        with open(str(src_path)) as f:
+            text += f.read()
+        text += "\n</component>"
+
+
+        logger.debug(text)
         try:
             code = self.compile_fromstring(text)
         except etree.XMLSyntaxError as exc:

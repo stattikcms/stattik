@@ -1,5 +1,3 @@
-<component name="PostCards">
-
 <template>
     <ul class="article-list">
       <li v-for="post in self.posts">
@@ -19,5 +17,3 @@ async def created(self):
     self.posts = await db['Post'].all()
 
 </script>
-
-</component>

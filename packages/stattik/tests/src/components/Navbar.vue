@@ -1,4 +1,3 @@
-<component name="Navbar">
 <template>
 <nav class="main-nav navbar is-primary" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
@@ -58,5 +57,3 @@
   </div>
 </nav>
 </template>
-
-</component>

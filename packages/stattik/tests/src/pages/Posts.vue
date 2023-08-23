@@ -1,4 +1,3 @@
-<component name="Posts">
 <template>
   <div>
     <p>{{ v_page.content }}</p>
@@ -11,4 +10,3 @@ def data(self):
       'greeting': 'Hello'
     }
 </script>
-</component>

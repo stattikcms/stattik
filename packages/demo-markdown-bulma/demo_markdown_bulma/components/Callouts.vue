@@ -1,5 +1,3 @@
-<component name="Callouts">
-
 <template>
   <section>
     <div class="columns is-multiline">
@@ -19,5 +17,3 @@ components = {
 }
 
 </script>
-
-</component>

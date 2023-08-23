@@ -1,4 +1,3 @@
-<component name="Post">
 <template>
   <article>
     <section>
@@ -14,4 +13,3 @@ def data(self):
       'greeting': 'Hello'
     }
 </script>
-</component>

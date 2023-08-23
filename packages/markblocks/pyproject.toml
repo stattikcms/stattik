@@ -5,10 +5,10 @@ description = ""
 authors = ["kfields <kurtisfields@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = ">=3.10.0,<3.11"
-sly = "^0.5"
-Pygments = "^2.15.1"
-emoji = "^2.5.1"
+python = ">=3.10.0, <3.11"
+#sly = "^0.5"
+Pygments = "^2.16.1"
+emoji = "^2.8.0"
 
 [tool.poetry.dev-dependencies]
 

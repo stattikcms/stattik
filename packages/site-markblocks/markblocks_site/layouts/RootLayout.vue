@@ -1,4 +1,3 @@
-<component name="RootLayout">
 <template>
 <div class="layout">
   <site-header />
@@ -19,5 +18,3 @@ components = {
   'SiteHeader': SiteHeader
 }
 </script>
-
-</component>

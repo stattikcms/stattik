@@ -1,5 +1,3 @@
-<component name="Posts">
-
 <template>
   <h2>Latest Posts</h2>
   <post-cards posts="{{self.posts}}"/>
@@ -29,5 +27,3 @@ async def created(self):
 
 <style>
 </style>
-
-</component>

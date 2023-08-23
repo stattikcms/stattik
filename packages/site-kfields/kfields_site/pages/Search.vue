@@ -1,5 +1,3 @@
-<component name="Search">
-
 <template>
   <div>
     <div id="app"></div>
@@ -14,5 +12,3 @@ components = {
   'HeroBanner': HeroBanner,
 }
 </script>
-
-</component>

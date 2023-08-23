@@ -1,5 +1,3 @@
-<component name="App">
-
 <template>
 <html lang="en">
   <head>
@@ -24,5 +22,3 @@ def data(self):
       'greeting': 'Hello'
     }
 </script> -->
-
-</component>

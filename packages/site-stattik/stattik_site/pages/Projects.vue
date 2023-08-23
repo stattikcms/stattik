@@ -1,5 +1,3 @@
-<component name="Projects">
-
 <template>
   <section>
       <div class="columns">
@@ -57,5 +55,3 @@ components = {
 }
 
 </style>
-
-</component>

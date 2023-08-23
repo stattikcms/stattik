@@ -1,5 +1,3 @@
-<component name="Home">
-
 <template>
     <div class="columns">
       <div class="column is-one-fifth">
@@ -25,5 +23,3 @@ components = {
   'LatestPosts': Vue.resolve('src/components/LatestPosts'),
 }
 </script>
-
-</component>

@@ -1,4 +1,3 @@
-<component name="PostsLayout">
 <template>
   <container>
     <div>
@@ -15,5 +14,3 @@ components = {
   'Container': Container,
 }
 </script>
-
-</component>

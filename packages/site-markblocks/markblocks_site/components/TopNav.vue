@@ -1,4 +1,3 @@
-<component name="TopNav">
 <template>
 <nav class="main-nav navbar is-primary" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
@@ -66,5 +65,3 @@ components = {
   'Emoji': Emoji,
 }
 </script> -->
-
-</component>

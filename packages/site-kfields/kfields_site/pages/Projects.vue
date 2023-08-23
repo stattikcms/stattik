@@ -1,5 +1,3 @@
-<component name="Projects">
-
 <template>
   <project-cards projects="{{self.projects}}"/>
   <pagination paginator="{{self.paginator}}" number="{{self.number}}"/>
@@ -30,5 +28,3 @@ async def paginate(self):
     return await super(self.__class__, self).paginate(paginator)
 
 </script>
-
-</component>

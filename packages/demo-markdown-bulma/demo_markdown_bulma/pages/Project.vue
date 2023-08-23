@@ -1,4 +1,3 @@
-<component name="Project">
 <template>
   <article>
     <!-- <g-image class="hero-image" :alt="$page.project.title" :src="$page.project.cover"/> -->
@@ -16,4 +15,3 @@ def data(self):
       'greeting': 'Hello'
     }
 </script>
-</component>

@@ -1,4 +1,3 @@
-<component name="DocsLayout">
 <template>
   <container>
   <section>
@@ -25,5 +24,3 @@ components = {
   'SideNav': SideNav,
 }
 </script>
-
-</component>

@@ -1,5 +1,3 @@
-<component name="Posts">
-
 <template>
   <post-cards posts="{{self.posts}}"/>
   <pagination paginator="{{self.paginator}}" number="{{self.number}}"/>
@@ -60,5 +58,3 @@ async def paginate(self):
 }
 
 </style>
-
-</component>

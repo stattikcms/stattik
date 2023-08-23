@@ -1,4 +1,3 @@
-<component name="RootLayout">
 <template>
 <div class="layout">
   <container>
@@ -21,5 +20,3 @@ components = {
   'Navbar': Navbar
 }
 </script>
-
-</component>

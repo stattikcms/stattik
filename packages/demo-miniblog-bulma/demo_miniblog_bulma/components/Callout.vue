@@ -1,5 +1,3 @@
-<component name="Callout">
-
 <template>
 <div class="card callout">
   <header class="card-header">
@@ -67,5 +65,3 @@ props = ['post']
   margin-right: .5em;
 }
 </style>
-
-</component>

@@ -1,5 +1,3 @@
-<component name="ContactLayout">
-
 <template>
   <container>
     <div class="columns">
@@ -22,5 +20,3 @@ components = {
   'Container': Vue.resolve('src/components/Container'),
 }
 </script>
-
-</component>

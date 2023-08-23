@@ -1,5 +1,3 @@
-<component name="ProjectCard">
-
 <template>
   <!--<div class="preview">
     <a href="{{post.url}}" >
@@ -74,5 +72,3 @@ props = ['project']
   margin-right: .5em;
 }
 </style>
-
-</component>

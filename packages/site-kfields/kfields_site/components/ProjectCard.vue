@@ -1,5 +1,3 @@
-<component name="ProjectCard">
-
 <template>
 <div class="card my-3">
   <header class="card-header">
@@ -66,5 +64,3 @@ props = ['project']
   margin-right: .5em;
 }
 </style>
-
-</component>

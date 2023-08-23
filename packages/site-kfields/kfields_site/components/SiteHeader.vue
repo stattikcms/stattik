@@ -1,4 +1,3 @@
-<component name="SiteHeader">
 <template>
   <header>
     <container>
@@ -16,5 +15,3 @@ components = {
   'TopNav': TopNav
 }
 </script>
-
-</component>

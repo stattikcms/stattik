@@ -1,5 +1,3 @@
-<component name="ProjectCards">
-
 <template>
     <ul class="article-list">
       <li v-for="project in self.projects">
@@ -21,5 +19,3 @@ async def created(self):
     self.projects = await db['Project'].all()
 
 </script>
-
-</component>

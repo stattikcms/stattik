@@ -1,4 +1,3 @@
-<component name="TopNav">
 <template>
 <nav class="main-nav navbar is-primary" role="navigation" aria-label="main navigation">
   <div class="navbar-brand">
@@ -14,10 +13,6 @@
 
   <div id="navbarBasicExample" class="navbar-menu">
     <div class="navbar-start">
-
-      <a href="/blog" class="navbar-item">
-        Blog
-      </a>
 
       <div class="navbar-item has-dropdown is-hoverable">
         <a class="navbar-link">
@@ -65,5 +60,3 @@ components = {
   'Emoji': Emoji,
 }
 </script> -->
-
-</component>

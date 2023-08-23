@@ -1,4 +1,4 @@
-import sly
+import markblocks.sly as sly
 
 from . import tokens
 
@@ -17,6 +17,7 @@ class Lexer(sly.Lexer):
         tok.value = value
         tok.lineno = lineno
         tok.index = index
+        tok.end = index + len(value)
         return tok
 
 

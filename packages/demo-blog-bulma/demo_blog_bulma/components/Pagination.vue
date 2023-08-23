@@ -1,5 +1,3 @@
-<component name="Pagination">
-
 <template>
 <nav class="pagination my-3" role="navigation" aria-label="pagination">
   <a v-if="self.paginator.page(self.number).has_previous()"
@@ -25,5 +23,3 @@
 <script type="text/python">
 props = ['paginator', 'number']
 </script>
-
-</component>

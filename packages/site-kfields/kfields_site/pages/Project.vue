@@ -1,4 +1,3 @@
-<component name="Project">
 <template>
   <article>
     <img class="hero-image" alt="{{v_page.title}}" src="{{v_page.cover}}" />
@@ -16,4 +15,3 @@ def data(self):
       'greeting': 'Hello'
     }
 </script>
-</component>

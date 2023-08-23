@@ -51,7 +51,7 @@ class MarkdownBuilder(PageBuilder):
         job.url = Path('/') / Path('/'.join([x for x in url.parts if x != '_index']))
         #print('Job url', job.url)
 
-        print('Src Path', src_path)
+        logger.debug(f'Src Path: {src_path}')
         with open(src_path) as f:
             matter = stattik.frontmatter.load(f)
 

@@ -1,5 +1,3 @@
-<component name="PostCard">
-
 <template>
 <div class="card my-3">
   <header class="card-header">
@@ -61,5 +59,3 @@ props = ['post']
   margin-right: .5em;
 }
 </style>
-
-</component>

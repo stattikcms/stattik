@@ -1,5 +1,3 @@
-<component name="App2">
-
 <template>
 <html lang="en">
   <head>
@@ -32,5 +30,3 @@ components = {
   'Navbar': Navbar
 }
 </script>
-
-</component>

@@ -1,5 +1,3 @@
-<component name="Home">
-
 <template>
   <div>
       <div class="columns is-gapless">
@@ -63,5 +61,3 @@ components = {
 }
 
 </style>
-
-</component>

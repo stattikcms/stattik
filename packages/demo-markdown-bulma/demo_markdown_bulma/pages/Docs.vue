@@ -1,5 +1,3 @@
-<component name="Docs">
-
 <template>
   <hero-banner><h1>{{v_page.title}}</h1></hero-banner>
   <section>
@@ -14,5 +12,3 @@ components = {
   'HeroBanner': HeroBanner,
 }
 </script>
-
-</component>

@@ -1,5 +1,3 @@
-<component name="SideNav">
-
 <template>
   <aside class="menu">
     <ul class="menu-list">
@@ -20,5 +18,3 @@ components = {
 async def created(self):
   self.menu = build_bottom_up(self.v_page)
 </script>
-
-</component>

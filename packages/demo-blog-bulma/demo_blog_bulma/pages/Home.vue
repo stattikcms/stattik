@@ -1,5 +1,3 @@
-<component name="Home">
-
 <template>
   <container>
     <hero-banner>
@@ -29,5 +27,3 @@ components = {
 }
 
 </script>
-
-</component>

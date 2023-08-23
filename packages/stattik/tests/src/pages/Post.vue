@@ -1,4 +1,3 @@
-<component name="Post">
 <template>
   <div>
     <h1>{{ v_page.title }}</h1>
@@ -12,4 +11,3 @@ def data(self):
       'greeting': 'Hello'
     }
 </script>
-</component>

@@ -1,6 +1,7 @@
 import sys
-import sly
 import re
+
+import markblocks.sly as sly
 
 from markblocks.lex.lexer import Lexer
 import markblocks.ast.node  as yy

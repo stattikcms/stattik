@@ -1,6 +1,6 @@
 import re
 
-import sly
+import markblocks.sly as sly
 
 class ScannerState:
     def __init__(self, cursor, output=[]):
@@ -77,6 +77,7 @@ class Scanner:
         tok.value = value
         tok.lineno = self.lineno
         tok.index = self.cursor
+        tok.end = self.cursor + len(value)
         return tok
 
     def write(self, token):

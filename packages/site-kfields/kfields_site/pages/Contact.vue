@@ -1,5 +1,3 @@
-<component name="Contact">
-
 <template>
   <section>
     <form name="contact" method="POST" data-netlify="true">
@@ -35,5 +33,3 @@ components = {
   'HeroBanner': HeroBanner,
 }
 </script>
-
-</component>

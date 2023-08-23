@@ -1,5 +1,3 @@
-<component name="Callouts">
-
 <template>
     <div class="columns">
       <div class="column" v-for="callout in self.v_page.data['callouts']">
@@ -17,5 +15,3 @@ components = {
 }
 
 </script>
-
-</component>

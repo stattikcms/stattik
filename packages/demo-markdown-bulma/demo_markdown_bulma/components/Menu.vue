@@ -1,5 +1,3 @@
-<component name="Menu">
-
 <template>
 <li>
 <a href="{{menu.url}}" class="{{menu.cls}}"> {{menu.title}} </a>
@@ -14,5 +12,3 @@
 props = ['menu']
 
 </script>
-
-</component>

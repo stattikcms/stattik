@@ -1,5 +1,3 @@
-<component name="ProjectCards">
-
 <template>
   <ul class="article-list">
     <li v-for="project in self.projects">
@@ -19,5 +17,3 @@ components = {
 }
 
 </script>
-
-</component>

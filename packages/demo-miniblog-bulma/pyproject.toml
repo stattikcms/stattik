@@ -13,7 +13,7 @@ stattik = {path = "../stattik",  develop = true}
 stattik-theme-bulma = {path = "../theme-bulma", develop = true}
 stattik-plugin-search-fuse = {path = "../plugin-search-fuse", develop = true}
 stattik-app-search-fuse-bulma = {path = "../app-search-fuse-bulma", develop = true}
-gql = {extras = ["all"], version = "^3.0.0b0", allow-prereleases = true}
+gql = {extras = ["all"], version = "^3.4.1"}
 
 [tool.poetry.dev-dependencies]
 
