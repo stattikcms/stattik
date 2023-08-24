@@ -2,7 +2,7 @@
 
   <hero-banner>
     <h1>{{v_page.title}}</h1>
-    <h2>{{v_page.content}}</h2>
+    <div>{{v_page.content}}</div>
   </hero-banner>
 
   <callouts />

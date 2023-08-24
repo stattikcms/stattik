@@ -1,14 +1,11 @@
 <template>
-  <div class="hero-banner">
-    <slot/>
+  <div class="hero-banner my-6">
+    <slot />
   </div>
 </template>
 
 <style>
 .hero-banner {
-  padding-top: 1em;
-  padding-bottom: 1em;
-  margin-bottom: 1em;
   text-align: center;
   font-size: 1.2em;
 }
@@ -16,6 +13,6 @@
   font-size: 2em;
 }
 .hero-banner div {
-  display: inline-block
+  display: inline-block;
 }
 </style>

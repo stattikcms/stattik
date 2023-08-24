@@ -26,6 +26,7 @@ python-dotenv = "^1.0.0"
 beautifulsoup4 = "^4.12.2"
 #reactivex = {version = "^4.0.0", allow-prereleases = true}
 aioreactive = "^0.16.0"
+requests = "^2.31.0"
 
 markblocks = {path = "../markblocks",  develop = true}
 

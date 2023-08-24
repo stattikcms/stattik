@@ -1,11 +1,11 @@
 <template>
 <div class="layout">
   <site-header />
-    <main>
-      <container>
-          <router-view />
-      </container>
-    </main>
+  <main>
+    <container>
+      <router-view />
+    </container>
+  </main>
 </div>
 </template>
 

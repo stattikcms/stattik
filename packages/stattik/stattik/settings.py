@@ -43,9 +43,10 @@ class Settings(UserDict):
             os.environ.setdefault(key, val)
 
         root_name = environment['STATTIK_ROOT_MODULE']
-        print(root_name)
+        logger.debug(f'root_name: {root_name}')
         sys.path.append(f"./{root_name}")
         module_name = environment['STATTIK_SETTINGS_MODULE']
+        logger.debug(f'module_name: {module_name}')
         module = importlib.import_module(module_name)
 
         attrs = {}
