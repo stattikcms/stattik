@@ -30,8 +30,8 @@ class Compiler(Transpiler):
             text += f.read()
         text += "\n</component>"
 
+        #logger.debug(text)
 
-        logger.debug(text)
         try:
             code = self.compile_fromstring(text)
         except etree.XMLSyntaxError as exc:
