@@ -28,11 +28,11 @@ beautifulsoup4 = "^4.12.2"
 aioreactive = "^0.16.0"
 requests = "^2.31.0"
 
-markblocks = {path = "../markblocks",  develop = true}
+markblocks = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 pytest = "^7.4.0"
-#markblocks = {path = "../markblocks",  develop = true}
+markblocks = {path = "../markblocks",  develop = true}
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

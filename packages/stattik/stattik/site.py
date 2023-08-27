@@ -6,15 +6,17 @@ import importlib.util
 from loguru import logger
 
 from dotenv import load_dotenv
-load_dotenv(Path(os.getcwd()) / '.env')
+
+load_dotenv(Path(os.getcwd()) / ".env")
 
 from . import blackboard
 from .core.collection import Collection
 from .settings import Settings
 
 aliases = {}
-#TODO:  Need to start Typing!
-#NOTE:  Ref can either be a str or a Path
+# TODO:  Need to start Typing!
+# NOTE:  Ref can either be a str or a Path
+
 
 def to_path(ref):
     path = None
@@ -24,16 +26,20 @@ def to_path(ref):
         path = ref
 
     if path.parts[0] in aliases:
-        path = Path(aliases[path.parts[0]]).joinpath('/'.join(path.parts[1:len(path.parts)]))
+        path = Path(aliases[path.parts[0]]).joinpath(
+            "/".join(path.parts[1 : len(path.parts)])
+        )
 
     return path
+
 
 class SiteConfigNotFound(Exception):
     pass
 
+
 class Site:
-    
     _instance = None
+
     @classmethod
     @property
     def instance(self):
@@ -41,8 +47,8 @@ class Site:
             return self._instance
         self._instance = asyncio.run(Site.produce())
         return self._instance
-    
-    #instance = None
+
+    # instance = None
 
     def __init__(self):
         self.collections = []
@@ -50,19 +56,21 @@ class Site:
         self.architect = None
         self.renderer = None
         self.indexer = None
+        self.baker = None
+
         self.css_scopes = []
         self.stylesheets = [
-            '/css/bundle.css',
-            '/css/components.css',
+            "/css/bundle.css",
+            "/css/components.css",
             #'/css/pygments.css',
         ]
         self.markdown_extensions = [
-            'meta',
-            'toc',
-            'tables',
-            'pymdownx.highlight',
-            'pymdownx.emoji',
-            'pymdownx.superfences',
+            "meta",
+            "toc",
+            "tables",
+            "pymdownx.highlight",
+            "pymdownx.emoji",
+            "pymdownx.superfences",
         ]
 
         self.tasks = []
@@ -78,13 +86,13 @@ class Site:
     async def produce(self):
         # NOTE: Need to set _instance here or it causes infinite recursion
         self._instance = site = await self.load_site()
-        site.on_create(site)
+        site.on_create(site) # requires self as argument
         await site.begin()
         return site
 
     @property
     async def page_count(self):
-        return await self.database['Page'].count()
+        return await self.database["Page"].count()
 
     def add_css(self, css):
         self.css_scopes.append(css)
@@ -101,99 +109,50 @@ class Site:
 
         self.load_resolve(settings)
         await self.load_plugins(site, settings)
-        
-        return site
-    '''
-    @classmethod
-    async def load_site(self):
-        config = self.load_config()
-        environment = config['environment']
-        for key, val in environment.items():
-            os.environ.setdefault(key, val)
-
-        root_name = environment['STATTIK_ROOT_MODULE']
-        print(root_name)
-        sys.path.append(f"./{root_name}")
-        module_name = environment['STATTIK_SETTINGS_MODULE']
-        module = importlib.import_module(module_name)
-
-        attrs = {}
-        for key in dir(module):
-            #print(key)
-            if key.startswith('__'):
-                continue
-            attrs[key] = module.__dict__[key]
-
-        #TODO: Should probably use more intelligent merging?
-        attrs.update(config)
-
-        super_class = Site
-        SiteClass = type(module_name, (super_class,), attrs)
-        site = SiteClass()
-
-        self.load_resolve(attrs)
-        await self.load_plugins(site, attrs)
 
         return site
 
-    @classmethod
-    def load_config(self):
-        #config = toml.load('stattik.toml')
-        config = {}
-        path = Path(os.getcwd(), 'stattik-config.py')
-        if os.path.exists(path):
-            spec = importlib.util.spec_from_file_location(
-                "stattik_config", path
-            )
-            stattik_config = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(stattik_config)
-            for key in dir(stattik_config):
-                if key.startswith('__'):
-                    continue
-                #print(key, stattik_config.__dict__[key])
-                config[key] = stattik_config.__dict__[key]
-            #exit()
-        #logger.debug(f'load_config:config: {config}')
-
-        return config
-    '''
     @classmethod
     def load_resolve(self, config):
-        if 'resolve' in config:
-            resolve = config['resolve']
-            if 'alias' in resolve:
+        if "resolve" in config:
+            resolve = config["resolve"]
+            if "alias" in resolve:
                 global aliases
-                aliases = resolve['alias']
+                aliases = resolve["alias"]
 
     def load_collections(self):
-        _collections = self.config['collections']
+        _collections = self.config["collections"]
         for _collection in _collections:
             collection = Collection()
             self.collections.append(collection)
 
     @classmethod
     async def load_plugins(self, site, config):
-        plugins = config['plugins']
+        plugins = config["plugins"]
         for plugin in plugins:
-            use = plugin['use']
+            use = plugin["use"]
             plugin_module = importlib.import_module(use)
-            await plugin_module.install(site, plugin['options'])
+            await plugin_module.install(site, plugin["options"])
 
     async def begin(self):
         await self.database.begin()
-
-    async def build(self):
-        await self.assemble()
-        await self.index()
-        await self.render()
 
     async def assemble(self):
         await self.database.drop_all()
         await self.architect.build_site()
 
+    async def index(self):
+        # await self.indexer.index()
+        await blackboard.publish("index", self)
+
     async def render(self):
         await self.renderer.render()
 
-    async def index(self):
-        #await self.indexer.index()
-        await blackboard.publish('index', self)
+    async def bake(self):
+        await self.baker.bake()
+
+    async def build(self):
+        await self.assemble()
+        await self.index()
+        await self.render()
+        await self.bake()

@@ -5,9 +5,11 @@ from .router import create_router
 from .architect import create_architect
 from .renderer import create_renderer
 from .indexer import create_indexer
+from .baker import create_baker
 
-SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-DATABASE_URL = os.environ.get('DATABASE_URL') or 'sqlite+aiosqlite:///./stattik.db'
+SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
+DATABASE_URL = os.environ.get("DATABASE_URL") or "sqlite+aiosqlite:///./stattik.db"
+
 
 def on_create(self):
     self.database = create_database()
@@ -15,19 +17,20 @@ def on_create(self):
     self.architect = create_architect()
     self.renderer = create_renderer()
     self.indexer = create_indexer()
+    self.baker = create_baker()
 
 
 siteMetadata = {
-    'title': 'Stattik',
-    'description': 'Static Site Generator in Python',
+    "title": "Stattik",
+    "description": "Static Site Generator in Python",
 }
 
 apps = [
-    'stattik_theme_bulma',
+    "stattik_theme_bulma",
 ]
 
 plugins = []
-'''
+"""
 plugins = [
     {
         'use': 'stattik_source_filesystem',
@@ -38,19 +41,16 @@ plugins = [
         }
     },
 ]
-'''
+"""
 
 collections = [
     {
-        'name': 'Post',
-        'source': [
+        "name": "Post",
+        "source": [
             {
-                'use': 'stattik_source_filesystem',
-                'options': {
-                    'path': 'blog/*.md',
-                    'route': '/blog/:slug'
-                }
+                "use": "stattik_source_filesystem",
+                "options": {"path": "blog/*.md", "route": "/blog/:slug"},
             },
-        ]
+        ],
     }
 ]

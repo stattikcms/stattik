@@ -12,6 +12,7 @@ dist.zip
 build/
 _build
 
+.envrc
 node_modules
 stattik.db
 .sqbpro
