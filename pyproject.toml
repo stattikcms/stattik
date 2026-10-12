@@ -1,15 +1,56 @@
-[tool.poetry]
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
 name = "stattik-root"
 version = "0.1.0"
-description = ""
-authors = ["Kurtis Fields <kurtisfields@gmail.com>"]
+description = "Development root for the Stattik workspace (not distributed)."
+requires-python = ">=3.12"
+classifiers = ["Private :: Do Not Upload"]
 
-[tool.poetry.dependencies]
-python = ">=3.10,<3.11"
+[tool.hatch.build.targets.wheel]
+bypass-selection = true # root ships nothing
 
-[tool.poetry.dev-dependencies]
-black = {version = "^23.7.0"}
+# --- environments -------------------------------------------------------------
+# default  : daily work. Every member installed editable, plus the toolchain.
+# pkg.<x>  : one member in isolation, to catch undeclared dependencies.
 
-[build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+[tool.hatch.envs.default]
+path = ".venv"
+python = "3.12"
+installer = "uv"
+skip-install = true
+workspace.members = ["pkg/*", "prj/*"]
+workspace.parallel = true
+dependencies = ["pytest", "pytest-asyncio", "hypothesis", "pyright"]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args}"
+typecheck = "pyright {args}"
+
+[tool.hatch.envs.pkg]
+template = "pkg"                                          # no inheritance from default
+python = "3.12"
+installer = "uv"
+skip-install = true
+workspace.members = ["pkg/{matrix:name}"]
+dependencies = ["pytest", "pytest-asyncio", "hypothesis"]
+scripts.test = "pytest pkg/{matrix:name}/tests {args}"
+
+[[tool.hatch.envs.pkg.matrix]]
+name = ["core", "ogm"]
+
+# --- tools --------------------------------------------------------------------
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+testpaths = ["pkg"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+[tool.pyright]
+venvPath = "."
+venv = ".venv"
+pythonVersion = "3.12"
+include = ["pkg"]
+typeCheckingMode = "standard"

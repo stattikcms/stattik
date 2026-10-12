@@ -1,0 +1,25 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "demo-markdown-bulma"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[tool.hatch.build.targets.wheel]
+packages = ["demo_markdown_bulma"]
+
+[tool.hatch.envs.default]
+python = "3.12"
+installer = "uv"
+workspace.members = [
+  "../markblocks",
+  "../stattik",
+  "../theme-bulma",
+]
+dependencies = ["uv", "pytest"]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"

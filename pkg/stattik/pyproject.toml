@@ -1,0 +1,52 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "stattik"
+version = "0.1.0"
+description = ""
+readme = "README.md"          # remove if you have no README
+requires-python = ">=3.12"
+authors = [
+    { name = "Kurtis Fields", email = "kurtisfields@gmail.com" },
+]
+dependencies = [
+    "click>=8.1.7,<9",
+    "loguru>=0.7.0,<0.8",
+    "ariadne>=0.20.1,<0.21",
+    "aiofiles>=23.2.1,<24",
+    "python-frontmatter>=1.0.0,<2",
+    "xmlschema>=2.4.0,<3",
+    "lxml>=4.9.3,<5",
+    "html5lib>=1.1,<2",
+    "pydantic>=1.10.9,<2",
+    "aiosqlite>=0.19.0,<0.20",
+    "SQLAlchemy[asyncio]>=2.0.20,<3",
+    "uvicorn[standard]>=0.23.2,<0.24",
+    "PyYAML>=6.0.1,<7",
+    "emoji>=2.8.0,<3",
+    "Pygments>=2.16.1,<3",
+    "python-dotenv>=1.0.0,<2",
+    "beautifulsoup4>=4.12.2,<5",
+    "aioreactive>=0.16.0,<0.17",
+    "requests>=2.31.0,<3",
+    "markblocks>=0.1.0,<0.2",
+]
+
+[project.scripts]
+stattik = "stattik.management:cli"
+
+[tool.hatch.build.targets.wheel]
+packages = ["stattik"]
+
+[tool.hatch.envs.default]
+python = "3.12"
+installer = "uv"
+workspace.members = [
+  "../markblocks",
+]
+dependencies = ["uv", "pytest>=7.4.0,<8"]
+
+[tool.hatch.envs.default.scripts]
+test = "pytest {args:tests}"
