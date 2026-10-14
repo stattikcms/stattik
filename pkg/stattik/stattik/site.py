@@ -82,7 +82,7 @@ class Site:
     def get_singleton_sync(cls):
         if cls._instance is not None:
             return cls._instance
-
+        loop = asyncio.get_event_loop()
         return asyncio.run(cls.get_singleton())
 
     def create_task(self, awaitable):

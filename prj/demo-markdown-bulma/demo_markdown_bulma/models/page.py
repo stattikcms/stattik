@@ -1,7 +1,17 @@
 from typing import Optional
 from datetime import datetime
 
-from sqlalchemy import Column, ForeignKey, Integer, JSON, String, DateTime, Text, event, func
+from sqlalchemy import (
+    Column,
+    ForeignKey,
+    Integer,
+    JSON,
+    String,
+    DateTime,
+    Text,
+    event,
+    func,
+)
 from sqlalchemy.orm import relationship
 from sqlalchemy.future import select
 
@@ -12,6 +22,7 @@ from stattik.data import Data
 import sqlalchemy.types as types
 from pathlib import Path
 
+
 class PathType(types.TypeDecorator):
     impl = String
 
@@ -20,6 +31,7 @@ class PathType(types.TypeDecorator):
 
     def process_result_value(self, value, dialect):
         return Path(value)
+
 
 class Page(Model):
     def __init__(self, data={}) -> None:
@@ -30,7 +42,7 @@ class Page(Model):
             setattr(self, key, data[key])
 
     id = Column(Integer, primary_key=True)
-    parent_id = Column(Integer, ForeignKey('Page.id'))
+    parent_id = Column(Integer, ForeignKey("Page.id"))
     type = Column(String(50))
     data = Column(JSON)
     menu = Column(JSON)
@@ -44,30 +56,16 @@ class Page(Model):
     path = Column(PathType(50))
     url = Column(PathType(50))
     content = Column(Text)
-    '''
-    children = relationship("Page",
-                    lazy="joined",
-                    join_depth=2)
-    '''
     parent = relationship(
-        'Page',
-        lazy='joined',
-        cascade='all',
-        backref='children',
-        remote_side='Page.id',
+        "Page",
+        lazy="joined",
+        cascade="all",
+        backref="children",
+        remote_side="Page.id",
     )
 
-    __mapper_args__ = {
-        'polymorphic_identity':'Page',
-        'polymorphic_on':type
-    }
-"""
-@event.listens_for(Page, "load")
-def _inject_data(target, context):
-    print(context)
-    target.inject(context.data)
-"""
-#event.listen(Page, 'load', _inject_data)
+    __mapper_args__ = {"polymorphic_identity": "Page", "polymorphic_on": type}
+
 
 class PageData(Data):
     id: int
@@ -78,6 +76,7 @@ class PageData(Data):
     cover: str
     slug: str
 
+
 class PageInput(Data):
     type: str
     title: Optional[str]
@@ -85,6 +84,7 @@ class PageInput(Data):
     description: Optional[str]
     cover: Optional[str]
     slug: Optional[str]
+
 
 class PageRepository(Repository):
     Input = PageInput
@@ -109,6 +109,8 @@ class PageRepository(Repository):
 
     async def count(self):
         session = self.Session()
-        q = await session.execute(select(func.count()).select_from(select(self.Model).subquery()))
+        q = await session.execute(
+            select(func.count()).select_from(select(self.Model).subquery())
+        )
         count = q.scalars().one()
         return count

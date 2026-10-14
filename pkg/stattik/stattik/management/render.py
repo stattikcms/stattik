@@ -10,7 +10,7 @@ from stattik.site import Site
 async def render():
     start = timer()
 
-    site = await Site.produce()
+    site = await Site.get_singleton()
     await site.begin()
     await site.render()
 

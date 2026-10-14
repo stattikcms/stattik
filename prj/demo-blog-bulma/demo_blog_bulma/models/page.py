@@ -12,6 +12,7 @@ from stattik.data import Data
 import sqlalchemy.types as types
 from pathlib import Path
 
+
 class PathType(types.TypeDecorator):
     impl = Text
 
@@ -20,6 +21,7 @@ class PathType(types.TypeDecorator):
 
     def process_result_value(self, value, dialect):
         return Path(value)
+
 
 class Page(Model):
     def __init__(self, data={}) -> None:
@@ -41,25 +43,15 @@ class Page(Model):
     title = Column(String(50))
     date = Column(DateTime, index=True, default=datetime.utcnow())
     stars = Column(Integer, index=True)
-    
+
     description = Column(String(50))
     cover = Column(String(50))
     slug = Column(String(50))
 
     content = Column(Text)
 
-    __mapper_args__ = {
-        'polymorphic_identity':'Page',
-        'polymorphic_on':type
-    }
-'''
-@event.listens_for(Page, "load")
-def _inject_data(target, context):
-    print(context.data)
-    target.inject(context.data)
-'''
+    __mapper_args__ = {"polymorphic_identity": "Page", "polymorphic_on": type}
 
-#event.listen(Page, 'load', _inject_data)
 
 class PageData(Data):
     id: int
@@ -70,6 +62,7 @@ class PageData(Data):
     cover: str
     slug: str
 
+
 class PageInput(Data):
     type: str
     title: Optional[str]
@@ -77,6 +70,7 @@ class PageInput(Data):
     description: Optional[str]
     cover: Optional[str]
     slug: Optional[str]
+
 
 class PageRepository(Repository):
     Input = PageInput
@@ -101,16 +95,22 @@ class PageRepository(Repository):
 
     async def count(self):
         session = self.Session()
-        q = await session.execute(select(func.count()).select_from(select(self.Model).subquery()))
+        q = await session.execute(
+            select(func.count()).select_from(select(self.Model).subquery())
+        )
         count = q.scalars().one()
         return count
 
     async def slice(self, start, stop):
         session = self.Session()
-        q = await session.execute(select(self.Model).order_by(self.Model.id).slice(start, stop))
+        q = await session.execute(
+            select(self.Model).order_by(self.Model.id).slice(start, stop)
+        )
         return q.scalars().all()
 
     async def latest(self, start, stop):
         session = self.Session()
-        q = await session.execute(select(self.Model).order_by(self.Model.date).slice(start, stop))
+        q = await session.execute(
+            select(self.Model).order_by(self.Model.date).slice(start, stop)
+        )
         return q.scalars().all()

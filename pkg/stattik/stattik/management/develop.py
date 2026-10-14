@@ -7,8 +7,6 @@ import uvicorn
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
-from ariadne.asgi import GraphQL
-
 from stattik.server import Stattik
 from stattik.database import Database
 from stattik.site import Site

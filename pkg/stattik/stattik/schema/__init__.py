@@ -1,1 +1,1 @@
-from .schema import Schema, RootSchema
+from .schema import Schema

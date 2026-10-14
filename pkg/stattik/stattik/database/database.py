@@ -2,8 +2,6 @@ from asyncio import current_task
 
 from loguru import logger
 
-from ariadne import make_executable_schema, QueryType, MutationType, SubscriptionType
-
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_scoped_session
 
@@ -18,9 +16,6 @@ class Database(Schema):
         super().__init__(parent)
         self.db = self
         self.engine = None
-        self.query_type = QueryType()
-        self.mutation_type = MutationType()
-        self.subscription_type = SubscriptionType()
 
         self.child_map = {}
 
@@ -48,8 +43,6 @@ class Database(Schema):
 
         async_session_factory = sessionmaker(engine, class_= AsyncSession)
         Schema.Session = Session = async_scoped_session(async_session_factory, scopefunc=current_task)
-
-        self.register()
 
 
     async def end(self):
