@@ -13,7 +13,7 @@ from stattik.site import Site
 
 class FuseIndexer:
     async def index(self):
-        site = Site.instance
+        site = await Site.get_singleton()
         db = site.database
 
         pages = await db['Page'].all()

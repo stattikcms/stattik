@@ -33,14 +33,14 @@ class Architect(FolderBuilder):
             # TODO: check for instance or class.  For now just class/callable
             self.builders[builder.extension] = builder
 
-        self.site = Site.instance
+        self.site = Site.get_singleton_sync()
         self.db = self.site.database
 
     def defer(self, builder, job):
         self.deferred.append( (builder, job) )
 
     async def build_site(self):
-        site = Site.instance
+        site = await Site.get_singleton()
         db = site.database
         await db.begin()
 

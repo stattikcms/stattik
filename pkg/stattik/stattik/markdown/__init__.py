@@ -29,7 +29,8 @@ class Markdown:
             'pymdownx.superfences',
         ]
 
-        extensions = extensions + Site.instance.markdown_extensions
+        site = Site.get_singleton_sync()
+        extensions = extensions + site.markdown_extensions
 
         extension_configs = {
             'pymdownx.highlight': {

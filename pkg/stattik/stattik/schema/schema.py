@@ -90,8 +90,8 @@ class Schema(metaclass=SchemaMeta):
         self.entries = self.__class__.entries
 
     @classmethod
-    def produce(self, parent=None):
-        schema = self(parent)
+    def produce(cls, parent=None):
+        schema = cls(parent)
         return schema
 
     def add_child(self, schema):
@@ -113,7 +113,7 @@ class Schema(metaclass=SchemaMeta):
         self.entries.append(r)
 
     @classmethod
-    def __collect_functions(self, definitions):
+    def __collect_functions(cls, definitions):
         '''
         Collect all of the tagged grammar entries
         '''
@@ -122,26 +122,26 @@ class Schema(metaclass=SchemaMeta):
         return entries
 
     @classmethod
-    def _build(self, definitions):
-        if vars(self).get('_build', False):
+    def _build(cls, definitions):
+        if vars(cls).get('_build', False):
             return
 
         # Collect all of the entry functions from the class definition
-        functions = self.__collect_functions(definitions)
+        functions = cls.__collect_functions(definitions)
 
-        self.entries = self.__build_entries(functions)
+        cls.entries = cls.__build_entries(functions)
 
     @classmethod
-    def __build_entries(self, functions):
+    def __build_entries(cls, functions):
         entries = []
         errors = ''
         for name, func in functions:
-            entry = self._build_entry(func)
+            entry = cls._build_entry(func)
             entries.append(entry)
         return entries
 
     @classmethod
-    def _build_entry(self, func):
+    def _build_entry(cls, func):
         tag = func.tag
         name = func.name
         prodname = func.__name__
@@ -154,8 +154,7 @@ class Schema(metaclass=SchemaMeta):
         logger.debug(f"_build_entry:prodname:  {prodname}")
         logger.debug(f"_build_entry:unwrapped:  {unwrapped}")
 
-        #entry = Resolver(name, func, prodname=prodname, filename=filename, lineno=lineno)
-        entry = entry_factories[tag](self, name, func, prodname=prodname, filename=filename, lineno=lineno)
+        entry = entry_factories[tag](cls, name, func, prodname=prodname, filename=filename, lineno=lineno)
 
         logger.debug(f"_build_entry:entry:  {entry}")
         return entry
@@ -184,15 +183,14 @@ class RootSchema(Schema):
         self.subscription_type = SubscriptionType()
 
     @classmethod
-    def produce(self):
-        if self.instance:
-            return self.instance
-        self.instance = schema = self()
+    def produce(cls):
+        if cls.instance:
+            return cls.instance
+        cls.instance = schema = cls()
         return schema
 
     def make_executable(self):
         self.register()
-        #return make_executable_schema(type_defs, self.query)
         return make_executable_schema(
             self.get_gql(),
             self.query_type,

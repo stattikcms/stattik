@@ -7,12 +7,16 @@ from datetime import datetime
 
 from sqlalchemy import Column, Integer, JSON
 from sqlalchemy.future import select
+from sqlalchemy.orm import DeclarativeBase
 
 from stattik.database import Database, Repository
-from stattik.models import Model
+from stattik.models import ModelMixin
 from stattik.data import Data
 
-class Post(Model):
+class Base(DeclarativeBase):
+    pass
+
+class Post(ModelMixin, Base):
     id = Column(Integer, primary_key=True)
     data = Column(JSON, nullable=False)
 

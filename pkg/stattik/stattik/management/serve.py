@@ -2,18 +2,17 @@ from loguru import logger
 
 import uvicorn
 
-from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
 from ariadne.asgi import GraphQL
 
-import stattik
 from stattik.site import Site
 from stattik.server import Stattik
 from stattik.database import Database
 
 def create_app():
-    db = Database.produce()
+    site = Site.get_singleton_sync()
+    db = site.database
 
     async def on_startup():
         pass

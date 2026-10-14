@@ -1,7 +1,9 @@
-import os, sys
+import os
+
 import asyncio
+import importlib
 from pathlib import Path
-import importlib.util
+from typing import Self
 
 from loguru import logger
 
@@ -12,6 +14,7 @@ load_dotenv(Path(os.getcwd()) / ".env")
 from . import blackboard
 from .core.collection import Collection
 from .settings import Settings
+from .database import Database
 
 aliases = {}
 # TODO:  Need to start Typing!
@@ -40,19 +43,10 @@ class SiteConfigNotFound(Exception):
 class Site:
     _instance = None
 
-    @classmethod
-    @property
-    def instance(self):
-        if self._instance:
-            return self._instance
-        self._instance = asyncio.run(Site.produce())
-        return self._instance
-
-    # instance = None
-
     def __init__(self):
         self.collections = []
-        self.database = None
+        self.settings: Settings | None = None
+        self.database: Database | None = None
         self.architect = None
         self.renderer = None
         self.indexer = None
@@ -75,20 +69,28 @@ class Site:
 
         self.tasks = []
 
+    @classmethod
+    async def get_singleton(cls):
+        if cls._instance is not None:
+            return cls._instance
+        cls._instance = site = await cls.load_site()
+        site.on_create(site)
+        await site.begin()
+        return site
+
+    @classmethod
+    def get_singleton_sync(cls):
+        if cls._instance is not None:
+            return cls._instance
+
+        return asyncio.run(cls.get_singleton())
+
     def create_task(self, awaitable):
         self.tasks.append(asyncio.create_task(awaitable))
 
     async def run_tasks(self):
         for task in self.tasks:
             await task
-
-    @classmethod
-    async def produce(self):
-        # NOTE: Need to set _instance here or it causes infinite recursion
-        self._instance = site = await self.load_site()
-        site.on_create(site) # requires self as argument
-        await site.begin()
-        return site
 
     @property
     async def page_count(self):
@@ -101,33 +103,49 @@ class Site:
         pass
 
     @classmethod
-    async def load_site(self):
-        settings = Settings.instance
+    async def load_site(cls):
+        settings = Settings.get_singleton()
+        logger.debug(f"Loaded settings: {settings}")
         site = Site()
         for key, val in settings.items():
             site.__setattr__(key, val)
 
-        self.load_resolve(settings)
-        await self.load_plugins(site, settings)
+        cls.load_resolve(settings)
+        await cls.load_plugins(site, settings)
 
         return site
 
+    '''
     @classmethod
-    def load_resolve(self, config):
+    async def load_site(cls):
+        settings = Settings.get_singleton()
+        logger.debug(f"Loaded settings: {settings}")
+        site = Site()
+        for key, val in settings.items():
+            site.__setattr__(key, val)
+
+        cls.load_resolve(settings)
+        await cls.load_plugins(site, settings)
+
+        database_url = settings["DATABASE_URL"]
+        logger.debug(f"Database URL: {database_url}")
+        site.database = Database(database_url)
+
+        return site
+    '''
+
+    @classmethod
+    def load_resolve(cls, config):
         if "resolve" in config:
             resolve = config["resolve"]
             if "alias" in resolve:
                 global aliases
                 aliases = resolve["alias"]
 
-    def load_collections(self):
-        _collections = self.config["collections"]
-        for _collection in _collections:
-            collection = Collection()
-            self.collections.append(collection)
-
     @classmethod
-    async def load_plugins(self, site, config):
+    async def load_plugins(cls, site, config):
+        if "plugins" not in config:
+            return
         plugins = config["plugins"]
         for plugin in plugins:
             use = plugin["use"]

@@ -5,7 +5,6 @@ from starlette.responses import HTMLResponse
 
 from .vue import Vue
 from .view import build_view
-from .database import Database
 from .site import Site
 
 
@@ -69,7 +68,8 @@ async def render_route(route):
     context = route.request['context']
     page = context.page
     #logger.debug(f'render_route:page:  {page.__dict__}')
-    props = { 'v_context': context, 'v_page': page, 'v_site': Site.instance, 'v_db': Database.instance}
+    site = await Site.get_singleton()
+    props = { 'v_context': context, 'v_page': page, 'v_site': site, 'v_db': site.database}
     props.update(params)
     view = build_view(route.matched, props)
     vu = await view.create_vu()
@@ -129,6 +129,12 @@ class Router:
         result.append(record)
         return result
 
+    @classmethod
+    def produce(cls, routes) -> "Router":
+        router = Router(routes)
+        router.on_create()
+        return router
+    
 def create_router(routes):
     router = Router(routes)
     router.on_create()

@@ -10,6 +10,7 @@ import stattik
 from stattik.server import Stattik
 from stattik.database import Database
 from stattik.schema import Schema
+from stattik.site import Site
 
 class HelloSchema(Schema):
     """
@@ -53,7 +54,8 @@ class HelloSchema(Schema):
             count += 1
 
 def create_app():
-    db = Database.produce()
+    site = Site.get_singleton_sync()
+    db = site.database
     schema = HelloSchema.produce(db)
     #print(schema.__dict__)
     #gql = inspect.getdoc(schema)

@@ -20,25 +20,20 @@ class Settings(UserDict):
     _instance = None
 
     @classmethod
-    @property
-    def instance(self):
-        if self._instance:
-            return self._instance
-        self._instance = Settings.produce()
-        return self._instance
-
-    def __init__(self, initialdata=None):
-        super().__init__(initialdata)
+    def get_singleton(cls):
+        if cls._instance is None:
+            cls._instance = cls.produce()
+        return cls._instance
 
     @classmethod
-    def produce(self):
+    def produce(cls):
         # NOTE: Need to set _instance here or it causes infinite recursion
-        self._instance = settings = self.load_settings()
+        settings = cls.load_settings()
         return settings
 
     @classmethod
-    def load_settings(self):
-        config = self.load_config()
+    def load_settings(cls):
+        config = cls.load_config()
         environment = config["environment"]
         for key, val in environment.items():
             os.environ.setdefault(key, val)
@@ -60,14 +55,12 @@ class Settings(UserDict):
         # TODO: Should probably use more intelligent merging?
         attrs.update(config)
 
-        # super_class = Settings
-        # SettingsClass = type(module_name, (super_class,), attrs)
         settings = Settings(attrs)
 
         return settings
 
     @classmethod
-    def load_config(self):
+    def load_config(cls):
         config = {}
         path = Path(os.getcwd(), "stattik.yml")
         if os.path.exists(path):

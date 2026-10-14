@@ -15,7 +15,7 @@ def create_baker():
 
 class Baker:
     def __init__(self) -> None:
-        self.site = Site.instance
+        self.site = Site.get_singleton_sync()
         self.db = self.site.database
 
     async def bake(self):

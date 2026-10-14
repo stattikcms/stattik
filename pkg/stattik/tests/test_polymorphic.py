@@ -4,19 +4,24 @@ import sys
 sys.path.append("./src")
 
 from datetime import datetime
+from contextlib import chdir
 
 from sqlalchemy import Column, Integer, String, DateTime, JSON
 from sqlalchemy.future import select
+from sqlalchemy.orm import DeclarativeBase
 
 from stattik.database import Database, Repository
-from stattik.models import Model
+from stattik.models import ModelMixin
 from stattik.data import Data
 
-class Page(Model):
+class Base(DeclarativeBase):
+    pass
+
+class Page(ModelMixin, Base):
     id = Column(Integer, primary_key=True)
     type = Column(String(50))
     title = Column(String(50))
-    date = Column(DateTime, index=True, default=datetime.utcnow())
+    date = Column(DateTime, index=True, default=datetime.now())
     description = Column(String(50))
     cover = Column(String(50))
     slug = Column(String(50))
@@ -27,7 +32,7 @@ class Page(Model):
         'polymorphic_on':type
     }
 
-class Post(Model):
+class Post(ModelMixin, Base):
     id = Column(Integer, primary_key=True)
     data = Column(JSON, nullable=False)
     __mapper_args__ = {
@@ -81,25 +86,26 @@ items = [
 ]
 class Test(unittest.IsolatedAsyncioTestCase):
     async def test(self):
-        db = Database.produce()
-        repo = PostRepository.produce(db)
-        print(repo.__dict__)
+        with chdir("."):
+            db = Database.produce()
+            repo = PostRepository.produce(db)
+            print(repo.__dict__)
 
-        await db.begin()
-        async with db.Session() as session:
-            async with session.begin():
-                for item in items:
-                    pod = PostInput(**item)
-                    await repo.create(session, pod)
+            await db.begin()
+            async with db.Session() as session:
+                async with session.begin():
+                    for item in items:
+                        pod = PostInput(**item)
+                        await repo.create(session, pod)
 
-                all = await repo.all(session)
-                print(all)
+                    all = await repo.all(session)
+                    print(all)
 
-        # Gives us a chance to inspect the database when ran manually:  python test_repository.py
-        if not "pytest" in sys.modules:
-            input("Press Enter to Exit...")
+            # Gives us a chance to inspect the database when ran manually:  python test_repository.py
+            if not "pytest" in sys.modules:
+                input("Press Enter to Exit...")
 
-        await db.drop_all()
+            await db.drop_all()
 
 if __name__ == "__main__":
     unittest.main()

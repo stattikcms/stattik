@@ -6,18 +6,15 @@ from loguru import logger
 
 from stattik.site import Site
 
-def create_renderer():
-    renderer = Renderer.produce()
-    return renderer
 
 class RenderContext:
     def __init__(self, renderer, page, url=None, path=None, paginator=None):
         self.renderer = renderer
         self.page = page
-        #self.url = url if url else page.url
+        # self.url = url if url else page.url
         self.url = url if url else page.src_url
         self.path = path if path else page.path
-        self.body = ''
+        self.body = ""
         self.paginator = paginator
         self.children = []
 
@@ -28,8 +25,10 @@ class RenderContext:
     def add_child(self, child):
         self.children.append(child)
 
+
 class NotFound(Exception):
     pass
+
 
 class Renderer:
 
@@ -37,6 +36,7 @@ class Renderer:
         pass
 
     _instance = None
+
     @classmethod
     @property
     def instance(self):
@@ -51,10 +51,10 @@ class Renderer:
         return self._instance
 
     async def render(self):
-        site = Site.instance
+        site = await Site.get_singleton()
         db = site.database
 
-        pages = await db['Page'].all()
+        pages = await db["Page"].all()
 
         for page in pages:
             await self.render_page(page)
@@ -67,70 +67,75 @@ class Renderer:
             pass
 
         dst_path.parent.mkdir(parents=True, exist_ok=True)
-        
+
         with open(dst_path, "w") as myfile:
             for css in site.css_scopes:
                 text = str(css)
                 myfile.write(text)
-
 
     async def render_page(self, page, context=None):
         if not context:
             context = RenderContext(self, page)
 
         async def receive():
-            logger.debug('receive')
+            logger.debug("receive")
 
         async def send(msg):
-            if msg['type'] != 'http.response.body':
-                #logger.debug(msg['type'])
+            if msg["type"] != "http.response.body":
+                # logger.debug(msg['type'])
                 return
-            content = msg['body'].decode('utf-8')
-            if content == 'Not Found':
+            content = msg["body"].decode("utf-8")
+            if content == "Not Found":
                 print(page.__dict__)
                 raise NotFound(f"Route not found:  {page.src_url}")
-            #logger.debug(content)
+            # logger.debug(content)
             context.body = f"<!DOCTYPE html>\n{content}"
             self.write_context(context)
 
         await self.render_context(context, receive, send)
-        
+
         for child in context.children:
             await self.render_page(page, child)
 
     async def render_context(self, context, receive, send):
         url = context.url
-        #logger.debug(f'name:  {url.name}')
+        # logger.debug(f'name:  {url.name}')
         s_url = str(url)
-        if s_url != '/' and url.suffix == '':
-            s_url = f'{s_url}/'
+        if s_url != "/" and url.suffix == "":
+            s_url = f"{s_url}/"
 
-        #logger.debug(f'render_page:url:  {s_url}')
+        # logger.debug(f'render_page:url:  {s_url}')
         scope = {
             "type": "http",
             "method": "GET",
             "path": s_url,
             "headers": {},
-            "context": context
+            "context": context,
         }
 
-        router = Site.instance.router
+        site = await Site.get_singleton()
+        router = site.router
 
         await router(scope, receive, send)
 
     def write_context(self, context):
         body = context.body
         context_path = context.path
-        #print(context_path)
-        dst_path = 'dist' / context_path
-        #print(dst_path)
+        # print(context_path)
+        dst_path = "dist" / context_path
+        # print(dst_path)
 
         if not os.path.exists(os.path.dirname(dst_path)):
             try:
                 os.makedirs(os.path.dirname(dst_path))
-            except OSError as exc: # Guard against race condition
+            except OSError as exc:  # Guard against race condition
                 if exc.errno != errno.EEXIST:
                     raise
 
         with open(dst_path, "w") as text_file:
             text_file.write(body)
+
+
+def create_renderer():
+    renderer = Renderer.produce()
+    return renderer

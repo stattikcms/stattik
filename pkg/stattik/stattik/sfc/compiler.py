@@ -50,6 +50,7 @@ class Compiler(Transpiler):
         root = etree.fromstring(text, parser=XHTMLParser(resolve_entities=False))
         self.parse(root)
         if self.css:
-            Site.instance.add_css(self.css)
+            site = Site.get_singleton_sync()
+            site.add_css(self.css)
                 
         return str(self)

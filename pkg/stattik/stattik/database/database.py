@@ -1,21 +1,22 @@
 from asyncio import current_task
 
+from loguru import logger
+
 from ariadne import make_executable_schema, QueryType, MutationType, SubscriptionType
 
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_scoped_session
 
 from stattik.schema import Schema
-from stattik.site import Site
 from stattik.models import Model
+from stattik.settings import Settings
+
 from .utils import json_serializer
 
 class Database(Schema):
-    instance = None
-
-    def __init__(self):
-        super().__init__()
-        self.db = Database.instance = self
+    def __init__(self, parent):
+        super().__init__(parent)
+        self.db = self
         self.engine = None
         self.query_type = QueryType()
         self.mutation_type = MutationType()
@@ -32,10 +33,10 @@ class Database(Schema):
         return self.child_map[key]
 
     async def begin(self):
-        #if self.engine:
-        #    return
+        self.url = Settings.get_singleton()["DATABASE_URL"]
+        logger.debug(f"Creating engine with URL: {self.url}")
         self.engine = engine = create_async_engine(
-            Site.instance.DATABASE_URL,
+            self.url,
             json_serializer=json_serializer
         )
         
@@ -74,14 +75,7 @@ class Database(Schema):
     def discover(self):
         pass
 
-    @classmethod
-    def produce(self):
-        if self.instance:
-            return self.instance
-        self.instance = db = self()
-        return db
-
-def create_database(repositories):
+def create_database(repositories) -> Database:
     db = Database.produce()
     for repo in repositories:
         # TODO: check for instance or class.  For now just class/callable
