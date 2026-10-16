@@ -2,8 +2,7 @@ from asyncio import current_task
 
 from loguru import logger
 
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_scoped_session
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_scoped_session, async_sessionmaker
 
 from stattik.schema import Schema
 from stattik.models import Model
@@ -19,13 +18,13 @@ class Database(Schema):
 
         self.child_map = {}
 
+    def __getitem__(self, key):
+        return self.child_map[key]
+
     def add_child(self, schema):
         # TODO:  Hacky
         self.child_map[schema.Model.__tablename__] = schema
         return super().add_child(schema)
-
-    def __getitem__(self, key):
-        return self.child_map[key]
 
     async def begin(self):
         self.url = Settings.get_singleton()["DATABASE_URL"]
@@ -36,33 +35,28 @@ class Database(Schema):
         )
         
         engine = self.engine
+        assert engine is not None
 
         async with engine.begin() as conn:
             await conn.run_sync(Model.metadata.create_all)
 
-        async_session_factory = sessionmaker(engine, class_= AsyncSession)
-        Schema.Session = Session = async_scoped_session(async_session_factory, scopefunc=current_task)
+        async_session_factory = async_sessionmaker(engine, class_= AsyncSession)
+        Schema.Session = async_scoped_session(async_session_factory, scopefunc=current_task)
 
 
     async def end(self):
         await self.end_session()
 
     async def end_session(self):
+        assert self.Session is not None
         await self.Session.commit()
         await self.Session.remove()
 
     async def drop_all(self):
         await self.begin()
+        assert self.engine is not None
         async with self.engine.begin() as conn:
             await conn.run_sync(Model.metadata.drop_all)
-
-    def make_executable(self):
-        return make_executable_schema(
-            self.get_gql(),
-            self.query_type,
-            self.mutation_type,
-            self.subscription_type
-        )
 
     def discover(self):
         pass
