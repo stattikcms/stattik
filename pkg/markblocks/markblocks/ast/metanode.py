@@ -1,14 +1,12 @@
 class MetaNode(type):
     nodeCount = 0
-    # def __init__(self):
-    # def __new__(cls, name, bases, attr):
     def __init__(cls, name, bases, attr):
         cls.nodeCount = 0
 
     @classmethod
-    def node(self, name):
-        index = self.nodeCount
-        self.nodeCount += 1
+    def node(cls, name):
+        index = cls.nodeCount
+        cls.nodeCount += 1
 
         def getter(self):
             return self.nodes[index]
@@ -17,4 +15,4 @@ class MetaNode(type):
             self.nodes[index] = val
 
         prop = property(getter, setter)
-        setattr(self, name, prop)
+        setattr(cls, name, prop)

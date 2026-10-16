@@ -10,8 +10,8 @@ class Stattik(Starlette):
         super().__init__(*args, **kwargs)
 
     @classmethod
-    def produce(self, *args, **kwargs):
-        instance = self(*args, **kwargs)
+    def produce(cls, *args, **kwargs):
+        instance = cls(*args, **kwargs)
         instance.create()
         return instance
 

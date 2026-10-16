@@ -67,16 +67,6 @@ class Page(Model):
     __mapper_args__ = {"polymorphic_identity": "Page", "polymorphic_on": type}
 
 
-class PageData(Data):
-    id: int
-    type: str
-    title: str
-    date: datetime
-    description: str
-    cover: str
-    slug: str
-
-
 class PageInput(Data):
     type: str
     title: Optional[str]
@@ -88,7 +78,6 @@ class PageInput(Data):
 
 class PageRepository(Repository):
     Input = PageInput
-    Data = PageData
     Model = Page
 
     async def add(self, page):

@@ -1,9 +1,6 @@
-from copy import copy
 from pathlib import Path
 
 from loguru import logger
-
-#import frontmatter
 
 from stattik.markdown import Markdown
 
@@ -17,6 +14,7 @@ class PageBuilder(Builder):
         db = job.db
         type = job.type
         repo = db[type]
+        input = repo.Input(**job.__dict__)
         page = repo.Model(job.__dict__)
 
         await repo.add(page)

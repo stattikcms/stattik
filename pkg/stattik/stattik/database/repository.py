@@ -5,5 +5,5 @@ class Repository(Schema):
         super().__init__(parent)
     
     @classmethod
-    def produce(self, parent):
-        return self(parent)
+    def produce(cls, parent):
+        return cls(parent)

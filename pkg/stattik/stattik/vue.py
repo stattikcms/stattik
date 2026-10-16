@@ -21,8 +21,8 @@ class Vue:
                 self.component(key, value)
 
     @classmethod
-    async def produce(self, props):
-        vu = self(props)
+    async def produce(cls, props):
+        vu = cls(props)
         context = props['v_context']
         paginator = context.paginator
         if not paginator:
@@ -97,21 +97,21 @@ class Vue:
         return await vu.render()
 
     @classmethod
-    def resolve(self, ref):
-        component = ref if callable(ref) else self.create_class(ref)
+    def resolve(cls, ref):
+        component = ref if callable(ref) else cls.create_class(ref)
         return component
 
     @classmethod
-    def create_app(self, ref, super_class=None):
+    def create_app(cls, ref, super_class=None):
         from .app import App
         if not super_class:
             super_class = App
 
-        app_class = self.create_class(ref, super_class)
+        app_class = cls.create_class(ref, super_class)
         return app_class
 
     @classmethod
-    def create_class(self, ref, super_class=None):
+    def create_class(cls, ref, super_class=None):
         src_path = to_path(ref)
         if src_path.suffix == '':
             src_path = src_path.with_suffix('.vue')
@@ -126,8 +126,8 @@ class Vue:
         module_name = '.'.join(dst_path.parts[1:])
         #print(module_name)
 
-        if src_path in self.component_cache:
-            return self.component_cache[src_path]
+        if src_path in cls.component_cache:
+            return cls.component_cache[src_path]
         if not super_class:
             super_class = Vue
 
@@ -157,5 +157,5 @@ class Vue:
         #class type(name, bases, dict, **kwds)
         component = type(module_name, (super_class,), attrs)
         #component = type(src_path.stem, (super_class,), attrs)
-        self.component_cache[src_path] = component
+        cls.component_cache[src_path] = component
         return component

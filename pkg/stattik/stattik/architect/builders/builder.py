@@ -16,11 +16,6 @@ class Builder:
     def is_deferred(self):
         return False
 
-    @classmethod
-    def produce(self, parent, job):
-        builder = self(parent, job)
-        return builder
-
     def defer(self, builder, job):
         self.architect.defer(builder, job)
 

@@ -5,7 +5,7 @@ from pathlib import Path
 from loguru import logger
 
 from stattik.site import Site
-
+from stattik import klass
 
 class RenderContext:
     def __init__(self, renderer, page, url=None, path=None, paginator=None):
@@ -31,24 +31,8 @@ class NotFound(Exception):
 
 
 class Renderer:
-
     def __init__(self):
         pass
-
-    _instance = None
-
-    @classmethod
-    @property
-    def instance(self):
-        if self._instance:
-            return self._instance
-        self._instance = self.produce()
-        return self._instance
-
-    @classmethod
-    def produce(self):
-        self._instance = self()
-        return self._instance
 
     async def render(self):
         site = await Site.get_singleton()
@@ -137,5 +121,5 @@ class Renderer:
 
 
 def create_renderer():
-    renderer = Renderer.produce()
+    renderer = Renderer()
     return renderer

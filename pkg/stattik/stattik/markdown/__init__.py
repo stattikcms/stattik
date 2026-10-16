@@ -7,18 +7,18 @@ class Markdown:
     _instance = None
     @classmethod
     @property
-    def instance(self):
-        if self._instance:
-            return self._instance
-        self._instance = Markdown.produce()
-        return self._instance
+    def instance(cls):
+        if cls._instance:
+            return cls._instance
+        cls._instance = Markdown.produce()
+        return cls._instance
     
     def __init__(self):
         self.md = None
 
     @classmethod
-    def produce(self):
-        self._instance = md = Markdown()
+    def produce(cls):
+        cls._instance = md = Markdown()
 
         extensions = [
             'meta',

@@ -8,13 +8,13 @@ class App(Vue):
         App.instance = self
     
     @classmethod
-    async def produce(self, props):
+    async def produce(cls, props):
         #print(props)
-        if self.instance:
-            self.instance.inject(props)
-            return self.instance
-        self.instance = await super().produce(props)
-        return self.instance
+        if cls.instance:
+            cls.instance.inject(props)
+            return cls.instance
+        cls.instance = await super().produce(props)
+        return cls.instance
 
     def component(self, name, klass):
         super().component(name, klass)

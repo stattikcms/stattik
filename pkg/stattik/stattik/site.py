@@ -12,7 +12,6 @@ from dotenv import load_dotenv
 load_dotenv(Path(os.getcwd()) / ".env")
 
 from . import blackboard
-from .core.collection import Collection
 from .settings import Settings
 from .database import Database
 

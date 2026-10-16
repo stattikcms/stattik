@@ -7,24 +7,10 @@ from stattik.site import Site
 from .builders import Job, FolderBuilder
 
 def create_architect(builders):
-    ar = Architect.produce(builders)
+    ar = Architect(builders)
     return ar
 
 class Architect(FolderBuilder):
-    _instance = None
-    @classmethod
-    @property
-    def instance(self):
-        if self._instance:
-            return self._instance
-        self._instance = self.produce()
-        return self._instance
-
-    @classmethod
-    def produce(self, builders):
-        self._instance = self(builders)
-        return self._instance
-
     def __init__(self, builders):
         super().__init__()
         self.deferred = []
