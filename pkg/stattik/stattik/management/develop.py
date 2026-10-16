@@ -4,6 +4,9 @@ from loguru import logger
 
 import uvicorn
 
+from contextlib import asynccontextmanager
+from starlette.applications import Starlette
+
 from starlette.routing import Mount
 from starlette.staticfiles import StaticFiles
 
@@ -13,6 +16,14 @@ from stattik.site import Site
 
 site = None
 
+@asynccontextmanager
+async def lifespan(app: Starlette):
+    # Code to run on startup
+    print("Startup")
+    yield
+    # Code to run on shutdown
+    print("Shutdown")
+
 async def create_site():
     global site
     site = await Site.produce()
@@ -20,17 +31,10 @@ async def create_site():
 
 def create_app():
 
-    async def on_startup():
-        pass
-
-    async def on_shutdown():
-        pass
-
     app = Stattik.produce(
         debug=True,
         routes=site.router.sroutes,
-        on_startup=[on_startup],
-        on_shutdown=[on_shutdown]
+        lifespan=lifespan
     )
     return app
 

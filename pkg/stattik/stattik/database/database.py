@@ -35,7 +35,6 @@ class Database(Schema):
             json_serializer=json_serializer
         )
         
-        #await self.drop_all()
         engine = self.engine
 
         async with engine.begin() as conn:

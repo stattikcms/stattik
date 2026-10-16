@@ -1,28 +1,31 @@
+from contextlib import asynccontextmanager
+
 from loguru import logger
 
 import uvicorn
 
 from starlette.staticfiles import StaticFiles
+from starlette.applications import Starlette
 
 from stattik.site import Site
 from stattik.server import Stattik
 from stattik.database import Database
 
+@asynccontextmanager
+async def lifespan(app: Starlette):
+    # Code to run on startup
+    print("Startup")
+    site = await Site.get_singleton()
+    db = site.database
+    app.mount('/', app=StaticFiles(directory='dist', html=True), name="public")
+
+    yield
+    # Code to run on shutdown
+    print("Shutdown")
+
 def create_app():
-    async def on_startup():
-        site = await Site.get_singleton()
-        db = site.database
-        #schema = db.make_executable()
-
-        #app.mount("/graphql", GraphQL(schema, debug=True, introspection=True))
-        app.mount('/', app=StaticFiles(directory='dist', html=True), name="public")
-
-    async def on_shutdown():
-        pass
-
     app = Stattik.produce(
-        on_startup=[on_startup],
-        on_shutdown=[on_shutdown]
+        lifespan=lifespan
     )
 
     return app

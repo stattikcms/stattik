@@ -1,8 +1,6 @@
-from loguru import logger
-
-import stattik.database
+from stattik import architect
 
 from .builders import builders
 
 def create_architect():
-    return stattik.architect.create_architect(builders)
+    return architect.create_architect(builders)

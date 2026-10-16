@@ -32,6 +32,7 @@ dependencies = [
     "aioreactive>=0.16.0,<0.17",
     "requests>=2.31.0,<3",
     "markblocks>=0.1.0,<0.2",
+    "starlette>=1.8.0,<2"
 ]
 
 [project.scripts]
