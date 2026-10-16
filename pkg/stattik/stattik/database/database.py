@@ -5,7 +5,7 @@ from loguru import logger
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_scoped_session, async_sessionmaker
 
 from stattik.schema import Schema
-from stattik.models import Model
+from stattik.repositories import Model
 from stattik.settings import Settings
 
 from .utils import json_serializer

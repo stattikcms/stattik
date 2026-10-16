@@ -102,7 +102,7 @@ class Site:
         pass
 
     @classmethod
-    async def load_site(cls):
+    async def load_site(cls) -> "Site":
         settings = Settings.get_singleton()
         logger.debug(f"Loaded settings: {settings}")
         site = Site()

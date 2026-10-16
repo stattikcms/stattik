@@ -17,7 +17,7 @@ from sqlalchemy.orm import relationship
 from sqlalchemy.future import select
 
 from stattik.database import Repository
-from stattik.models import Model
+from stattik.repositories import Model
 from stattik.data import Data
 
 import sqlalchemy.types as types

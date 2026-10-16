@@ -1,6 +1,6 @@
 import os
 
-from .models import create_database
+from .repositories import create_database
 from .router import create_router
 from .architect import create_architect
 from .renderer import create_renderer

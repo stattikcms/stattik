@@ -1,5 +1,5 @@
 import stattik.database
-from stattik.models.page import PageRepository
+from stattik.repositories.page import PageRepository
 from .landing import LandingRepository
 from .post import PostRepository
 

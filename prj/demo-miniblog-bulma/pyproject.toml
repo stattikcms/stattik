@@ -15,11 +15,11 @@ packages = ["demo_miniblog_bulma"]
 python = "3.12"
 installer = "uv"
 workspace.members = [
-  "../markblocks",
-  "../stattik",
-  "../theme-bulma",
-  "../plugin-search-fuse",
-  "../app-search-fuse-bulma",
+  "../../pkg/markblocks",
+  "../../pkg/stattik",
+  "../../pkg/theme-bulma",
+  "../../pkg/plugin-search-fuse",
+  "../../pkg/app-search-fuse-bulma",
 ]
 dependencies = ["uv", "pytest"]
 
