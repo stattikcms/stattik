@@ -1,0 +1,122 @@
+// Markblocks grammar (LALR). Terminals are produced by markblocks.lex.MultiLexer
+// and %declare'd by parser.py from markblocks.lex.tokens.
+
+start: block_group
+
+body: INDENT block_group DEDENT
+
+?block: leaf_block | container_block
+
+block_group: block                      -> block_group_new
+           | block_group line           -> block_group_add
+
+line: block
+    | TERMINATOR                        -> empty_line
+
+heading_u: inline_group TERMINATOR H1U TERMINATOR
+         | inline_group TERMINATOR H2U TERMINATOR
+
+heading: H1_OPEN inline_group H1_CLOSE TERMINATOR
+       | H2_OPEN inline_group H2_CLOSE TERMINATOR
+       | H3_OPEN inline_group H3_CLOSE TERMINATOR
+       | H4_OPEN inline_group H4_CLOSE TERMINATOR
+
+?leaf_block: heading | heading_u | paragraph | fence
+
+?container_block: blockquote | ul | ol | tl | admonition | table
+
+// Inlines
+
+text: TEXT
+
+code_span: CODE_SPAN_OPEN TEXT CODE_SPAN_CLOSE
+
+bold_italic: BOLD_ITALIC_OPEN TEXT BOLD_ITALIC_CLOSE
+
+bold: BOLD_OPEN TEXT BOLD_CLOSE
+
+italic: ITALIC_OPEN TEXT ITALIC_CLOSE
+
+emoji: EMOJI
+
+link: LBRACE inline RBRACE LPAREN TEXT RPAREN
+
+image: BANG LBRACE TEXT RBRACE LPAREN TEXT RPAREN
+
+?inline: text | code_span | bold | italic | bold_italic | emoji | link | image
+
+inline_group: inline_group inline       -> inline_group_add
+            | inline                    -> inline_group_new
+
+paragraph: inline_group TERMINATOR      -> paragraph
+         | paragraph paragraph          -> paragraph_join
+
+// Block quotes
+
+blockquote: BLOCKQUOTE inline_group TERMINATOR          -> blockquote
+          | BLOCKQUOTE TERMINATOR body                  -> blockquote_body
+          | BLOCKQUOTE inline_group TERMINATOR body     -> blockquote_inline_body
+
+// Unordered list
+
+ul_item: UL inline_group TERMINATOR     -> list_item
+       | UL body                        -> list_item
+       | UL inline_group TERMINATOR body -> list_item_body
+
+ul: ul ul_item                          -> list_add
+  | ul_item                             -> ul
+
+// Ordered list
+
+ol_item: OL inline_group TERMINATOR     -> list_item
+       | OL body                        -> list_item
+       | OL inline_group TERMINATOR body -> list_item_body
+
+ol: ol ol_item                          -> list_add
+  | ol_item                             -> ol
+
+// Task list
+
+tl_item: TL inline_group TERMINATOR
+       | TL body
+
+tl: tl tl_item                          -> list_add
+  | tl_item                             -> tl
+
+// Fence
+
+fence: FENCE TERMINATOR
+     | FENCE NAME TERMINATOR
+
+// Admonition
+
+admonition: ADMONITION NAME WS STRING TERMINATOR body   -> admonition_title
+          | ADMONITION NAME TERMINATOR body             -> admonition
+
+// Table
+
+t_cell: PIPE text
+
+t_row_list: t_row_list t_cell           -> list_append
+          | t_cell                      -> list_new
+
+t_row: t_row_list TERMINATOR
+
+t_sep_cell: PIPE TSEPARATOR
+
+t_sep_row_list: t_sep_row_list t_sep_cell -> list_append
+              | t_sep_cell              -> list_new
+
+t_sep_row: t_sep_row_list TERMINATOR    -> t_row
+
+table_list: table_list t_row            -> list_append
+          | table_list t_sep_row        -> list_append
+          | t_row                       -> list_new
+          | t_sep_row                   -> list_new
+
+t_body: table_list
+      | table_list TERMINATOR
+
+t_head: t_row t_sep_row
+
+table: t_head t_body

@@ -1,4 +1,4 @@
-import markblocks.sly as sly
+from dataclasses import dataclass
 
 EOF = 'EOF'
 NEWLINE = 'NEWLINE'
@@ -7,14 +7,16 @@ TERMINATOR = 'TERMINATOR'
 INDENT = 'INDENT'
 DEDENT = 'DEDENT'
 
+@dataclass
+class Token:
+    type: str
+    value: object
+    lineno: int = 0
+    index: int = 0
+    end: int = 0
+
 def create_token(type, value, lineno, index):
-    tok = sly.lex.Token()
-    tok.type = type
-    tok.value = None
-    tok.lineno = lineno
-    tok.index = index
-    tok.end = index + 1
-    return tok
+    return Token(type, None, lineno, index, index + 1)
 
 # Synthesize a TERMINATOR tag
 def TERMINATOR_(lineno, index):

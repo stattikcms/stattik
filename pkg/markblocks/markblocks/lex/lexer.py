@@ -1,29 +1,12 @@
-import markblocks.sly as sly
-
 from . import tokens
+from .token import Token
 
-class Lexer(sly.Lexer):
-
-    def __init__(self):
-        super().__init__()
-
-    def error(self, t):
-        print(f"{self.__class__.__name__}: Line {self.lineno}: Bad character '{t.value[0]}'")
-        self.index += 1
+class Lexer:
+    tokens = tokens.tokens
+    fingerprints = []
 
     def create_token(self, type, value, lineno, index):
-        tok = sly.lex.Token()
-        tok.type = type
-        tok.value = value
-        tok.lineno = lineno
-        tok.index = index
-        tok.end = index + len(value)
-        return tok
+        return Token(type, value, lineno, index, index + len(value))
 
-
-    tokens = tokens.tokens
-
-    # Whitespace
-    @_(r'^ +')
-    def WS(self, t):
-        return t
+    def tokenize(self, text, lineno=1, index=0):
+        raise NotImplementedError

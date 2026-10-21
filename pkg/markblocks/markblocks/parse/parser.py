@@ -1,282 +1,203 @@
 import sys
-import re
+from pathlib import Path
 
-import markblocks.sly as sly
+import lark
+from lark.exceptions import UnexpectedInput, UnexpectedToken
 
 from markblocks.lex.lexer import Lexer
 import markblocks.ast.node  as yy
 
-class Parser(sly.Parser):
-    debugfile = 'parser_debug.txt'
-    tokens = Lexer.tokens
 
-    def __init__(self):
-        super().__init__()
+class TokenStream(lark.lexer.Lexer):
+    '''Feed tokens from MultiLexer straight through to the Lark parser.'''
+    def __init__(self, lexer_conf):
+        pass
 
-    def error(self, token):
-        if token:
-            lineno = getattr(token, 'lineno', 0)
-            if lineno:
-                sys.stderr.write(f'sly: Syntax error at line {lineno}, index {token.index}, token={token.type}, value={token.value}\n')
-            else:
-                sys.stderr.write(f'sly: Syntax error, token={token.type}, value={token.value}\n')
-        else:
-            sys.stderr.write('sly: Parse error in input. EOF\n')
+    def lex(self, tokens):
+        for t in tokens:
+            value = t.value if t.value is not None else ''
+            yield lark.Token(t.type, value, start_pos=t.index, end_pos=t.end, line=t.lineno)
 
 
-    @_('BlockGroup')
-    def Document(self, p):
+class AstBuilder(lark.Transformer):
+    def start(self, p):
         return yy.Document(p[0].children)
 
-    @_('INDENT BlockGroup DEDENT')
-    def Body(self, p):
+    def body(self, p):
         return p[1]
 
-    @_('LeafBlock', 'ContainerBlock')
-    def Block(self, p):
-        return p[0]
-
-    @_('Block')
-    def BlockGroup(self, p):
+    def block_group_new(self, p):
         return yy.Block([p[0]])
 
-    @_('BlockGroup Line')
-    def BlockGroup(self, p):
-        p.BlockGroup.add(p[1])
-        return p.BlockGroup
-    
-    @_('Block', 'TERMINATOR')
-    def Line(self, p):
-        if p[0]:
-            return p[0]
-        return yy.Empty()
-
-    @_('InlineGroup TERMINATOR H1U TERMINATOR')
-    def HeadingU(self, p):
-        return yy.Heading(1, p[0].children)
-
-    @_('InlineGroup TERMINATOR H2U TERMINATOR')
-    def HeadingU(self, p):
-        return yy.Heading(2, p[0].children)
-
-    @_('H1_OPEN InlineGroup H1_CLOSE TERMINATOR')
-    def Heading(self, p):
-        return yy.Heading(1, p[1].children)
-
-    @_('H2_OPEN InlineGroup H2_CLOSE TERMINATOR')
-    def Heading(self, p):
-        return yy.Heading(2, p[1].children)
-
-    @_('H3_OPEN InlineGroup H3_CLOSE TERMINATOR')
-    def Heading(self, p):
-        return yy.Heading(3, p[1].children)
-
-    @_('H4_OPEN InlineGroup H4_CLOSE TERMINATOR')
-    def Heading(self, p):
-        return yy.Heading(4, p[1].children)
-
-    @_('Heading', 'HeadingU', 'Paragraph', 'Fence')
-    def LeafBlock(self, p):
-        return p[0]
-
-    @_('Blockquote', 'Ul', 'Ol', 'Tl', 'Admonition', 'Table')
-    def ContainerBlock(self, p):
-        return p[0]
-
-    @_('TEXT')
-    def Text(self, p):
-        return yy.Text(p[0])
-
-    @_('CODE_SPAN_OPEN TEXT CODE_SPAN_CLOSE')
-    def CodeSpan(self, p):
-        return yy.CodeSpan(p[1])
-
-    @_('BOLD_ITALIC_OPEN TEXT BOLD_ITALIC_CLOSE')
-    def BoldItalic(self, p):
-        return yy.BoldItalic(p[1])
-
-    @_('BOLD_OPEN TEXT BOLD_CLOSE')
-    def Bold(self, p):
-        return yy.Bold(p[1])
-
-    @_('ITALIC_OPEN TEXT ITALIC_CLOSE')
-    def Italic(self, p):
-        return yy.Italic(p[1])
-
-    @_('EMOJI')
-    def Emoji(self, p):
-        return yy.Emoji(p[0])
-
-    @_('LBRACE Inline RBRACE LPAREN TEXT RPAREN')
-    def Link(self, p):
-        return yy.Link(p[1], p[4])
-
-    @_('BANG LBRACE TEXT RBRACE LPAREN TEXT RPAREN')
-    def Image(self, p):
-        return yy.Image(p[2], p[5])
-
-    @_('Text', 'CodeSpan', 'Bold', 'Italic', 'BoldItalic', 'Emoji', 'Link', 'Image')
-    def Inline(self, p):
-        return p[0]
-
-    @_('InlineGroup Inline')
-    def InlineGroup(self, p):
+    def block_group_add(self, p):
         p[0].add(p[1])
         return p[0]
 
-    @_('Inline')
-    def InlineGroup(self, p):
+    def line(self, p):
+        return p[0]
+
+    def empty_line(self, p):
+        return yy.Empty()
+
+    def heading_u(self, p):
+        level = 1 if p[2].type == 'H1U' else 2
+        return yy.Heading(level, p[0].children)
+
+    def heading(self, p):
+        level = int(p[0].type[1])
+        return yy.Heading(level, p[1].children)
+
+    # Inlines
+
+    def text(self, p):
+        return yy.Text(p[0].value)
+
+    def code_span(self, p):
+        return yy.CodeSpan(p[1].value)
+
+    def bold_italic(self, p):
+        return yy.BoldItalic(p[1].value)
+
+    def bold(self, p):
+        return yy.Bold(p[1].value)
+
+    def italic(self, p):
+        return yy.Italic(p[1].value)
+
+    def emoji(self, p):
+        return yy.Emoji(p[0].value)
+
+    def link(self, p):
+        return yy.Link(p[1], p[4].value)
+
+    def image(self, p):
+        return yy.Image(p[2].value, p[5].value)
+
+    def inline_group_add(self, p):
+        p[0].add(p[1])
+        return p[0]
+
+    def inline_group_new(self, p):
         return yy.InlineGroup([p[0]])
 
-    @_('InlineGroup TERMINATOR')
-    def Paragraph(self, p):
+    def paragraph(self, p):
         return yy.Paragraph(p[0].children)
 
-    @_('Paragraph Paragraph')
-    def Paragraph(self, p):
+    def paragraph_join(self, p):
         return yy.Paragraph(p[0].children + p[1].children)
 
     # Block quotes
 
-    @_('BLOCKQUOTE InlineGroup TERMINATOR')
-    def Blockquote(self, p):
+    def blockquote(self, p):
         return yy.Blockquote(p[1].children)
 
-    @_('BLOCKQUOTE TERMINATOR Body')
-    def Blockquote(self, p):
-        return yy.Blockquote(p.Body.children)
+    def blockquote_body(self, p):
+        return yy.Blockquote(p[2].children)
 
-    @_('BLOCKQUOTE InlineGroup TERMINATOR Body')
-    def Blockquote(self, p):
-        return yy.Blockquote(p[1].children + p.Body.children)
+    def blockquote_inline_body(self, p):
+        return yy.Blockquote(p[1].children + p[3].children)
 
-    # Unordered List
+    # Lists
 
-    @_('UL InlineGroup TERMINATOR', 'UL Body')
-    def UlItem(self, p):
+    def list_item(self, p):
         return p[1]
 
-    @_('UL InlineGroup TERMINATOR Body')
-    def UlItem(self, p):
+    def list_item_body(self, p):
         p[1].children = p[1].children + p[3].children
         return p[1]
 
-    @_('Ul UlItem')
-    def Ul(self, p):
+    def list_add(self, p):
         p[0].add(p[1])
         return p[0]
 
-    @_('UlItem')
-    def Ul(self, p):
+    def ul(self, p):
         return yy.Ul([p[0]])
 
-# Ordered List
-
-    @_('OL InlineGroup TERMINATOR', 'OL Body')
-    def OlItem(self, p):
-        return p[1]
-
-    @_('OL InlineGroup TERMINATOR Body')
-    def OlItem(self, p):
-        p[1].children = p[1].children + p[3].children
-        return p[1]
-
-    @_('Ol OlItem')
-    def Ol(self, p):
-        p[0].add(p[1])
-        return p[0]
-
-    @_('OlItem')
-    def Ol(self, p):
+    def ol(self, p):
         return yy.Ol([p[0]])
 
-    # Task List
-    @_('TL InlineGroup TERMINATOR', 'TL Body')
-    def TlItem(self, p):
-        checked = 'x' in p[0]
+    def tl_item(self, p):
+        checked = 'x' in p[0].value
         return yy.TlItem(p[1], checked)
 
-    @_('Tl TlItem')
-    def Tl(self, p):
-        p[0].add(p[1])
-        return p[0]
-
-    @_('TlItem')
-    def Tl(self, p):
+    def tl(self, p):
         return yy.Tl([p[0]])
 
     # Fence
-    @_('FENCE TERMINATOR')
-    def Fence(self, p):
-        return yy.Fence(p[0])
 
-    @_('FENCE NAME TERMINATOR')
-    def Fence(self, p):
-        return yy.Fence(p[0], p[1])
+    def fence(self, p):
+        if p[1].type == 'NAME':
+            return yy.Fence(p[0].value, p[1].value)
+        return yy.Fence(p[0].value)
 
     # Admonition
-    @_('ADMONITION NAME WS STRING TERMINATOR Body')
-    def Admonition(self, p):
-        return yy.Admonition(p.Body.children, p.NAME, p.STRING)
 
-    @_('ADMONITION NAME TERMINATOR Body')
-    def Admonition(self, p):
-        return yy.Admonition(p.Body.children, p.NAME)
+    def admonition_title(self, p):
+        return yy.Admonition(p[5].children, p[1].value, p[3].value)
 
-    # Table
-    @_('PIPE Text')
-    def TCell(self, p):
-        return p[1]
-
-    @_('TRowList TCell')
-    def TRowList(self, p):
-        p[0].append(p[1])
-        return p[0]
-
-    @_('TCell')
-    def TRowList(self, p):
-        return [p[0]]
-
-    @_('TRowList TERMINATOR')
-    def TRow(self, p):
-        return yy.TRow(p[0])
-
-    # Separator
-    @_('PIPE TSEPARATOR')
-    def TSepCell(self, p):
-        return p[1]
-
-    @_('TSepRowList TSepCell')
-    def TSepRowList(self, p):
-        p[0].append(p[1])
-        return p[0]
-
-    @_('TSepCell')
-    def TSepRowList(self, p):
-        return [p[0]]
-
-    @_('TSepRowList TERMINATOR')
-    def TSepRow(self, p):
-        return yy.TRow(p[0])
+    def admonition(self, p):
+        return yy.Admonition(p[3].children, p[1].value)
 
     # Table
-    @_('TableList TRow', 'TableList TSepRow')
-    def TableList(self, p):
+
+    def t_cell(self, p):
+        return p[1]
+
+    def t_sep_cell(self, p):
+        return p[1].value
+
+    def list_append(self, p):
         p[0].append(p[1])
         return p[0]
 
-    @_('TRow', 'TSepRow')
-    def TableList(self, p):
+    def list_new(self, p):
         return [p[0]]
 
-    @_('TableList', 'TableList TERMINATOR')
-    def TBody(self, p):
+    def t_row(self, p):
+        return yy.TRow(p[0])
+
+    def t_body(self, p):
         return yy.TBody(p[0])
 
-    @_('TRow TSepRow')
-    def THead(self, p):
+    def t_head(self, p):
         return yy.THead(p[0].children, p[1])
 
-    @_('THead TBody')
-    def Table(self, p):
+    def table(self, p):
         return yy.Table([p[0], p[1]])
+
+
+def _grammar():
+    declare = '%declare ' + ' '.join(sorted(Lexer.tokens))
+    return declare + '\n' + (Path(__file__).parent / 'markblocks.lark').read_text()
+
+
+class Parser:
+    _lark = None
+
+    def __init__(self):
+        if not Parser._lark:
+            Parser._lark = lark.Lark(
+                _grammar(),
+                parser='lalr',
+                lexer=TokenStream,
+                transformer=AstBuilder(),
+            )
+
+    def error(self, token):
+        if token is not None:
+            lineno = getattr(token, 'line', 0)
+            if lineno:
+                sys.stderr.write(f'lark: Syntax error at line {lineno}, index {token.start_pos}, token={token.type}, value={token.value}\n')
+            else:
+                sys.stderr.write(f'lark: Syntax error, token={token.type}, value={token.value}\n')
+        else:
+            sys.stderr.write('lark: Parse error in input. EOF\n')
+
+    def parse(self, tokens):
+        try:
+            return self._lark.parse(tokens)
+        except UnexpectedToken as e:
+            self.error(e.token if e.token.type != '$END' else None)
+        except UnexpectedInput as e:
+            self.error(None)
+        return None

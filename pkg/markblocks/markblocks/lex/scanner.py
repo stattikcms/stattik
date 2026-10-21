@@ -1,6 +1,6 @@
 import re
 
-import markblocks.sly as sly
+from .token import Token
 
 class ScannerState:
     def __init__(self, cursor, output=[]):
@@ -72,13 +72,7 @@ class Scanner:
         return self.input[self.cursor:self.cursor + len(value)] == value    
 
     def create_token(self, type, value):
-        tok = sly.lex.Token()
-        tok.type = type
-        tok.value = value
-        tok.lineno = self.lineno
-        tok.index = self.cursor
-        tok.end = self.cursor + len(value)
-        return tok
+        return Token(type, value, self.lineno, self.cursor, self.cursor + len(value))
 
     def write(self, token):
         self.output.append(token)

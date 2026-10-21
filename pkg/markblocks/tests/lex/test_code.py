@@ -1,6 +1,5 @@
 import unittest
 
-import markblocks.sly as sly
 
 from markblocks.data import load
 from markblocks.lex.inline_lexer import InlineLexer

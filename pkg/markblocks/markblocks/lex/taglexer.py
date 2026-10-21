@@ -1,4 +1,19 @@
+import re
+
 from .lexer import Lexer
+from .scanner import Scanner
+from .tokens import *
+
+class TagScanner(Scanner):
+    def scan(self):
+        while self.cursor < len(self.input):
+            if not (
+                self.consume(':', TAG) or
+                self.consume('=', 'ASSIGN')
+                ):
+                self(TEXT, self.value)
+                self.advance()
+        return self.output
 
 class TagLexer(Lexer):
     tokens = Lexer.tokens
@@ -6,17 +21,6 @@ class TagLexer(Lexer):
         (r'(?P<TAG>^:)', 'TAG'),
     ]
 
-    def __init__(self):
-        super().__init__()
-
-    @_(r':')
-    def TAG(self, t):
-        return t
-
-    @_(r'=')
-    def ASSIGN(self, t):
-        return t
-
-    @_(r'.')
-    def TEXT(self, t):
-        return t
+    def tokenize(self, text, lineno=1, index=0):
+        ctx = TagScanner(text, lineno, index)
+        return ctx.scan()
