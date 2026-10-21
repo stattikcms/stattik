@@ -69,33 +69,3 @@ class HeadingLexer(Lexer):
     def tokenize(self, text, lineno=1, index=0):
         ctx = HeadingScanner(text, lineno, index)
         return ctx.scan()
-    '''
-    @_(r'\r?\n+')
-    def NEWLINE(self, t):
-        return t
-
-    @_(r'###( +)?')
-    def H3(self, t):
-        return t
-
-    @_(r'##( +)?')
-    def H2(self, t):
-        return t
-
-    @_(r'--?-+( +)?')
-    def H2U(self, t):
-        return t
-
-    @_(r'#( +)?')
-    def H1(self, t):
-        return t
-
-    @_(r'==?=+( +)?')
-    def H1U(self, t):
-        return t
-
-    #@_(r'.+')
-    @_(r'.')
-    def TEXT(self, t):
-        return t
-    '''

@@ -11,15 +11,14 @@ from .lex.admonition_lexer import AdmonitionLexer
 from .lex.table_lexer import TableLexer
 
 from .parse.parser import Parser
-from .ast.node import AstEncoder
 
 from .render.default_renderer import DefaultRenderer
 
 
 class Markblocks:
-    def convert(self, text, renderer = DefaultRenderer()):
+    def convert(self, text, renderer=DefaultRenderer()):
         if not text:
-            return ''
+            return ""
         lexer = MultiLexer()
 
         lexer.add_lexer(InlineLexer(), default=True)
@@ -34,15 +33,15 @@ class Markblocks:
         tokens = lexer.tokenize(text)
 
         tokens, tokens2 = itertools.tee(tokens)
-        #for tok in tokens2:
+        # for tok in tokens2:
         #    print(tok)
 
         parser = Parser()
-        
+
         ast = parser.parse(tokens)
-        #print(AstEncoder(indent=2).encode(ast))
+        # print(AstEncoder(indent=2).encode(ast))
         if not ast:
             return None
         result = renderer.render(ast)
-        #print(result)
+        # print(result)
         return result

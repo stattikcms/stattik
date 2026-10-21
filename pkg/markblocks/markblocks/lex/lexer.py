@@ -24,7 +24,6 @@ class Lexer(sly.Lexer):
     tokens = tokens.tokens
 
     # Whitespace
-    #@_(r' [ \t]+ ')
     @_(r'^ +')
     def WS(self, t):
         return t

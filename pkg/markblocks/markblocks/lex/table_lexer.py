@@ -5,9 +5,7 @@ from .inline_lexer import InlineScanner
 from .tokens import *
 
 class TableScanner(InlineScanner):
-    #r_pipe = re.compile(r'\|')
     r_pipe = re.compile(r'\|( +)?')
-    #r_separator = re.compile(r'--?-+')
     r_separator = re.compile(r'--?-+( +)?')
 
     def scan(self):
@@ -34,17 +32,3 @@ class TableLexer(Lexer):
     def tokenize(self, text, lineno=1, index=0):
         ctx = TableScanner(text, lineno, index)
         return ctx.scan()
-
-    '''
-    @_(r'\|')
-    def PIPE(self, t):
-        return t
-
-    @_(r'--?-+')
-    def TSEPARATOR(self, t):
-        return t
-
-    @_(r'[\w\d]+')
-    def TEXT(self, t):
-        return t
-    '''

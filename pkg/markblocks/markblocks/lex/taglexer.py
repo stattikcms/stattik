@@ -1,7 +1,6 @@
 from .lexer import Lexer
 
 class TagLexer(Lexer):
-    #tokens = { H3, H2, H1 }
     tokens = Lexer.tokens
     fingerprints = [
         (r'(?P<TAG>^:)', 'TAG'),

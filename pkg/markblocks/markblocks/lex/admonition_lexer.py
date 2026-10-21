@@ -8,7 +8,6 @@ class AdmonitionScanner(InlineScanner):
     r_ad = re.compile(r'^!!!( +)?')
     r_name = re.compile(r'[a-zA-Z0-9_]+')
     r_ws = re.compile(r' +')
-    #r_string = re.compile(r'"(.+)"')
     r_string = re.compile(r'"([^"]*)"')
 
     def scan(self):
@@ -39,22 +38,3 @@ class AdmonitionLexer(Lexer):
     def tokenize(self, text, lineno=1, index=0):
         ctx = AdmonitionScanner(text, lineno, index)
         return ctx.scan()
-
-    '''
-    @_(r'^!!!( +)?')
-    def ADMONITION(self, t):
-        return t
-
-    @_(r'[a-zA-Z0-9_]+')
-    def NAME(self, t):
-        return t
-
-    @_(r'\".+\"')
-    def STRING(self, t):
-        t.value = t.value[1:-1]
-        return t
-
-    @_(r' +')
-    def WS(self, t):
-        return t
-    '''

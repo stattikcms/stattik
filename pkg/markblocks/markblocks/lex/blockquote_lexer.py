@@ -26,12 +26,3 @@ class BlockquoteLexer(Lexer):
     def tokenize(self, text, lineno=1, index=0):
         ctx = BlockquoteScanner(text, lineno, index)
         return ctx.scan()
-    '''
-    @_(r'^>( +)?')
-    def BLOCKQUOTE(self, t):
-        return t
-
-    @_(r'.')
-    def TEXT(self, t):
-        return t
-    '''
