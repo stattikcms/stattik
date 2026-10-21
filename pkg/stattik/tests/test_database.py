@@ -20,7 +20,8 @@ class Test(unittest.IsolatedAsyncioTestCase):
                 "type": "Post",
                 "title": slug,
                 "date": datetime(2024, 1, day),
-                "src_url": Path(f"/news/{slug}"),
+                "src_url": Path(f"/_index/{slug}"),
+                "url": Path(f"/{slug}"),
             }))
         await self.posts.add(self.posts.Model({"type": "Post", "title": "undated"}))
         await self.db.end_session()
@@ -44,9 +45,14 @@ class Test(unittest.IsolatedAsyncioTestCase):
         self.assertEqual([p.title for p in posts], ["undated", "third", "second"])
 
     async def test_find_by_src_url(self):
-        page = await self.posts.find_by_src_url("/news/second")
+        page = await self.posts.find_by_src_url("/_index/second")
         self.assertEqual(page.title, "second")
-        self.assertIsNone(await self.posts.find_by_src_url("/nope"))
+        self.assertIsNone(await self.posts.find_by_src_url("/second"))
+
+    async def test_find_by_url(self):
+        page = await self.posts.find_by_url("/second")
+        self.assertEqual(page.title, "second")
+        self.assertIsNone(await self.posts.find_by_url("/_index/second"))
 
     async def test_reset(self):
         await self.db.reset()

@@ -132,6 +132,13 @@ class PageRepository(Repository):
         )
         return q.scalars().first()
 
+    async def find_by_url(self, url):
+        session = self.Session()
+        q = await session.execute(
+            select(self.Model).where(self.Model.url == Path(url))
+        )
+        return q.scalars().first()
+
 
 _page_types = {}
 

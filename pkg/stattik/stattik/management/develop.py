@@ -10,6 +10,7 @@ from starlette.applications import Starlette
 from starlette.responses import Response
 from starlette.staticfiles import StaticFiles
 
+from stattik.routing import resolve_path
 from stattik.server import Stattik
 from stattik.site import Site
 
@@ -35,6 +36,8 @@ class DevApp:
         if suffix and suffix != ".html" and Path("dist", path.lstrip("/")).is_file():
             return await self.static(scope, receive, send)
 
+        # NOTE: Routes match source urls (which keep folders like _index), so translate the public url first
+        scope = {**scope, "path": await resolve_path(path)}
         await site.router(scope, receive, send)
 
 

@@ -91,14 +91,43 @@ async def render_context(route, context):
     #logger.debug(f"render_route:vu:  {vu}")
     return await vu.render()
 
+def route_path(url):
+    """Format a page url the way the routes expect it:  folders get a trailing slash."""
+    s_url = str(url)
+    if s_url != '/' and url.suffix == '':
+        s_url = f'{s_url}/'
+    return s_url
+
+def split_page_suffix(path):
+    """Split '/blog/page/2' into ('/blog', ['page', '2']).  Paginated urls render from the listing page itself."""
+    parts = [part for part in path.split('/') if part]
+    suffix = []
+    if len(parts) >= 2 and parts[-2] == 'page' and parts[-1].isdigit():
+        parts, suffix = parts[:-2], parts[-2:]
+    return '/' + '/'.join(parts), suffix
+
+async def resolve_path(path):
+    """
+    Map a public request path to the source path the routes are written against.
+    NOTE: Folders like _index group pages without appearing in the public url, so '/post.html' may live at '/_index/post.html'
+    """
+    base, suffix = split_page_suffix(path)
+    site = await Site.get_singleton()
+    repo = site.database['Page']
+    try:
+        page = await repo.find_by_src_url(base) or await repo.find_by_url(base)
+    finally:
+        await site.database.Session.remove()
+    if page is None:
+        return path
+    if not suffix:
+        return route_path(page.src_url)
+    return route_path(page.src_url.joinpath(*suffix))
+
 async def lookup_context(request):
     from .renderer import RenderContext
 
-    parts = [part for part in request.url.path.split('/') if part]
-    # Paginated urls (/blog/page/2) render from the listing page itself
-    if len(parts) >= 2 and parts[-2] == 'page' and parts[-1].isdigit():
-        parts = parts[:-2]
-    src_url = '/' + '/'.join(parts)
+    src_url, _ = split_page_suffix(request.url.path)
 
     site = await Site.get_singleton()
     page = await site.database['Page'].find_by_src_url(src_url)

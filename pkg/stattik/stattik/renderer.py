@@ -5,6 +5,7 @@ from pathlib import Path
 from loguru import logger
 
 from stattik.site import Site
+from stattik.routing import route_path
 from stattik import klass
 
 class RenderContext:
@@ -82,11 +83,7 @@ class Renderer:
             await self.render_page(page, child)
 
     async def render_context(self, context, receive, send):
-        url = context.url
-        # logger.debug(f'name:  {url.name}')
-        s_url = str(url)
-        if s_url != "/" and url.suffix == "":
-            s_url = f"{s_url}/"
+        s_url = route_path(context.url)
 
         # logger.debug(f'render_page:url:  {s_url}')
         scope = {
