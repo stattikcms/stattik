@@ -69,7 +69,7 @@ class MarkdownBuilder(PageBuilder):
         if hasattr(job, 'paginate'):
             self.paginate(job)
 
-        await self.create_page(job)
+        return await self.create_page(job)
 
     def build_menu(self, job):
         #print(job.menu)
@@ -78,10 +78,10 @@ class MarkdownBuilder(PageBuilder):
             item_path = Path(job.src_path.parent) / f"{item['url']}.md"
             if item_path.is_file():
                 #print('File:  ', item_path)
-                item['url'] = "/" / Path('/'.join(job.path.parts[0:-1])) / f"{item['url']}.html"
+                item['url'] = str("/" / Path('/'.join(job.path.parts[0:-1])) / f"{item['url']}.html")
             else:
                 #print('Dir:  ', item_path)
-                item['url'] = "/" / Path('/'.join(job.path.parts[0:-1])) / item['url']
+                item['url'] = str("/" / Path('/'.join(job.path.parts[0:-1])) / item['url'])
 
             new_menu.append(item)
 

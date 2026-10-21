@@ -67,4 +67,4 @@ class FolderBuilder(Builder):
     async def build_page(self, job):
         #print(job.__dict__)
         builder = self.get_builder(job)
-        await builder.build(job)
+        return await builder.build(job)
