@@ -16,7 +16,9 @@ python = "3.12"
 installer = "uv"
 workspace.members = [
   "../../../grotto/pkg/core",
+  "../../../grotto/pkg/gql",
   "../../../grotto/pkg/ogm",
+  "../../../grotto/prj/grottobench",
 
   "../../pkg/markblocks",
   "../../pkg/stattik",

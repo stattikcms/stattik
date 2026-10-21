@@ -84,3 +84,6 @@ stattik.db
 stattik.db-*
 .sqbpro
 parser_debug.txt
+
+# Grotto
+*.grottobench.json
