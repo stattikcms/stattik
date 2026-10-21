@@ -1,9 +1,6 @@
 from loguru import logger
 
-from sqlalchemy.ext.asyncio import async_scoped_session
-
 class Schema:
-    Session: async_scoped_session | None = None
     def __init__(self, parent: "Schema | None" = None):
         self.parent = parent
         self.children = []

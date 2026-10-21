@@ -1,7 +1,7 @@
 import os
 
 SECRET_KEY = os.environ.get('SECRET_KEY') or 'you-will-never-guess'
-DATABASE_URL = os.environ.get('DATABASE_URL') or 'sqlite+aiosqlite:///./stattik.db'
+DATABASE_URL = os.environ.get('DATABASE_URL') or 'sqlite:///./stattik.db'
 
 '''
 siteMetadata = {

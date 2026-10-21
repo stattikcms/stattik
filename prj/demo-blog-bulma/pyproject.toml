@@ -15,6 +15,9 @@ packages = ["demo_blog_bulma"]
 python = "3.12"
 installer = "uv"
 workspace.members = [
+  "../../../grotto/pkg/core",
+  "../../../grotto/pkg/ogm",
+
   "../../pkg/markblocks",
   "../../pkg/stattik",
   "../../pkg/theme-bulma",

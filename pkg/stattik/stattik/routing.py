@@ -69,14 +69,10 @@ async def render_route(route):
         return HTMLResponse(await render_context(route, context))
 
     # NOTE: No context means a live request from the dev server, so look up the page ourselves
-    site = await Site.get_singleton()
-    try:
-        context = await lookup_context(route.request)
-        if context is None:
-            return PlainTextResponse("Not Found", status_code=404)
-        return HTMLResponse(f"<!DOCTYPE html>\n{await render_context(route, context)}")
-    finally:
-        await site.database.Session.remove()
+    context = await lookup_context(route.request)
+    if context is None:
+        return PlainTextResponse("Not Found", status_code=404)
+    return HTMLResponse(f"<!DOCTYPE html>\n{await render_context(route, context)}")
 
 async def render_context(route, context):
     params = route.request['path_params']
@@ -114,10 +110,7 @@ async def resolve_path(path):
     base, suffix = split_page_suffix(path)
     site = await Site.get_singleton()
     repo = site.database['Page']
-    try:
-        page = await repo.find_by_src_url(base) or await repo.find_by_url(base)
-    finally:
-        await site.database.Session.remove()
+    page = await repo.find_by_src_url(base) or await repo.find_by_url(base)
     if page is None:
         return path
     if not suffix:

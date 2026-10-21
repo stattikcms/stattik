@@ -15,9 +15,8 @@ class PageBuilder(Builder):
         type = job.type
         repo = db[type]
         input = repo.Input(**job.__dict__)
-        page = repo.Model(job.__dict__)
 
-        await repo.add(page)
+        return await repo.create(job.__dict__)
 
 
 class MarkdownBuilder(PageBuilder):

@@ -21,7 +21,7 @@ path = ".venv"
 python = "3.12"
 installer = "uv"
 skip-install = true
-workspace.members = ["pkg/*", "prj/*"]
+workspace.members = ["pkg/*", "prj/*", "../grotto/pkg/core", "../grotto/pkg/ogm"]
 workspace.parallel = true
 dependencies = ["pytest", "pytest-asyncio", "hypothesis", "pyright"]
 

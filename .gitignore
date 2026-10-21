@@ -81,5 +81,6 @@ docs/_build/
 # Stattik
 node_modules
 stattik.db
+stattik.db-*
 .sqbpro
 parser_debug.txt

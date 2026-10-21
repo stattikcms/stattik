@@ -1,1 +1,1 @@
-from .model import Model, ModelMixin
+from .model import Model, SCHEMA
