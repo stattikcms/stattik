@@ -10,8 +10,7 @@ from stattik.site import Site
 async def index():
     start = timer()
 
-    site = await Site.produce()
-    await site.begin()
+    site = await Site.get_singleton()
     await site.index()
 
     end = timer()

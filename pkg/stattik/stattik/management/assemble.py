@@ -11,7 +11,7 @@ async def assemble():
 
     start = timer()
 
-    site = await Site.produce()
+    site = await Site.get_singleton()
     #await site.begin()
     await site.assemble()
 

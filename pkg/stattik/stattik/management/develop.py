@@ -26,8 +26,7 @@ async def lifespan(app: Starlette):
 
 async def create_site():
     global site
-    site = await Site.produce()
-    await site.begin()
+    site = await Site.get_singleton()
 
 def create_app():
 
