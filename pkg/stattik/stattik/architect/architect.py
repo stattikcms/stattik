@@ -28,7 +28,6 @@ class Architect(FolderBuilder):
     async def build_site(self):
         site = await Site.get_singleton()
         db = site.database
-        await db.begin()
 
         config = { "type": "Page", "db": self.db, "parent": None }
 

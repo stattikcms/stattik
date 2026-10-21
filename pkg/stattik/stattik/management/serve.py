@@ -22,6 +22,7 @@ async def lifespan(app: Starlette):
     yield
     # Code to run on shutdown
     print("Shutdown")
+    await site.end()
 
 
 def create_app():

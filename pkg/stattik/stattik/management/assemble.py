@@ -12,15 +12,17 @@ async def assemble():
     start = timer()
 
     site = await Site.get_singleton()
-    #await site.begin()
-    await site.assemble()
+    try:
+        await site.assemble()
 
-    end = timer()
-    elapsed = end - start
+        end = timer()
+        elapsed = end - start
 
-    count = await site.page_count
+        count = await site.page_count
     
-    print(emoji.emojize(f"Assembled {count} pages in {str(round(elapsed, 2))} seconds :thumbs_up:"))
+        print(emoji.emojize(f"Assembled {count} pages in {str(round(elapsed, 2))} seconds :thumbs_up:"))
+    finally:
+        await site.end()
 
 if __name__ == "__main__":
     asyncio.run(assemble())

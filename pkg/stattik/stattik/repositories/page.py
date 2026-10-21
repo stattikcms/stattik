@@ -1,20 +1,17 @@
-from typing import Optional
-from datetime import datetime
-import json
+from typing import Any, Optional
+from datetime import UTC, datetime
 
 from sqlalchemy import (
-    Column,
     ForeignKey,
     Integer,
     JSON,
     String,
     DateTime,
     Text,
-    event,
     func,
+    select,
 )
-from sqlalchemy.orm import relationship
-from sqlalchemy.future import select
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from stattik.database import Repository
 from stattik.repositories import Model
@@ -29,42 +26,47 @@ class PathType(types.TypeDecorator):
     cache_ok = True
 
     def process_bind_param(self, value, dialect):
-        return str(value)
+        return None if value is None else str(value)
 
     def process_result_value(self, value, dialect):
-        return Path(value)
+        return None if value is None else Path(value)
+
+
+def utcnow():
+    # NOTE: Naive UTC, to compare with the naive datetimes frontmatter produces
+    return datetime.now(UTC).replace(tzinfo=None)
 
 
 class Page(Model):
-    def __init__(self, data={}) -> None:
-        self.inject(data)
+    def __init__(self, data=None) -> None:
+        self.inject(data or {})
 
     def inject(self, data):
         for key in data:
             setattr(self, key, data[key])
 
-    id = Column(Integer, primary_key=True)
-    parent_id = Column(Integer, ForeignKey("Page.id"))
-    type = Column(String(50))
-    data = Column(JSON)
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    parent_id: Mapped[Optional[int]] = mapped_column(ForeignKey("Page.id"))
+    type: Mapped[str] = mapped_column(String(50))
+    data: Mapped[Optional[Any]] = mapped_column(JSON)
 
-    src_path = Column(PathType())
-    src_url = Column(PathType())
-    path = Column(PathType())
-    url = Column(PathType())
+    src_path: Mapped[Optional[Path]] = mapped_column(PathType())
+    src_url: Mapped[Optional[Path]] = mapped_column(PathType())
+    path: Mapped[Optional[Path]] = mapped_column(PathType())
+    url: Mapped[Optional[Path]] = mapped_column(PathType())
 
-    title = Column(String(50))
-    date = Column(DateTime, index=True, default=datetime.utcnow())
-    stars = Column(Integer, index=True)
-    menu = Column(JSON)
+    title: Mapped[Optional[str]] = mapped_column(String)
+    date: Mapped[Optional[datetime]] = mapped_column(DateTime, index=True, default=utcnow)
+    stars: Mapped[Optional[int]] = mapped_column(Integer, index=True)
+    menu: Mapped[Optional[Any]] = mapped_column(JSON)
 
-    description = Column(String(50))
-    cover = Column(String(50))
-    slug = Column(String(50))
+    description: Mapped[Optional[str]] = mapped_column(String)
+    cover: Mapped[Optional[str]] = mapped_column(String)
+    slug: Mapped[Optional[str]] = mapped_column(String)
 
-    content = Column(Text)
+    content: Mapped[Optional[str]] = mapped_column(Text)
 
-    parent = relationship(
+    parent: Mapped[Optional["Page"]] = relationship(
         "Page",
         lazy="joined",
         cascade="all",
@@ -72,7 +74,7 @@ class Page(Model):
         remote_side="Page.id",
     )
 
-    __mapper_args__ = {"polymorphic_identity": "Page", "polymorphic_on": type}
+    __mapper_args__ = {"polymorphic_identity": "Page", "polymorphic_on": "type"}
 
 
 class PageInput(Data):
@@ -106,19 +108,8 @@ class PageRepository(Repository):
 
     async def count(self):
         session = self.Session()
-        q = await session.execute(
-            select(func.count()).select_from(select(self.Model).subquery())
-        )
-        count = q.scalars().one()
-        return count
-
-    async def child_count(self):
-        session = self.Session()
-        q = await session.execute(
-            select(func.count()).select_from(select(self.Model.children).subquery())
-        )
-        count = q.scalars().one()
-        return count
+        q = await session.execute(select(func.count()).select_from(self.Model))
+        return q.scalar_one()
 
     async def slice(self, start, stop):
         session = self.Session()
@@ -130,7 +121,7 @@ class PageRepository(Repository):
     async def latest(self, start, stop):
         session = self.Session()
         q = await session.execute(
-            select(self.Model).order_by(self.Model.date).slice(start, stop)
+            select(self.Model).order_by(self.Model.date.desc()).slice(start, stop)
         )
         return q.scalars().all()
 
@@ -153,7 +144,7 @@ def define_page_type(name, base=PageRepository):
         name,
         (base.Model,),
         {
-            "id": Column(Integer, ForeignKey("Page.id"), primary_key=True),
+            "id": mapped_column(Integer, ForeignKey("Page.id"), primary_key=True),
             "__mapper_args__": {"polymorphic_identity": name},
         },
     )

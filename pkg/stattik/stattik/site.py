@@ -179,8 +179,11 @@ class Site:
     async def begin(self):
         await self.database.begin()
 
+    async def end(self):
+        await self.database.close()
+
     async def assemble(self):
-        await self.database.drop_all()
+        await self.database.reset()
         await self.architect.build_site()
 
     async def index(self):

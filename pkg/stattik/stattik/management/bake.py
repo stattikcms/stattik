@@ -12,8 +12,10 @@ async def bake():
     start = timer()
 
     site = await Site.get_singleton()
-    await site.begin()
-    await site.bake()
+    try:
+        await site.bake()
+    finally:
+        await site.end()
 
     end = timer()
     elapsed = end - start

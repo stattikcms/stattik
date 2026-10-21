@@ -46,6 +46,7 @@ async def lifespan(app: Starlette):
     await site.index()
     app.mount("/", app=DevApp())
     yield
+    await site.end()
 
 
 def create_app():

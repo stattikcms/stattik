@@ -11,7 +11,10 @@ async def index():
     start = timer()
 
     site = await Site.get_singleton()
-    await site.index()
+    try:
+        await site.index()
+    finally:
+        await site.end()
 
     end = timer()
     elapsed = end - start
