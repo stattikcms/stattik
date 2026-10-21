@@ -1,7 +1,7 @@
 from loguru import logger
 
 import starlette.routing as srouting
-from starlette.responses import HTMLResponse
+from starlette.responses import HTMLResponse, PlainTextResponse
 
 from .vue import Vue
 from .view import build_view
@@ -64,8 +64,22 @@ async def render_route(route):
     #matched = route.matched
     #print_matched(matched)
     #page = route.request['page']
+    context = route.request.scope.get('context')
+    if context is not None:
+        return HTMLResponse(await render_context(route, context))
+
+    # NOTE: No context means a live request from the dev server, so look up the page ourselves
+    site = await Site.get_singleton()
+    try:
+        context = await lookup_context(route.request)
+        if context is None:
+            return PlainTextResponse("Not Found", status_code=404)
+        return HTMLResponse(f"<!DOCTYPE html>\n{await render_context(route, context)}")
+    finally:
+        await site.database.Session.remove()
+
+async def render_context(route, context):
     params = route.request['path_params']
-    context = route.request['context']
     page = context.page
     #logger.debug(f'render_route:page:  {page.__dict__}')
     site = await Site.get_singleton()
@@ -75,8 +89,22 @@ async def render_route(route):
     vu = await view.create_vu()
 
     #logger.debug(f"render_route:vu:  {vu}")
-    body = await vu.render()
-    return HTMLResponse( body )
+    return await vu.render()
+
+async def lookup_context(request):
+    from .renderer import RenderContext
+
+    parts = [part for part in request.url.path.split('/') if part]
+    # Paginated urls (/blog/page/2) render from the listing page itself
+    if len(parts) >= 2 and parts[-2] == 'page' and parts[-1].isdigit():
+        parts = parts[:-2]
+    src_url = '/' + '/'.join(parts)
+
+    site = await Site.get_singleton()
+    page = await site.database['Page'].find_by_src_url(src_url)
+    if page is None:
+        return None
+    return RenderContext(site.renderer, page)
 
 def print_routes(routes):
     for route in routes:

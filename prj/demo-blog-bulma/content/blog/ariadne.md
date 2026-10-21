@@ -11,4 +11,4 @@ tags:
 
 ---
 
-[Ariadne](https://ariadnegraphql.org/) is a Python library for implementing GraphQL servers
+[Ariadne](https://ariadnegraphql.org/) is a Python library for implementing GraphQL servers.
