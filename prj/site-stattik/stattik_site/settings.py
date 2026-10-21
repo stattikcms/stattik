@@ -1,23 +1,11 @@
 import os
 
-from .repositories import create_database
-from .router import create_router
-from .architect import create_architect
-from .renderer import create_renderer
-from .indexer import create_indexer
-from .baker import create_baker
+from .routes import routes
 
 SECRET_KEY = os.environ.get("SECRET_KEY") or "you-will-never-guess"
 DATABASE_URL = os.environ.get("DATABASE_URL") or "sqlite+aiosqlite:///./stattik.db"
 
-
-def on_create(self):
-    self.database = create_database()
-    self.router = create_router()
-    self.architect = create_architect()
-    self.renderer = create_renderer()
-    self.indexer = create_indexer()
-    self.baker = create_baker()
+page_types = ["Landing", "Post", "Project"]
 
 
 siteMetadata = {

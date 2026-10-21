@@ -132,3 +132,23 @@ class PageRepository(Repository):
             select(self.Model).order_by(self.Model.date).slice(start, stop)
         )
         return q.scalars().all()
+
+
+_page_types = {}
+
+
+def define_page_type(name, base=PageRepository):
+    """Create (or fetch) a polymorphic Page subtype and its repository by name."""
+    if name in _page_types:
+        return _page_types[name]
+    Model = type(
+        name,
+        (base.Model,),
+        {
+            "id": Column(Integer, ForeignKey("Page.id"), primary_key=True),
+            "__mapper_args__": {"polymorphic_identity": name},
+        },
+    )
+    repo = type(f"{name}Repository", (base,), {"Model": Model})
+    _page_types[name] = repo
+    return repo

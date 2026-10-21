@@ -73,7 +73,10 @@ class Site:
         if cls._instance is not None:
             return cls._instance
         cls._instance = site = await cls.load_site()
-        site.on_create(site)
+        site.on_create()
+        hook = site.settings.get("on_create")
+        if hook:
+            hook(site)
         await site.begin()
         return site
 
@@ -99,14 +102,36 @@ class Site:
         self.css_scopes.append(css)
 
     def on_create(self):
-        pass
+        from .repositories.page import PageRepository, define_page_type
+        from .database import create_database
+        from .routing import create_router
+        from .architect import create_architect
+        from .architect.builders import MarkdownBuilder
+        from .renderer import create_renderer
+        from .indexer.fuse import FuseIndexer
+        from .baker import create_baker
+
+        settings = self.settings
+        repositories = [PageRepository] + [
+            t if isinstance(t, type) else define_page_type(t)
+            for t in settings.get("page_types", ["Landing", "Post"])
+        ]
+        self.database = create_database(repositories)
+        self.router = create_router(settings["routes"])
+        self.architect = create_architect(settings.get("builders", [MarkdownBuilder]))
+        self.renderer = create_renderer()
+        self.indexer = settings.get("indexer", FuseIndexer)()
+        self.baker = create_baker()
 
     @classmethod
     async def load_site(cls) -> "Site":
         settings = Settings.get_singleton()
         logger.debug(f"Loaded settings: {settings}")
         site = Site()
+        site.settings = settings
         for key, val in settings.items():
+            if key == "on_create":
+                continue
             site.__setattr__(key, val)
 
         cls.load_resolve(settings)
