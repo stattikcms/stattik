@@ -6,7 +6,7 @@ build-backend = "hatchling.build"
 name = "stattik-demo-blog-bulma"
 version = "0.1.0"
 requires-python = ">=3.12"
-dependencies = ["gql[all]>=3.0.0b0,<4"]
+dependencies = []
 
 [tool.hatch.build.targets.wheel]
 packages = ["demo_blog_bulma"]

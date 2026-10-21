@@ -39,7 +39,7 @@ dependencies = ["pytest", "pytest-asyncio", "hypothesis"]
 scripts.test = "pytest pkg/{matrix:name}/tests {args}"
 
 [[tool.hatch.envs.pkg.matrix]]
-name = ["core", "ogm"]
+name = ["markblocks", "stattik"]
 
 # --- tools --------------------------------------------------------------------
 [tool.pytest.ini_options]

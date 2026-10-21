@@ -26,6 +26,7 @@ from pathlib import Path
 
 class PathType(types.TypeDecorator):
     impl = Text
+    cache_ok = True
 
     def process_bind_param(self, value, dialect):
         return str(value)
@@ -76,11 +77,11 @@ class Page(Model):
 
 class PageInput(Data):
     type: str
-    title: Optional[str]
-    date: Optional[datetime]
-    description: Optional[str]
-    cover: Optional[str]
-    slug: Optional[str]
+    title: Optional[str] = None
+    date: Optional[datetime] = None
+    description: Optional[str] = None
+    cover: Optional[str] = None
+    slug: Optional[str] = None
 
 
 class PageRepository(Repository):
